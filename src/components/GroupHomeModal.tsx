@@ -95,31 +95,30 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (validateForm()) {
-      // 空の居室を除外
-      const cleanedData = {
-        ...formData,
-        residentRooms: formData.residentRooms.filter(room => room.trim() !== '')
-      };
-      
-      onSubmit(cleanedData);
-      setFormData({
-        propertyName: '',
-        unitName: '',
-        postalCode: '',
-        address: '',
-        phoneNumber: '',
-        commonRoom: '1室',
-        residentRooms: [''],
-        openingDate: ''
-      });
-      setErrors({});
-      onClose();
-    }
-  };
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (validateForm()) {
+    const cleanedData = {
+      ...formData,
+      residentRooms: formData.residentRooms.filter(room => room.trim() !== '')
+    };
+
+    onSubmit(cleanedData); // App.tsxのhandleGroupHomeSubmitが呼ばれる
+    setFormData({
+      propertyName: '',
+      unitName: '',
+      postalCode: '',
+      address: '',
+      phoneNumber: '',
+      commonRoom: '1室',
+      residentRooms: [''],
+      openingDate: ''
+    });
+    setErrors({});
+    onClose();
+  }
+};
 
   const handleInputChange = (field: keyof GroupHomeFormData, value: string | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
