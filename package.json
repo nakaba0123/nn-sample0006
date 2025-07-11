@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "start": "node server.cjs",
+    "start": "node server.js",
     "preview": "vite preview"
   },
   "dependencies": {
