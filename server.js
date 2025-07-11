@@ -62,7 +62,7 @@ app.get('/my-ip', async (req, res) => {
 
 // 静的ファイル & React初期画面
 app.use(express.static(path.join(__dirname, "dist")));
-app.get("/*", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
