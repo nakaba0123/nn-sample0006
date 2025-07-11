@@ -41,9 +41,9 @@ app.post('/group-homes', (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   const values = [
-    d.id, d.propertyName, d.unitName, d.postalCode,
-    d.address, d.phoneNumber, d.commonRoom,
-    JSON.stringify(d.residentRooms), d.openingDate, d.createdAt
+    d.id, d.property_name, d.unit_name, d.postal_code,
+    d.address, d.phone_number, d.common_room,
+    JSON.stringify(d.resident_rooms), d.opening_date, d.created_at
   ];
 
   db.query(sql, values, (err) => {
