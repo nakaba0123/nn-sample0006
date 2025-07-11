@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Home, MapPin, Phone, Calendar, Plus, Trash2, Building } from 'lucide-react';
 import { GroupHome, GroupHomeFormData } from '../types/GroupHome';
+import axios from "axios";
 
 interface GroupHomeModalProps {
   isOpen: boolean;
@@ -95,28 +96,26 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  if (validateForm()) {
-    const cleanedData = {
-      ...formData,
-      residentRooms: formData.residentRooms.filter(room => room.trim() !== '')
-    };
-
-    onSubmit(cleanedData); // App.tsxのhandleGroupHomeSubmitが呼ばれる
-    setFormData({
-      propertyName: '',
-      unitName: '',
-      postalCode: '',
-      address: '',
-      phoneNumber: '',
-      commonRoom: '1室',
-      residentRooms: [''],
-      openingDate: ''
+  try {
+    const response = await axios.post("https://your-railway-url/group-homes", {
+      property_name,
+      unit_name,
+      postal_code,
+      address,
+      phone_number,
+      common_room,
+      resident_rooms,
+      opening_date,
     });
-    setErrors({});
+
+    console.log("登録成功:", response.data);
+    // モーダルを閉じる or 入力値をリセットしたければここで
     onClose();
+  } catch (error) {
+    console.error("登録エラー:", error);
   }
 };
 
