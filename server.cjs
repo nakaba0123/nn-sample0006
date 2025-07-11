@@ -55,6 +55,17 @@ app.post('/group-homes', (req, res) => {
   });
 });
 
+// グループホーム一覧取得API
+app.get('/group-homes', (req, res) => {
+  db.query('SELECT * FROM group_homes', (err, results) => {
+    if (err) {
+      console.error('DB取得エラー:', err);
+      return res.status(500).json({ message: '取得に失敗しました' });
+    }
+    res.status(200).json(results);
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
