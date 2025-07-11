@@ -10,15 +10,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// MySQL接続設定（Railway用）
+// MySQL接続
 const db = mysql.createConnection({
-  host: process.env.MYSQL_HOST || 'your-hostname',
-  user: process.env.MYSQL_USER || 'your-username',
-  password: process.env.MYSQL_PASSWORD || 'your-password',
-  database: process.env.MYSQL_DATABASE || 'your-database',
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
 });
 
-// 接続テスト
 db.connect(err => {
   if (err) {
     console.error('MySQL接続エラー:', err);
@@ -27,46 +26,33 @@ db.connect(err => {
   }
 });
 
-// グループホーム登録API
+// APIルート
+app.get('/group-homes', (req, res) => {
+  db.query('SELECT * FROM group_homes', (err, results) => {
+    if (err) return res.status(500).json({ message: '取得に失敗しました' });
+    res.json(results);
+  });
+});
+
 app.post('/group-homes', (req, res) => {
-  const data = req.body;
+  const d = req.body;
   const sql = `
     INSERT INTO group_homes (id, property_name, unit_name, postal_code, address, phone_number, common_room, resident_rooms, opening_date, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   const values = [
-    data.id,
-    data.propertyName,
-    data.unitName,
-    data.postalCode,
-    data.address,
-    data.phoneNumber,
-    data.commonRoom,
-    JSON.stringify(data.residentRooms), // ※ MySQL 5.7未満なら TEXT型を使う
-    data.openingDate,
-    data.createdAt
+    d.id, d.propertyName, d.unitName, d.postalCode,
+    d.address, d.phoneNumber, d.commonRoom,
+    JSON.stringify(d.residentRooms), d.openingDate, d.createdAt
   ];
 
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('DB挿入エラー:', err);
-      return res.status(500).json({ message: '登録に失敗しました' });
-    }
-    res.status(200).json({ message: '登録に成功しました' });
+  db.query(sql, values, (err) => {
+    if (err) return res.status(500).json({ message: '登録に失敗しました' });
+    res.json({ message: '登録に成功しました' });
   });
 });
 
-// グループホーム一覧取得API
-app.get('/group-homes', (req, res) => {
-  db.query('SELECT * FROM group_homes', (err, results) => {
-    if (err) {
-      console.error('DB取得エラー:', err);
-      return res.status(500).json({ message: '取得に失敗しました' });
-    }
-    res.status(200).json(results);
-  });
-});
-
+// IP取得
 app.get('/my-ip', async (req, res) => {
   const fetch = (await import('node-fetch')).default;
   const response = await fetch('https://api.ipify.org?format=json');
@@ -74,7 +60,7 @@ app.get('/my-ip', async (req, res) => {
   res.json(data);
 });
 
-// === フロント(React)の静的ファイル ===
+// 静的ファイル & React初期画面
 app.use(express.static(path.join(__dirname, "dist")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
