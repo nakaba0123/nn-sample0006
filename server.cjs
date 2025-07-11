@@ -66,6 +66,13 @@ app.get('/group-homes', (req, res) => {
   });
 });
 
+app.get('/my-ip', async (req, res) => {
+  const fetch = (await import('node-fetch')).default;
+  const response = await fetch('https://api.ipify.org?format=json');
+  const data = await response.json();
+  res.json(data);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
