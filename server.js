@@ -73,6 +73,15 @@ app.get('/my-ip', async (req, res) => {
   res.json(data);
 });
 
+// ① 静的ファイルの提供
+const path = require("path");
+app.use(express.static(path.join(__dirname, "dist"))); // ← build出力先がdistの場合
+
+// ② すべての未定義ルートで index.html を返す
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
