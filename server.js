@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require("path");
 const mysql = require('mysql2');
 require('dotenv').config();
 
@@ -73,11 +74,8 @@ app.get('/my-ip', async (req, res) => {
   res.json(data);
 });
 
-// ① 静的ファイルの提供
-const path = require("path");
-app.use(express.static(path.join(__dirname, "dist"))); // ← build出力先がdistの場合
-
-// ② すべての未定義ルートで index.html を返す
+// === フロント(React)の静的ファイル ===
+app.use(express.static(path.join(__dirname, "dist")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
