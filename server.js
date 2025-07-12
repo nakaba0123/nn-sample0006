@@ -70,6 +70,19 @@ app.post('/group-homes', (req, res) => {
   });
 });
 
+app.delete('/group-homes/:id', (req, res) => {
+  const { id } = req.params;
+  const sql = 'DELETE FROM group_homes WHERE id = ?';
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error('削除エラー:', err);
+      return res.status(500).json({ message: '削除に失敗しました' });
+    }
+    res.json({ message: '削除に成功しました' });
+  });
+});
+
+
 // IP取得
 app.get('/my-ip', async (req, res) => {
   const fetch = (await import('node-fetch')).default;

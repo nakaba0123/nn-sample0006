@@ -33,6 +33,8 @@ interface AttendanceData {
   timestamp: string;
 }
 
+const API_BASE_URL = 'https://nn-sample0006-production.up.railway.app';
+
 function App() {
   const [activeTab, setActiveTab] = useState<'attendance' | 'users' | 'grouphomes' | 'departments' | 'shifts' | 'masters' | 'residents' | 'usage'>('attendance');
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceData[]>([]);
@@ -436,18 +438,27 @@ useEffect(() => {
     setIsGroupHomeModalOpen(true);
   };
 
-  const handleDeleteGroupHome = (groupHomeId: string) => {
-    if (window.confirm('このグループホームを削除してもよろしいですか？')) {
-      setGroupHomes(prev => prev.filter(gh => gh.id !== groupHomeId));
-      // 関連するシフト希望も更新
-      setShiftPreferences(prev => prev.map(pref => ({
-        ...pref,
-        preferences: pref.preferences.filter(ghPref => ghPref.groupHomeId !== groupHomeId)
-      })).filter(pref => pref.preferences.length > 0));
-      // 関連する利用者も削除
-      setResidents(prev => prev.filter(resident => resident.groupHomeId !== groupHomeId));
-    }
-  };
+const handleDeleteGroupHome = async (groupHomeId: string) => {
+  if (!window.confirm('このグループホームを削除してもよろしいですか？')) return;
+
+  try {
+    // 🔥 DELETEリクエストを送る（バックエンドAPI呼び出し）
+    await axios.delete(`${API_BASE_URL}/group-homes/${groupHomeId}`);
+
+    // ✅ 削除成功したらローカル状態も更新
+    setGroupHomes(prev => prev.filter(gh => gh.id !== groupHomeId));
+    setShiftPreferences(prev => prev.map(pref => ({
+      ...pref,
+      preferences: pref.preferences.filter(ghPref => ghPref.groupHomeId !== groupHomeId)
+    })).filter(pref => pref.preferences.length > 0));
+    setResidents(prev => prev.filter(resident => resident.groupHomeId !== groupHomeId));
+
+    alert('削除に成功しました');
+  } catch (err) {
+    console.error('削除エラー:', err);
+    alert('削除に失敗しました');
+  }
+};
 
   const handleEditExpansion = (expansion: ExpansionRecord) => {
     setEditingExpansion(expansion);
