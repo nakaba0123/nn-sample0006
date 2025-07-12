@@ -96,30 +96,19 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
+// GroupHomeModal.tsx ─ handleSubmit を差し替え
+const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
 
+  // 入力チェック
   if (!validateForm()) return;
 
-  try {
-    const response = await axios.post("https://nn-sample0006-production.up.railway.app/group-homes", {
-      property_name: formData.propertyName,
-      unit_name: formData.unitName,
-      postal_code: formData.postalCode,
-      address: formData.address,
-      phone_number: formData.phoneNumber,
-      common_room: formData.commonRoom,
-      resident_rooms: formData.residentRooms,
-      opening_date: formData.openingDate,
-    });
+  // 👉 親(App.tsx)に入力値を渡すだけ
+  onSubmit(formData);
 
-    console.log("登録成功:", response.data);
-    onClose();
-  } catch (error) {
-    console.error("登録エラー:", error);
-  }
+  // モーダルを閉じる
+  onClose();
 };
-
 
   const handleInputChange = (field: keyof GroupHomeFormData, value: string | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));

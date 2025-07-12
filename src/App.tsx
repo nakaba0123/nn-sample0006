@@ -201,27 +201,25 @@ function App() {
     }
   };
 
+// 1. 登録 → 2. 一覧再取得 → 3. モーダル閉じる はここで完結
 const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
-  try {
-    const response = await fetch('https://nn-sample0006-production.up.railway.app/group-homes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
+  // 1️⃣ 登録
+  await axios.post(`${API_BASE}/group-homes`, {
+    property_name: data.propertyName,
+    unit_name:    data.unitName,
+    postal_code:  data.postalCode,
+    address:      data.address,
+    phone_number: data.phoneNumber,
+    common_room:  data.commonRoom,
+    resident_rooms: data.residentRooms,
+    opening_date: data.openingDate,
+  });
 
-    if (response.ok) {
-      alert('グループホームの登録に成功しました！');
-      const newGroupHome = await response.json();
-      setGroupHomes(prev => [newGroupHome, ...prev]);
-    } else {
-      alert('登録に失敗しました（バックエンドのresponse.okがfalse）');
-    }
-  } catch (error) {
-    console.error('登録エラー:', error);
-    alert('登録中にエラーが発生しました');
-  }
+  // 2️⃣ 一覧再取得
+  await fetchGroupHomes();
+
+  // 3️⃣ 終了メッセージなどはここで
+  alert('グループホームを登録しました！');
 };
 
   const handleExpansionSubmit = (data: ExpansionFormData) => {
