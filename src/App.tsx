@@ -204,7 +204,7 @@ function App() {
 
 const handleGroupHomeSubmit = async (formData: GroupHomeFormData) => {
   try {
-    const response = await axios.post(`${API_BASE}/group-homes`, {
+    const response = await axios.post("https://nn-sample0006-production.up.railway.app/group-homes", {
       property_name: formData.propertyName,
       unit_name: formData.unitName,
       postal_code: formData.postalCode,
