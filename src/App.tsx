@@ -224,13 +224,24 @@ const handleGroupHomeSubmit = async (formData: GroupHomeFormData) => {
   }
 };
 
-// ① 一覧取得用の関数
+// ⬇ fetchGroupHomes の中
 const fetchGroupHomes = async () => {
   try {
-    const res = await axios.get(
-      "https://nn-sample0006-production.up.railway.app/group-homes"
-    );
-    setGroupHomes(res.data);   // ← 一覧表示用ステートに反映
+    const res = await axios.get(`https://nn-sample0006-production.up.railway.app/group-homes`);
+    // キーを変換
+    const data = res.data.map((gh: any) => ({
+      id: gh.id,
+      propertyName: gh.property_name,
+      unitName: gh.unit_name,
+      postalCode: gh.postal_code,
+      address: gh.address,
+      phoneNumber: gh.phone_number,
+      commonRoom: gh.common_room,
+      residentRooms: gh.resident_rooms,
+      openingDate: gh.opening_date,
+      createdAt: gh.created_at,
+    }));
+    setGroupHomes(data);
   } catch (err) {
     console.error("一覧取得エラー:", err);
   }
