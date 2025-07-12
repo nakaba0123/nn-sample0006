@@ -10,6 +10,14 @@ interface GroupHomeModalProps {
   editGroupHome?: GroupHome | null;
 }
 
+// ISO文字列を「YYYY-MM-DD」形式に変換
+const formatDateForInput = (str: string) => {
+  if (!str) return '';
+  const d = new Date(str);
+  if (isNaN(d.getTime())) return '';
+  return d.toISOString().slice(0, 10);
+};
+
 const GroupHomeModal: React.FC<GroupHomeModalProps> = ({ 
   isOpen, 
   onClose, 
@@ -39,7 +47,7 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
         phoneNumber: editGroupHome.phoneNumber,
         commonRoom: editGroupHome.commonRoom,
         residentRooms: editGroupHome.residentRooms.length > 0 ? editGroupHome.residentRooms : [''],
-        openingDate: editGroupHome.openingDate
+        openingDate: formatDateForInput(editGroupHome.openingDate)
       });
     } else {
       setFormData({
