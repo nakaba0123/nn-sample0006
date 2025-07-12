@@ -205,7 +205,7 @@ function App() {
 // 1. 登録 → 2. 一覧再取得 → 3. モーダル閉じる はここで完結
 const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
   // 1️⃣ 登録
-  await axios.post(`${API_BASE}/group-homes`, {
+  await axios.post(`https://nn-sample0006-production.up.railway.app/group-homes`, {
     property_name: data.propertyName,
     unit_name:    data.unitName,
     postal_code:  data.postalCode,
