@@ -235,13 +235,16 @@ const fetchGroupHomes = async () => {
   }
 };
 
-// マウント時
+// 1️⃣ 最初のマウント時に一覧取得
 useEffect(() => {
-  fetchGroupHomes();
+  const fetchData = async () => {
+    await fetchGroupHomes();
+  };
+  fetchData();
 }, []);
 
-// ➜ POST 成功後（すでに書いている）
-await fetchGroupHomes();
+// 2️⃣ グループホーム登録後（handleGroupHomeSubmitの中）
+await fetchGroupHomes(); // ← ここは async 関数の中ならOK！
 
   const handleExpansionSubmit = (data: ExpansionFormData) => {
     if (editingExpansion) {
