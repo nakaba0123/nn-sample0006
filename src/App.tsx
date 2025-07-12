@@ -202,25 +202,26 @@ function App() {
     }
   };
 
-// 1. 登録 → 2. 一覧再取得 → 3. モーダル閉じる はここで完結
-const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
-  // 1️⃣ 登録
-  await axios.post(`https://nn-sample0006-production.up.railway.app/group-homes`, {
-    property_name: data.propertyName,
-    unit_name:    data.unitName,
-    postal_code:  data.postalCode,
-    address:      data.address,
-    phone_number: data.phoneNumber,
-    common_room:  data.commonRoom,
-    resident_rooms: data.residentRooms,
-    opening_date: data.openingDate,
-  });
+const handleGroupHomeSubmit = async (formData: GroupHomeFormData) => {
+  try {
+    const response = await axios.post(`${API_BASE}/group-homes`, {
+      property_name: formData.propertyName,
+      unit_name: formData.unitName,
+      postal_code: formData.postalCode,
+      address: formData.address,
+      phone_number: formData.phoneNumber,
+      common_room: formData.commonRoom,
+      resident_rooms: formData.residentRooms,
+      opening_date: formData.openingDate,
+    });
 
-  // 2️⃣ 一覧再取得
-  await fetchGroupHomes();
+    console.log("登録成功:", response.data);
 
-  // 3️⃣ 終了メッセージなどはここで
-  alert('グループホームを登録しました！');
+    // ✅ INSERT成功後に一覧再取得
+    await fetchGroupHomes();
+  } catch (error) {
+    console.error("登録エラー:", error);
+  }
 };
 
 // ① 一覧取得用の関数
