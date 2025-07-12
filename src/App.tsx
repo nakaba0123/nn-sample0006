@@ -224,11 +224,11 @@ const handleGroupHomeSubmit = async (formData: GroupHomeFormData) => {
   }
 };
 
-// ⬇ fetchGroupHomes の中
 const fetchGroupHomes = async () => {
   try {
-    const res = await axios.get(`https://nn-sample0006-production.up.railway.app/group-homes`);
-    // キーを変換
+    const res = await axios.get(
+      "https://nn-sample0006-production.up.railway.app/group-homes"
+    );
     const data = res.data.map((gh: any) => ({
       id: gh.id,
       propertyName: gh.property_name,
@@ -237,7 +237,10 @@ const fetchGroupHomes = async () => {
       address: gh.address,
       phoneNumber: gh.phone_number,
       commonRoom: gh.common_room,
-      residentRooms: gh.resident_rooms,
+      // ここ！ 文字列 → 配列に変換
+      residentRooms: Array.isArray(gh.resident_rooms)
+        ? gh.resident_rooms
+        : JSON.parse(gh.resident_rooms || "[]"),
       openingDate: gh.opening_date,
       createdAt: gh.created_at,
     }));
