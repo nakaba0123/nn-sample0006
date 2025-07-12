@@ -26,20 +26,27 @@ db.connect(err => {
   }
 });
 
-// APIルート（一覧取得）
 app.get('/group-homes', (req, res) => {
   db.query('SELECT * FROM group_homes', (err, results) => {
-    if (err) return res.status(500).json({ message: '取得に失敗しました' });
+    if (err) {
+      console.error('DB取得エラー実ログ:', err);   // ★ ① 追加！
+      return res.status(500).json({ message: '取得に失敗しました' });
+    }
 
-    // 🧼 resident_rooms を空配列に補正する
-    const fixedResults = results.map(row => ({
+    const fixed = results.map(row => ({
       ...row,
-      resident_rooms: Array.isArray(row.resident_rooms)
-        ? row.resident_rooms
-        : [],
+      resident_rooms: (() => {
+        try {
+          const parsed = JSON.parse(row.resident_rooms || '[]');
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      })(),
     }));
 
-    res.json(fixedResults);
+    console.log('取得件数:', fixed.length);        // ★ ② 任意：確認用
+    res.json(fixed);
   });
 });
 
