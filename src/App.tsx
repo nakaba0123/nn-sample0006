@@ -244,9 +244,6 @@ useEffect(() => {
   fetchData();
 }, []);
 
-// 2️⃣ グループホーム登録後（handleGroupHomeSubmitの中）
-await fetchGroupHomes(); // ← ここは async 関数の中ならOK！
-
   const handleExpansionSubmit = (data: ExpansionFormData) => {
     if (editingExpansion) {
       // Edit existing expansion
