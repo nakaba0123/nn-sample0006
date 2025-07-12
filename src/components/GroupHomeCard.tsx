@@ -119,7 +119,10 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
             <span className="text-xs text-gray-500">{groupHome.residentRooms.length}室</span>
           </div>
           <div className="flex flex-wrap gap-2 mb-4">
-            {groupHome.residentRooms.slice(0, 6).map((room, index) => (
+            {(groupHome.residentRooms || "")
+		.split(",")
+		.slice(0, 6)
+		.map((room, 1) => <span key{i}>{room}</span>) => (
               <span
                 key={index}
                 className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
@@ -138,7 +141,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
         <div className="pt-4 border-t border-gray-100">
           <div className="flex items-center justify-between text-sm text-gray-500">
             <span>登録日: {formatDate(groupHome.createdAt)}</span>
-            <span>ID: {groupHome.id.slice(0, 8)}...</span>
+            <span>ID: {String(groupHome.id).slice(0, 8)}...</span>
           </div>
         </div>
       </div>

@@ -196,7 +196,7 @@ const ResidentCard: React.FC<ResidentCardProps> = ({ resident, onEdit, onDelete 
       <div className="pt-4 border-t border-gray-100">
         <div className="flex items-center justify-between text-sm text-gray-500">
           <span>登録: {formatDate(resident.createdAt)}</span>
-          <span>ID: {resident.id.slice(0, 8)}...</span>
+          <span>ID: {String(resident.id).slice(0, 8)}...</span>
         </div>
       </div>
     </div>

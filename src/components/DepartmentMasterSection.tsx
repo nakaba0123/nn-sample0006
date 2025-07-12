@@ -86,7 +86,7 @@ const DepartmentMasterSection: React.FC<DepartmentMasterSectionProps> = ({
                 
                 <div className="flex items-center space-x-2">
                   <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
-                    ID: {department.id.slice(0, 8)}...
+                    ID: {String(department.id).slice(0, 8)}...
                   </span>
                   <button
                     onClick={() => onEdit(department)}

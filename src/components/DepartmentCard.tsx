@@ -22,7 +22,7 @@ const DepartmentCard: React.FC<DepartmentCardProps> = ({ department, onEdit, onD
           </div>
           <div>
             <h3 className="font-semibold text-gray-800 text-lg">{department.name}</h3>
-            <p className="text-sm text-gray-500">部署ID: {department.id.slice(0, 8)}...</p>
+            <p className="text-sm text-gray-500">部署ID: {String(department.id).slice(0, 8)}...</p>
           </div>
         </div>
         

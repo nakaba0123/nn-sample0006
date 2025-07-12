@@ -185,7 +185,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete }) => {
       <div className="pt-4 border-t border-gray-100">
         <div className="flex items-center justify-between text-sm text-gray-500">
           <span>登録日: {formatDate(user.createdAt)}</span>
-          <span>ID: {user.id.slice(0, 8)}...</span>
+          <span>ID: {String(user.id).slice(0, 8)}...</span>
         </div>
       </div>
     </div>

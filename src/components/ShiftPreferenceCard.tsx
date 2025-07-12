@@ -120,7 +120,7 @@ const ShiftPreferenceCard: React.FC<ShiftPreferenceCardProps> = ({
               <span>更新: {formatDate(preference.updatedAt)}</span>
             )}
           </div>
-          <span>ID: {preference.id.slice(0, 8)}...</span>
+          <span>ID: {String(preference.id).slice(0, 8)}...</span>
         </div>
       </div>
     </div>

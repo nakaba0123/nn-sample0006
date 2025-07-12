@@ -117,7 +117,7 @@ const RoleMasterSection: React.FC<RoleMasterSectionProps> = ({
                 
                 <div className="flex items-center space-x-2">
                   <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
-                    ID: {role.id.slice(0, 8)}...
+                    ID: {String(role.id).slice(0, 8)}...
                   </span>
                   <button
                     onClick={() => onEdit(role)}
