@@ -223,6 +223,26 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
   alert('グループホームを登録しました！');
 };
 
+// ① 一覧取得用の関数
+const fetchGroupHomes = async () => {
+  try {
+    const res = await axios.get(
+      "https://nn-sample0006-production.up.railway.app/group-homes"
+    );
+    setGroupHomes(res.data);   // ← 一覧表示用ステートに反映
+  } catch (err) {
+    console.error("一覧取得エラー:", err);
+  }
+};
+
+// マウント時
+useEffect(() => {
+  fetchGroupHomes();
+}, []);
+
+// ➜ POST 成功後（すでに書いている）
+await fetchGroupHomes();
+
   const handleExpansionSubmit = (data: ExpansionFormData) => {
     if (editingExpansion) {
       // Edit existing expansion
