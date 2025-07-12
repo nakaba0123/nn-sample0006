@@ -10,26 +10,24 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// MySQL接続
-const db = mysql.createConnection({
+// ✅ MySQL接続プールに変更
+const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-db.connect(err => {
-  if (err) {
-    console.error('MySQL接続エラー:', err);
-  } else {
-    console.log('MySQLに接続成功！');
-  }
-});
+console.log("✅ MySQL接続プールを作成しました");
 
+// ✅ 一覧取得（nullやJSON形式の補正あり）
 app.get('/group-homes', (req, res) => {
-  db.query('SELECT * FROM group_homes', (err, results) => {
+  pool.query('SELECT * FROM group_homes', (err, results) => {
     if (err) {
-      console.error('DB取得エラー実ログ:', err);   // ★ ① 追加！
+      console.error('DB取得エラー実ログ:', err);
       return res.status(500).json({ message: '取得に失敗しました' });
     }
 
@@ -45,11 +43,12 @@ app.get('/group-homes', (req, res) => {
       })(),
     }));
 
-    console.log('取得件数:', fixed.length);        // ★ ② 任意：確認用
+    console.log('取得件数:', fixed.length);
     res.json(fixed);
   });
 });
 
+// ✅ 登録（JSON.stringify）
 app.post('/group-homes', (req, res) => {
   const d = req.body;
   const sql = `
@@ -62,8 +61,11 @@ app.post('/group-homes', (req, res) => {
     JSON.stringify(d.resident_rooms), d.opening_date, d.created_at
   ];
 
-  db.query(sql, values, (err) => {
-    if (err) return res.status(500).json({ message: '登録に失敗しました' });
+  pool.query(sql, values, (err) => {
+    if (err) {
+      console.error('登録エラー実ログ:', err);
+      return res.status(500).json({ message: '登録に失敗しました' });
+    }
     res.json({ message: '登録に成功しました' });
   });
 });
@@ -83,6 +85,6 @@ app.get("*", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
 
