@@ -561,6 +561,11 @@ const handleDeleteGroupHome = async (groupHomeId: string) => {
     setIsUserModalOpen(true);
   };
 
+  const handleAddGroupHome = () => {
+    setEditingGroupHome(null);
+    setIsGroupHomeModalOpen(true);
+  };
+
 const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
   try {
     // 1️⃣ IDなどを生成（登録用）
