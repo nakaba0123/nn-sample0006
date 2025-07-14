@@ -349,8 +349,9 @@ const ResidentModal: React.FC<ResidentModalProps> = ({
   const selectedUnit = getSelectedUnit();
   const availableRooms = getAvailableRooms();
 
-// 👇 この直後に追記してください！
 console.log("▼デバッグログ▼");
+console.log("formData.groupHomeId:", formData.groupHomeId);
+console.log("getAllUnits():", getAllUnits());
 console.log("selectedUnit:", selectedUnit);
 console.log("availableRooms:", availableRooms);
 
