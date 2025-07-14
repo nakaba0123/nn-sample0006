@@ -348,6 +348,12 @@ const ResidentModal: React.FC<ResidentModalProps> = ({
   const allUnits = getAllUnits();
   const selectedUnit = getSelectedUnit();
   const availableRooms = getAvailableRooms();
+
+// 👇 この直後に追記してください！
+console.log("▼デバッグログ▼");
+console.log("selectedUnit:", selectedUnit);
+console.log("availableRooms:", availableRooms);
+
   const autoStatus = getAutoStatus(formData.moveOutDate);
 
   const getStatusDisplay = (status: 'active' | 'inactive') => {
