@@ -253,7 +253,7 @@ const fetchGroupHomes = async () => {
     const res = await axios.get(
       "https://nn-sample0006-production.up.railway.app/group-homes"
     );
-    setFroupHomes(res.data);
+    setGroupHomes(res.data);
     const data = res.data.map((gh: any) => ({
       id: gh.id,
       propertyName: gh.property_name,
