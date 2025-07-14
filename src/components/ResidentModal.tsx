@@ -128,7 +128,7 @@ const ResidentModal: React.FC<ResidentModalProps> = ({
   // 選択されたユニットの情報を取得
   const getSelectedUnit = () => {
     const allUnits = getAllUnits();
-    return allUnits.find(unit => unit.id === formData.groupHomeId);
+    return allUnits.find(unit => unit.id == formData.groupHomeId);
   };
 
   // 利用可能な部屋番号を取得（初期登録分 + 増床分）
