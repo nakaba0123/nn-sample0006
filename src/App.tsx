@@ -253,6 +253,7 @@ const fetchGroupHomes = async () => {
     const res = await axios.get(
       "https://nn-sample0006-production.up.railway.app/group-homes"
     );
+    setFroupHomes(res.data);
     const data = res.data.map((gh: any) => ({
       id: gh.id,
       propertyName: gh.property_name,
@@ -560,17 +561,26 @@ const handleDeleteGroupHome = async (groupHomeId: string) => {
     setIsUserModalOpen(true);
   };
 
-const handleAddGroupHome = async (formData: GroupHomeFormData) => {
+const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
   try {
-    await axios.post(`${API_BASE_URL}/group-homes`, {
-      ...formData,
-      created_at: new Date().toISOString()
-    });
+    // 1️⃣ IDなどを生成（登録用）
+    const newGroupHome: GroupHome = {
+      ...data,
+      createdAt: new Date().toISOString()     // ← 任意で付加
+    };
 
-    // ✅ 登録成功後にグループホーム一覧を再取得！
-    await fetchGroupHomes();
+    // 2️⃣ POST（DBに登録）
+    await axios.post(`${API_BASE_URL}/group-homes`, newGroupHome);
+
+    // 3️⃣ 表示用stateを更新 ← これがなかったから「登録しても見えない！」となってた
+    setGroupHomes(prev => [...prev, newGroupHome]);
+
+    // 4️⃣ モーダル閉じて編集モードリセット
+    setIsGroupHomeModalOpen(false);
+    setEditingGroupHome(null);
   } catch (err) {
     console.error('登録エラー:', err);
+    alert('グループホームの登録に失敗しました');
   }
 };
 

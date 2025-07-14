@@ -55,13 +55,13 @@ app.post('/group-homes', (req, res) => {
 const d = req.body;
 const sql = `
   INSERT INTO group_homes (
-    id, property_name, unit_name, postal_code, address, 
+    property_name, unit_name, postal_code, address, 
     phone_number, common_room, resident_rooms, opening_date, created_at
   )
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
 const values = [
-  d.id, d.propertyName, d.unitName, d.postalCode,  // ←ここ直す！
+  d.propertyName, d.unitName, d.postalCode,  // ←ここ直す！
   d.address, d.phoneNumber, d.commonRoom,
   JSON.stringify(d.residentRooms), d.openingDate, d.createdAt
 ];
