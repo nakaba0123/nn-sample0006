@@ -19,6 +19,8 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  connectTimeout: 10000,       // 10秒でタイムアウト
+  acquireTimeout: 10000,       // プールから接続取得の待機時間
 });
 
 console.log("✅ MySQL接続プールを作成しました");
