@@ -50,16 +50,19 @@ app.get('/group-homes', (req, res) => {
 
 // ✅ 登録（JSON.stringify）
 app.post('/group-homes', (req, res) => {
-  const d = req.body;
-  const sql = `
-    INSERT INTO group_homes (id, property_name, unit_name, postal_code, address, phone_number, common_room, resident_rooms, opening_date, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-  const values = [
-    d.id, d.property_name, d.unit_name, d.postal_code,
-    d.address, d.phone_number, d.common_room,
-    JSON.stringify(d.resident_rooms), d.opening_date, d.created_at
-  ];
+const d = req.body;
+const sql = `
+  INSERT INTO group_homes (
+    id, property_name, unit_name, postal_code, address, 
+    phone_number, common_room, resident_rooms, opening_date, created_at
+  )
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
+const values = [
+  d.id, d.propertyName, d.unitName, d.postalCode,  // ←ここ直す！
+  d.address, d.phoneNumber, d.commonRoom,
+  JSON.stringify(d.residentRooms), d.openingDate, d.createdAt
+];
 
   pool.query(sql, values, (err) => {
     if (err) {
