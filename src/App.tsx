@@ -253,6 +253,8 @@ const fetchGroupHomes = async () => {
     const res = await axios.get(
       "https://nn-sample0006-production.up.railway.app/group-homes"
     );
+
+    // ── API から来る snake_case → camelCase へ変換 ＆ 配列化 ──
     const data = res.data.map((gh: any) => ({
       id: gh.id,
       propertyName: gh.property_name,
@@ -261,14 +263,14 @@ const fetchGroupHomes = async () => {
       address: gh.address,
       phoneNumber: gh.phone_number,
       commonRoom: gh.common_room,
-      // ここ！ 文字列 → 配列に変換
       residentRooms: Array.isArray(gh.resident_rooms)
         ? gh.resident_rooms
         : JSON.parse(gh.resident_rooms || "[]"),
       openingDate: gh.opening_date,
       createdAt: gh.created_at,
     }));
-    setGroupHomes(data);
+
+    setGroupHomes(data);          // ← これ“だけ”で OK
   } catch (err) {
     console.error("一覧取得エラー:", err);
   }
