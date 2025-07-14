@@ -71,7 +71,7 @@ const values = [
       console.error('登録エラー実ログ:', err);
       return res.status(500).json({ message: '登録に失敗しました' });
     }
-    res.json({ message: '登録に成功しました' });
+//    res.json({ message: '登録に成功しました' });
   });
 });
 
@@ -83,7 +83,7 @@ app.delete('/group-homes/:id', (req, res) => {
       console.error('削除エラー:', err);
       return res.status(500).json({ message: '削除に失敗しました' });
     }
-    res.json({ message: '削除に成功しました' });
+//    res.json({ message: '削除に成功しました' });
   });
 });
 
@@ -120,7 +120,7 @@ app.put('/group-homes/:id', (req, res) => {
       console.error('更新エラー:', err);
       return res.status(500).json({ message: '更新に失敗しました' });
     }
-    res.json({ message: '更新に成功しました' });
+//    res.json({ message: '更新に成功しました' });
   });
 });
 
