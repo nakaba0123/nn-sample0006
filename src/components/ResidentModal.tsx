@@ -612,7 +612,7 @@ const ResidentModal: React.FC<ResidentModalProps> = ({
                     {allUnits.map(unit => (
                       <option key={unit.id} value={unit.id}>
                         {unit.propertyName} - {unit.unitName}
-                        {unit.id.startsWith('expansion_') && ' (増床)'}
+                        {String(unit.id).startsWith('expansion_') && ' (増床)'}
                       </option>
                     ))}
                   </select>
