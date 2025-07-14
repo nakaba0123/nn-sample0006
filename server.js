@@ -82,6 +82,42 @@ app.delete('/group-homes/:id', (req, res) => {
   });
 });
 
+// ── UPDATE（PUT）: グループホームを編集 ──
+app.put('/group-homes/:id', (req, res) => {
+  const { id } = req.params;       // ← URL から ID を取得
+  const d = req.body;              // ← フロントから送られてきた編集値
+
+  const sql = `
+    UPDATE group_homes SET
+      property_name  = ?,
+      unit_name      = ?,
+      postal_code    = ?,
+      address        = ?,
+      phone_number   = ?,
+      common_room    = ?,
+      resident_rooms = ?,
+      opening_date   = ?
+    WHERE id = ?`;
+  const values = [
+    d.propertyName,
+    d.unitName,
+    d.postalCode,
+    d.address,
+    d.phoneNumber,
+    d.commonRoom,
+    JSON.stringify(d.residentRooms),
+    d.openingDate,
+    id,                // ← 最後に WHERE 用の ID
+  ];
+
+  pool.query(sql, values, (err) => {
+    if (err) {
+      console.error('更新エラー:', err);
+      return res.status(500).json({ message: '更新に失敗しました' });
+    }
+    res.json({ message: '更新に成功しました' });
+  });
+});
 
 // IP取得
 app.get('/my-ip', async (req, res) => {

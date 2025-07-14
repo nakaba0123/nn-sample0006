@@ -204,25 +204,47 @@ function App() {
     }
   };
 
-const handleGroupHomeSubmit = async (formData: GroupHomeFormData) => {
+const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
   try {
-    const response = await axios.post("https://nn-sample0006-production.up.railway.app/group-homes", {
-      property_name: formData.propertyName,
-      unit_name: formData.unitName,
-      postal_code: formData.postalCode,
-      address: formData.address,
-      phone_number: formData.phoneNumber,
-      common_room: formData.commonRoom,
-      resident_rooms: formData.residentRooms,
-      opening_date: formData.openingDate,
-    });
+    if (editingGroupHome) {
+      // === 編集モード：PUT ===
+      await axios.put(
+        `${API_BASE_URL}/group-homes/${editingGroupHome.id}`,
+        {
+          propertyName:  data.propertyName,
+          unitName:      data.unitName,
+          postalCode:    data.postalCode,
+          address:       data.address,
+          phoneNumber:   data.phoneNumber,
+          commonRoom:    data.commonRoom,
+          residentRooms: data.residentRooms,
+          openingDate:   data.openingDate,
+        }
+      );
+      alert('更新に成功しました！');
+    } else {
+      // === 新規登録：POST ===
+      await axios.post(`${API_BASE_URL}/group-homes`, {
+        propertyName:  data.propertyName,
+        unitName:      data.unitName,
+        postalCode:    data.postalCode,
+        address:       data.address,
+        phoneNumber:   data.phoneNumber,
+        commonRoom:    data.commonRoom,
+        residentRooms: data.residentRooms,
+        openingDate:   data.openingDate,
+      });
+      alert('登録に成功しました！');
+    }
 
-    console.log("登録成功:", response.data);
+    // 一覧を最新化
+    fetchGroupHomes();
 
-    // ✅ INSERT成功後に一覧再取得
-    await fetchGroupHomes();
-  } catch (error) {
-    console.error("登録エラー:", error);
+    // モーダルを閉じ、編集状態をリセット
+    handleCloseGroupHomeModal();
+  } catch (err) {
+    console.error('保存エラー:', err);
+    alert('保存に失敗しました');
   }
 };
 
