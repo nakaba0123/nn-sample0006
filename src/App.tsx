@@ -560,10 +560,20 @@ const handleDeleteGroupHome = async (groupHomeId: string) => {
     setIsUserModalOpen(true);
   };
 
-  const handleAddGroupHome = () => {
-    setEditingGroupHome(null);
-    setIsGroupHomeModalOpen(true);
-  };
+const handleAddGroupHome = async (formData: GroupHomeFormData) => {
+  try {
+    await axios.post(`${API_BASE_URL}/group-homes`, {
+      ...formData,
+      id: generateUUID(),
+      created_at: new Date().toISOString()
+    });
+
+    // ✅ 登録成功後にグループホーム一覧を再取得！
+    await fetchGroupHomes();
+  } catch (err) {
+    console.error('登録エラー:', err);
+  }
+};
 
   const handleAddExpansion = () => {
     setEditingExpansion(null);
