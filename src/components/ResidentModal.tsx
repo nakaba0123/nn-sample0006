@@ -86,11 +86,16 @@ const ResidentModal: React.FC<ResidentModalProps> = ({
 
   const isHiragana = (t: string) => /^[\u3041-\u3096\u30FC\s　]+$/.test(t.trim());
 
-  const allUnits = (): { id: string; propertyName: string; unitName: string }[] => {
-    const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
-    groupHomes.forEach((g) =>
-      map.set(`${g.propertyName}-${g.unitName}`, { id: g.id, propertyName: g.propertyName, unitName: g.unitName })
-    );
+
+const allUnits = (): { id: string; propertyName: string; unitName: string }[] => {
+  const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
+  groupHomes.forEach((g) =>
+    map.set(`${g.propertyName}-${g.unitName}`, {
+      id: String(g.id), // ←ここで強制的に文字列にする！
+      propertyName: g.propertyName,
+      unitName: g.unitName,
+    })
+  );
     expansionRecords
       .filter((e) => e.expansionType === "A")
       .forEach((e) => {
