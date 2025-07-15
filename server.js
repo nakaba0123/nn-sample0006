@@ -124,6 +124,55 @@ app.put('/group-homes/:id', (req, res) => {
   });
 });
 
+app.post('/residents', (req, res) => {
+  const {
+    group_home_id,
+    name,
+    gender,
+    birthdate,
+    room_number,
+    admission_date,
+    memo
+  } = req.body;
+
+  const sql = `
+    INSERT INTO residents (
+      group_home_id, name, gender, birthdate,
+      room_number, admission_date, memo, created_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+  `;
+
+  pool.query(
+    sql,
+    [group_home_id, name, gender, birthdate, room_number, admission_date, memo],
+    (err, result) => {
+      if (err) {
+        console.error('登録失敗:', err);
+        res.status(500).json({ error: '登録失敗' });
+      } else {
+        res.status(201).json({ message: '利用者登録成功', id: result.insertId });
+      }
+    }
+  );
+});
+
+app.get('/residents', (req, res) => {
+  const sql = `
+    SELECT * FROM residents
+    ORDER BY admission_date DESC
+  `;
+
+  pool.query(sql, (err, results) => {
+    if (err) {
+      console.error('取得失敗:', err);
+      res.status(500).json({ error: '取得失敗' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 // IP取得
 app.get('/my-ip', async (req, res) => {
   const fetch = (await import('node-fetch')).default;
