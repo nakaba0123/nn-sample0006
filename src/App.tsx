@@ -279,22 +279,26 @@ const fetchGroupHomes = async () => {
 // --- 利用者一覧取得 -----------------------------
 // App.tsx どこか上に
 const fetchResidents = async () => {
+  console.log('fetchResidents(): 呼び出されたよ');
   try {
     const res = await axios.get(`${API_BASE_URL}/residents`);
+    console.log('取得した利用者:', res.data);  // ← これ重要！
 
-    // ★ snake_case → camelCase 変換が必要ならここで
     setResidents(
       res.data.map((r: any) => ({
         id: r.id,
         name: r.name,
         nameKana: r.name_kana,
         disabilityLevel: r.disability_level,
-        // …必要ぶん変換
+        roomNumber: r.room_number,
+        moveInDate: r.move_in_date,
+        moveOutDate: r.move_out_date,
+        groupHomeId: r.group_home_id,
         createdAt: r.created_at,
       }))
     );
   } catch (err) {
-    console.error('Residents 取得失敗:', err);
+    console.error('fetchResidents() エラー:', err);
   }
 };
 
@@ -462,6 +466,7 @@ const handleResidentSubmit = async (data: Resident) => {
     console.error('利用者保存エラー:', err);
     alert('利用者の保存に失敗しました');
   }
+  console.log('登録後の residents:', residents);
 };
 
   const handleUsageRecordUpdate = (records: UsageRecord[]) => {
