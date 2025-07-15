@@ -450,23 +450,32 @@ useEffect(() => {
 // App.tsx
 const handleResidentSubmit = async (data: Resident) => {
   try {
+   // 🍼 ① ここでキャメル → スネークへ変換してあげる
+   const payload = {
+     name:              data.name,
+     name_kana:         data.nameKana,
+     disability_level:  data.disabilityLevel,
+     group_home_id:     data.groupHomeId,   // ← ここが超重要！
+     room_number:       data.roomNumber,
+     move_in_date:      data.moveInDate,
+     move_out_date:     data.moveOutDate,
+     memo:              '',                 // 使ってなければ空でもOK
+   };
+
     if (residents.find(r => r.id === data.id)) {
-      // 編集（PUT）
-      await axios.put(`${API_BASE_URL}/residents/${data.id}`, data);
+      // 編集
+     await axios.put(`${API_BASE_URL}/residents/${data.id}`, payload);
     } else {
-      // 新規（POST）
-      await axios.post(`${API_BASE_URL}/residents`, data);
+      // 新規
+     await axios.post(`${API_BASE_URL}/residents`, payload);
     }
 
-    // 🎯 ここで再フェッチ
+    // 🎯 再フェッチ
     await fetchResidents();
-
-    // モーダル閉じ等は呼び出し側で
   } catch (err) {
     console.error('利用者保存エラー:', err);
     alert('利用者の保存に失敗しました');
   }
-  console.log('登録後の residents:', residents);
 };
 
   const handleUsageRecordUpdate = (records: UsageRecord[]) => {
