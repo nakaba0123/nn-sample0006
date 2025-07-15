@@ -199,6 +199,11 @@ const ResidentModal: React.FC<ResidentModalProps> = ({
 
   if (!isOpen) return null;
 
+// 👇👇👇 ここに console.log を入れます
+console.log("groupHomeId:", formData.groupHomeId);
+console.log("selectedUnit:", selectedUnit());
+console.log("availableRooms:", availableRooms());
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
