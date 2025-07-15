@@ -277,38 +277,36 @@ const fetchGroupHomes = async () => {
 };
 
 // --- 利用者一覧取得 -----------------------------
+// App.tsx どこか上に
 const fetchResidents = async () => {
   try {
     const res = await axios.get(`${API_BASE_URL}/residents`);
 
-    // もし snake_case で返ってくるならここで整形
-    const data = res.data.map((r: any) => ({
-      id:             r.id,
-      groupHomeId:    r.group_home_id,
-      name:           r.name,
-      gender:         r.gender,
-      birthdate:      r.birthdate,
-      roomNumber:     r.room_number,
-      admissionDate:  r.admission_date,
-      moveOutDate:    r.move_out_date,   // ← カラム名は実テーブルに合わせて
-      memo:           r.memo,
-      createdAt:      r.created_at,
-      updatedAt:      r.updated_at,
-    }));
-
-    setResidents(data);
+    // ★ snake_case → camelCase 変換が必要ならここで
+    setResidents(
+      res.data.map((r: any) => ({
+        id: r.id,
+        name: r.name,
+        nameKana: r.name_kana,
+        disabilityLevel: r.disability_level,
+        // …必要ぶん変換
+        createdAt: r.created_at,
+      }))
+    );
   } catch (err) {
-    console.error('利用者一覧取得エラー:', err);
+    console.error('Residents 取得失敗:', err);
   }
 };
 
 // 1️⃣ 最初のマウント時に一覧取得
 useEffect(() => {
-  const fetchData = async () => {
-    await fetchGroupHomes();
-    await fetchResidents(); // ← これを追加！
+  const init = async () => {
+    await Promise.all([
+      fetchGroupHomes(),
+      fetchResidents(),   // ← 追加済み
+    ]);
   };
-  fetchData();
+  init();
 }, []);
 
   const handleExpansionSubmit = (data: ExpansionFormData) => {
@@ -445,17 +443,24 @@ useEffect(() => {
     }
   };
 
+// App.tsx
 const handleResidentSubmit = async (data: Resident) => {
   try {
-    await axios.post(`${API_BASE_URL}/residents`, data);
+    if (residents.find(r => r.id === data.id)) {
+      // 編集（PUT）
+      await axios.put(`${API_BASE_URL}/residents/${data.id}`, data);
+    } else {
+      // 新規（POST）
+      await axios.post(`${API_BASE_URL}/residents`, data);
+    }
 
-    // ★ 一覧を最新化！
+    // 🎯 ここで再フェッチ
     await fetchResidents();
 
-    alert('利用者を登録しました');
+    // モーダル閉じ等は呼び出し側で
   } catch (err) {
-    console.error('利用者登録エラー:', err);
-    alert('登録に失敗しました');
+    console.error('利用者保存エラー:', err);
+    alert('利用者の保存に失敗しました');
   }
 };
 
