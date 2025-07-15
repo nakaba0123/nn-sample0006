@@ -143,9 +143,9 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
       {/* ✅ ① 追加：登録フォーム */}
       <ResidentForm
         /* 利用可能なグループホームを渡す  */
-        groupHomes={groupHomes}
+        /* groupHomes={groupHomes} */
         /* 保存時に App.tsx 側へ通知するハンドラを渡す  */
-        onSubmit={onResidentSubmit}
+        /* onSubmit={onResidentSubmit} */
       />
       <div className="flex items-center justify-between">
         <div>
