@@ -7,6 +7,7 @@ import ResidentModal from './ResidentModal';
 import ResidentCard from './ResidentCard';
 import StatsCard from './StatsCard';
 import PermissionGuard from './PermissionGuard';
+import ResidentForm from './ResidentForm';
 
 interface ResidentPageProps {
   residents: Resident[];
@@ -139,6 +140,13 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
   return (
     <div className="space-y-8">
       {/* Header */}
+      {/* ✅ ① 追加：登録フォーム */}
+      <ResidentForm
+        /* 利用可能なグループホームを渡す  */
+        groupHomes={groupHomes}
+        /* 保存時に App.tsx 側へ通知するハンドラを渡す  */
+        onSubmit={onResidentSubmit}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">利用者管理</h2>
