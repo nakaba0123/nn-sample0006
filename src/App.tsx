@@ -276,10 +276,37 @@ const fetchGroupHomes = async () => {
   }
 };
 
+// --- 利用者一覧取得 -----------------------------
+const fetchResidents = async () => {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/residents`);
+
+    // もし snake_case で返ってくるならここで整形
+    const data = res.data.map((r: any) => ({
+      id:             r.id,
+      groupHomeId:    r.group_home_id,
+      name:           r.name,
+      gender:         r.gender,
+      birthdate:      r.birthdate,
+      roomNumber:     r.room_number,
+      admissionDate:  r.admission_date,
+      moveOutDate:    r.move_out_date,   // ← カラム名は実テーブルに合わせて
+      memo:           r.memo,
+      createdAt:      r.created_at,
+      updatedAt:      r.updated_at,
+    }));
+
+    setResidents(data);
+  } catch (err) {
+    console.error('利用者一覧取得エラー:', err);
+  }
+};
+
 // 1️⃣ 最初のマウント時に一覧取得
 useEffect(() => {
   const fetchData = async () => {
     await fetchGroupHomes();
+    await fetchResidents(); // ← これを追加！
   };
   fetchData();
 }, []);
@@ -418,17 +445,19 @@ useEffect(() => {
     }
   };
 
-  const handleResidentSubmit = (data: Resident) => {
-    if (residents.find(r => r.id === data.id)) {
-      // Edit existing resident
-      setResidents(prev => prev.map(resident => 
-        resident.id === data.id ? data : resident
-      ));
-    } else {
-      // Add new resident
-      setResidents(prev => [data, ...prev]);
-    }
-  };
+const handleResidentSubmit = async (data: Resident) => {
+  try {
+    await axios.post(`${API_BASE_URL}/residents`, data);
+
+    // ★ 一覧を最新化！
+    await fetchResidents();
+
+    alert('利用者を登録しました');
+  } catch (err) {
+    console.error('利用者登録エラー:', err);
+    alert('登録に失敗しました');
+  }
+};
 
   const handleUsageRecordUpdate = (records: UsageRecord[]) => {
     setUsageRecords(records);
