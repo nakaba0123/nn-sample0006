@@ -24,38 +24,38 @@ export default function ResidentForm({ onSubmit, groupHomes }: ResidentFormProps
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch('https://nn-sample0006-production.up.railway.app/residents', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-      if (res.ok) {
-        const data = await res.json();
-        alert('利用者登録が成功しました！');
-        onSubmit(data); // ← 親に通知して一覧更新！
-
-        // フォームを初期化
-        setFormData({
-          group_home_id: '',
-          name: '',
-          gender: '',
-          birthdate: '',
-          room_number: '',
-          admission_date: '',
-          memo: '',
-        });
-      } else {
-        alert('登録に失敗しました...');
-      }
-    } catch (error) {
-      console.error(error);
-      alert('通信エラーが発生しました');
-    }
+  // 1. フォーム内容をまとめる
+  const newResident: Resident = {
+    ...formData,
+    id: '',                 // ← 新規なので空 or undefined
+    createdAt: new Date().toISOString(),
   };
+
+  try {
+    // 2. 親( App.tsx ) に「登録お願い！」と合図
+    await onSubmit(newResident);
+
+    // 3. フォームをリセット
+    setFormData({
+      group_home_id: '',
+      name: '',
+      gender: '',
+      birthdate: '',
+      room_number: '',
+      admission_date: '',
+      memo: '',
+    });
+
+    // 4. 成功メッセージ
+    alert('利用者登録が成功しました！');
+  } catch (err) {
+    console.error(err);
+    alert('登録に失敗しました...');
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md space-y-4 mb-8">
