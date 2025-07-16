@@ -206,6 +206,10 @@ const ResidentModal: React.FC<Props> = ({
   );
 
   if (!isOpen) return null;
+console.log("🧪 ResidentModal レンダリング中");
+console.log("🧪 isOpen:", isOpen);
+console.log("🧪 selectedUnit:", selected);
+
   const selected = selectedUnit();
 
   return (
