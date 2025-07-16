@@ -165,6 +165,8 @@ function App() {
   const [editingResident, setEditingResident] = useState<Resident | null>(null); // ← 追加
   const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);  // ← 追加
 
+  console.log("👀 モーダル状態:", isResidentModalOpen);
+
   const handleAttendanceSubmit = (data: AttendanceData) => {
     const newRecord = {
       ...data,
