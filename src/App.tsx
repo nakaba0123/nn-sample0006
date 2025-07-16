@@ -498,6 +498,12 @@ useEffect(() => {
     }
   };
 
+  /* ---------- 追加ハンドラ ---------- */
+  const handleOpenResidentModal = () => {
+    setEditingResident(null);             // 新規登録なので null
+    setIsResidentModalOpen(true);         // モーダルを開く
+  };
+
   const handleEditUser = (user: User) => {
     setEditingUser(user);
     setIsUserModalOpen(true);
