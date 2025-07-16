@@ -452,15 +452,34 @@ useEffect(() => {
   };
 
 // App.tsx
-  const handleResidentSubmit = (resident: Resident) => {
-    console.log("送信された利用者:", resident);
+const handleResidentSubmit = async (resident: Resident) => {
+  console.log("送信された利用者:", resident);
 
-    /* ここで API へ POST／PUT して、
-       成功したら residents を再フェッチ  */
-    // await axios.post(...)
+  try {
+    // 1️⃣ POST送信
+    await axios.post(`${API_BASE_URL}/residents`, {
+      name: resident.name,
+      nameKana: resident.nameKana,
+      disabilityLevel: resident.disabilityLevel,
+      roomNumber: resident.roomNumber,
+      moveInDate: resident.moveInDate,
+      moveOutDate: resident.moveOutDate,
+      groupHomeId: resident.groupHomeId,
+    });
 
-    setIsResidentModalOpen(false);        // 登録成功→閉じる
-  };
+    // 2️⃣ 成功したら一覧再取得
+    await fetchResidents();
+
+    // 3️⃣ モーダル閉じる
+    setIsResidentModalOpen(false);
+    setEditingResident(null);
+
+    alert("利用者を登録しました！");
+  } catch (err) {
+    console.error("利用者登録エラー:", err);
+    alert("登録に失敗しました！");
+  }
+};
 
   /* ---------- 画面 ---------- */
 
