@@ -12,6 +12,7 @@ import DepartmentModal from './components/DepartmentModal';
 import ShiftPreferencePage from './components/ShiftPreferencePage';
 import MasterDataPage from './components/MasterDataPage';
 import RoleModal from './components/RoleModal';
+import ResidentModal from './components/ResidentModal';  // ← 追加
 import ResidentPage from './components/ResidentPage';
 import UsageRecordPage from './components/UsageRecordPage';
 import UserSelector from './components/UserSelector';
@@ -161,6 +162,7 @@ function App() {
   const [editingExpansion, setEditingExpansion] = useState<ExpansionRecord | null>(null);
   const [editingDepartment, setEditingDepartment] = useState<Department | null>(null);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);  // ← 追加
 
   const handleAttendanceSubmit = (data: AttendanceData) => {
     const newRecord = {
