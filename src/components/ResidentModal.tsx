@@ -205,8 +205,14 @@ const ResidentModal: React.FC<Props> = ({
     />
   );
 
-  if (!isOpen) return null; 
-  const selected = selectedUnit();
+if (!isOpen) {
+  console.log("🧪 ResidentModal レンダリング中");
+  console.log("🧪 isOpen:", isOpen);
+  return null; // ✅ selected はここでは呼ばない
+}
+
+const selected = selectedUnit(); // ✅ isOpen が true になってから呼ぶ
+console.log("🧪 selectedUnit:", selected);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4">
