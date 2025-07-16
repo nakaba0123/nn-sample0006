@@ -458,13 +458,15 @@ const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
   try {
+    const fallbackDate = new Date().toISOString().split('T')[0]; // ← 今日の日付 YYYY-MM-DD
+
     await axios.post(`${API_BASE_URL}/residents`, {
       name: resident.name,
       nameKana: resident.nameKana,
       gender: resident.gender,
       birthdate: resident.birthdate,
       disabilityLevel: resident.disabilityLevel,
-      disabilityStartDate: resident.disabilityHistory?.[0]?.startDate || null,
+      disabilityStartDate: resident.disabilityHistory?.[0]?.startDate || fallbackDate,
       roomNumber: resident.roomNumber,
       moveInDate: resident.moveInDate,
       moveOutDate: resident.moveOutDate || null,
