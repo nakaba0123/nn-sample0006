@@ -147,8 +147,15 @@ console.log("selectedUnit:", selectedUnit());
 
     e.preventDefault();
     console.log("submit clicked");
-    if (!validate()) return;
-    const unit = selectedUnit();
+
+    const isValid = validate();
+    console.log("🧪 validateの結果:", isValid);
+
+    if (!isValid) {
+      console.log("⛔ バリデーション失敗。送信中止！");
+      return;
+    }
+
     if (!unit) return;
 
     const now = new Date().toISOString();
