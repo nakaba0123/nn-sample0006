@@ -24,9 +24,6 @@ import { Role, RoleFormData, DEFAULT_ROLES } from './types/Role';
 import { ShiftPreference } from './types/ShiftPreference';
 import { Resident } from './types/Resident';
 import { UsageRecord } from './types/UsageRecord';
-// 1️⃣ 追加インポート
-import ResidentModal from "./components/ResidentModal";
-import { Resident } from "./types/Resident";
 
 interface AttendanceData {
   name: string;
@@ -108,9 +105,6 @@ function App() {
   ]);
   const [groupHomes, setGroupHomes] = useState<GroupHome[]>([]);
   const [expansionRecords, setExpansionRecords] = useState<ExpansionRecord[]>([]);
-  /* ---------- 追加 state ---------- */
-  const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);
-  const [editingResident, setEditingResident] = useState<Resident | null>(null);
 
   const [shiftPreferences, setShiftPreferences] = useState<ShiftPreference[]>([]);
   const [residents, setResidents] = useState<Resident[]>([]);
@@ -688,12 +682,6 @@ const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
   const handleCloseRoleModal = () => {
     setIsRoleModalOpen(false);
     setEditingRole(null);
-  };
-
-  /* ---------- 追加ハンドラ ---------- */
-  const handleOpenResidentModal = () => {
-    setEditingResident(null);             // 新規登録なので null
-    setIsResidentModalOpen(true);         // モーダルを開く
   };
 
   // 利用可能な権限を取得（全デフォルトロールから）
