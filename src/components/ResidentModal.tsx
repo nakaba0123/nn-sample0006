@@ -231,8 +231,60 @@ console.log("🧪 selectedUnit:", selected);
           </button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* 以下略：フォームUIのまま維持 */}
-        </form>
+  <section className="bg-blue-50 rounded-lg p-4 border border-blue-200 space-y-5">
+    <h3 className="font-medium text-blue-800 flex items-center">
+      <User className="w-5 h-5 mr-2" />
+      基本情報
+    </h3>
+    <div className="grid md:grid-cols-2 gap-5">
+      <div>
+        {input("name", { placeholder: "氏名 *" })}
+        {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
+      </div>
+      <div>
+        {input("nameKana", { placeholder: "よみがな *" })}
+        {errors.nameKana && <p className="text-xs text-red-500 mt-1">{errors.nameKana}</p>}
+      </div>
+      <div>
+        <select
+          value={formData.gender}
+          onChange={(e) => setFormData((p) => ({ ...p, gender: e.target.value }))}
+          className={`w-full rounded-lg border px-4 py-2 ${
+            errors.gender ? "border-red-400 bg-red-50" : "border-gray-300"
+          }`}
+        >
+          <option value="">性別を選択 *</option>
+          <option value="男性">男性</option>
+          <option value="女性">女性</option>
+          <option value="その他">その他</option>
+        </select>
+        {errors.gender && <p className="text-xs text-red-500 mt-1">{errors.gender}</p>}
+      </div>
+      <div>
+        {input("birthdate", { type: "date", placeholder: "生年月日 *" })}
+        {errors.birthdate && <p className="text-xs text-red-500 mt-1">{errors.birthdate}</p>}
+      </div>
+    </div>
+  </section>
+
+  {/* 追加で disabilityLevel, groupHomeId, roomNumber, moveInDate などの入力欄も復活させてOK！ */}
+
+  <div className="flex justify-end space-x-3 pt-4 border-t">
+    <button
+      type="button"
+      onClick={onClose}
+      className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+    >
+      キャンセル
+    </button>
+    <button
+      type="submit"
+      className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+    >
+      登録
+    </button>
+  </div>
+</form>
         <DisabilityHistoryModal
           isOpen={isDisModalOpen}
           onClose={() => setIsDisModalOpen(false)}
