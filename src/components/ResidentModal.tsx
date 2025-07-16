@@ -158,6 +158,9 @@ const ResidentModal: React.FC<Props> = ({
     e.preventDefault();
     if (!validate()) return;
 
+console.log("✅ フォームデータ:", formData);
+console.log("✅ バリデーションエラー:", errors);
+
     const u = selectedUnit();
     if (!u) {
       console.error("unit が取得できませんでした");
