@@ -206,6 +206,7 @@ const ResidentModal: React.FC<Props> = ({
     };
 
     console.log("➡️ onSubmitを呼ぶぞ！", resident);
+    console.log("resident:", resident);
     onSubmit(resident);
     onClose();
   };
