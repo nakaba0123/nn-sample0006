@@ -455,35 +455,40 @@ useEffect(() => {
   };
 
 // App.tsx
-const handleResidentSubmit = async (data: Resident) => {
-  try {
-   // 🍼 ① ここでキャメル → スネークへ変換してあげる
-   const payload = {
-     name:              data.name,
-     name_kana:         data.nameKana,
-     disability_level:  data.disabilityLevel,
-     group_home_id:     data.groupHomeId,   // ← ここが超重要！
-     room_number:       data.roomNumber,
-     move_in_date:      data.moveInDate,
-     move_out_date:     data.moveOutDate,
-     memo:              '',                 // 使ってなければ空でもOK
-   };
+  const handleResidentSubmit = (resident: Resident) => {
+    console.log("送信された利用者:", resident);
 
-    if (residents.find(r => r.id === data.id)) {
-      // 編集
-     await axios.put(`${API_BASE_URL}/residents/${data.id}`, payload);
-    } else {
-      // 新規
-     await axios.post(`${API_BASE_URL}/residents`, payload);
-    }
+    /* ここで API へ POST／PUT して、
+       成功したら residents を再フェッチ  */
+    // await axios.post(...)
 
-    // 🎯 再フェッチ
-    await fetchResidents();
-  } catch (err) {
-    console.error('利用者保存エラー:', err);
-    alert('利用者の保存に失敗しました');
-  }
-};
+    setIsResidentModalOpen(false);        // 登録成功→閉じる
+  };
+
+  /* ---------- 画面 ---------- */
+  return (
+    <div>
+      {/* 例：利用者一覧の上に登録ボタン */}
+      <button
+        onClick={handleOpenResidentModal}
+        className="bg-emerald-600 text-white px-4 py-2 rounded-lg"
+      >
+        ＋ 利用者登録
+      </button>
+
+      {/* 既存の利用者一覧など… */}
+
+      {/* 2️⃣ ここで ResidentModal を配置 */}
+      <ResidentModal
+        isOpen={isResidentModalOpen}
+        onClose={() => setIsResidentModalOpen(false)}
+        onSubmit={handleResidentSubmit}
+        editResident={editingResident}           // ※新規なら null
+        groupHomes={groupHomes}
+        expansionRecords={expansionRecords}
+      />
+    </div>
+  );
 
   const handleUsageRecordUpdate = (records: UsageRecord[]) => {
     setUsageRecords(records);
@@ -690,41 +695,6 @@ const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
     setEditingResident(null);             // 新規登録なので null
     setIsResidentModalOpen(true);         // モーダルを開く
   };
-
-  const handleResidentSubmit = (resident: Resident) => {
-    console.log("送信された利用者:", resident);
-
-    /* ここで API へ POST／PUT して、
-       成功したら residents を再フェッチ  */
-    // await axios.post(...)
-
-    setIsResidentModalOpen(false);        // 登録成功→閉じる
-  };
-
-  /* ---------- 画面 ---------- */
-  return (
-    <div>
-      {/* 例：利用者一覧の上に登録ボタン */}
-      <button
-        onClick={handleOpenResidentModal}
-        className="bg-emerald-600 text-white px-4 py-2 rounded-lg"
-      >
-        ＋ 利用者登録
-      </button>
-
-      {/* 既存の利用者一覧など… */}
-
-      {/* 2️⃣ ここで ResidentModal を配置 */}
-      <ResidentModal
-        isOpen={isResidentModalOpen}
-        onClose={() => setIsResidentModalOpen(false)}
-        onSubmit={handleResidentSubmit}
-        editResident={editingResident}           // ※新規なら null
-        groupHomes={groupHomes}
-        expansionRecords={expansionRecords}
-      />
-    </div>
-  );
 
   // 利用可能な権限を取得（全デフォルトロールから）
   const getAllAvailablePermissions = () => {
