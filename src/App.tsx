@@ -458,21 +458,21 @@ const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
   try {
-    // 1️⃣ POST送信
     await axios.post(`${API_BASE_URL}/residents`, {
       name: resident.name,
       nameKana: resident.nameKana,
+      gender: resident.gender,
+      birthdate: resident.birthdate,
       disabilityLevel: resident.disabilityLevel,
+      disabilityStartDate: resident.disabilityHistory?.[0]?.startDate || null,
       roomNumber: resident.roomNumber,
       moveInDate: resident.moveInDate,
-      moveOutDate: resident.moveOutDate,
+      moveOutDate: resident.moveOutDate || null,
+      memo: "",
       groupHomeId: Number(resident.groupHomeId),
     });
 
-    // 2️⃣ 成功したら一覧再取得
     await fetchResidents();
-
-    // 3️⃣ モーダル閉じる
     setIsResidentModalOpen(false);
     setEditingResident(null);
 
