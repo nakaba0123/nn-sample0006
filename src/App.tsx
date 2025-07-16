@@ -24,6 +24,9 @@ import { Role, RoleFormData, DEFAULT_ROLES } from './types/Role';
 import { ShiftPreference } from './types/ShiftPreference';
 import { Resident } from './types/Resident';
 import { UsageRecord } from './types/UsageRecord';
+// 1️⃣ 追加インポート
+import ResidentModal from "./components/ResidentModal";
+import { Resident } from "./types/Resident";
 
 interface AttendanceData {
   name: string;
@@ -105,6 +108,10 @@ function App() {
   ]);
   const [groupHomes, setGroupHomes] = useState<GroupHome[]>([]);
   const [expansionRecords, setExpansionRecords] = useState<ExpansionRecord[]>([]);
+  /* ---------- 追加 state ---------- */
+  const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);
+  const [editingResident, setEditingResident] = useState<Resident | null>(null);
+
   const [shiftPreferences, setShiftPreferences] = useState<ShiftPreference[]>([]);
   const [residents, setResidents] = useState<Resident[]>([]);
   const [usageRecords, setUsageRecords] = useState<UsageRecord[]>([]);
@@ -677,6 +684,47 @@ const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
     setIsRoleModalOpen(false);
     setEditingRole(null);
   };
+
+  /* ---------- 追加ハンドラ ---------- */
+  const handleOpenResidentModal = () => {
+    setEditingResident(null);             // 新規登録なので null
+    setIsResidentModalOpen(true);         // モーダルを開く
+  };
+
+  const handleResidentSubmit = (resident: Resident) => {
+    console.log("送信された利用者:", resident);
+
+    /* ここで API へ POST／PUT して、
+       成功したら residents を再フェッチ  */
+    // await axios.post(...)
+
+    setIsResidentModalOpen(false);        // 登録成功→閉じる
+  };
+
+  /* ---------- 画面 ---------- */
+  return (
+    <div>
+      {/* 例：利用者一覧の上に登録ボタン */}
+      <button
+        onClick={handleOpenResidentModal}
+        className="bg-emerald-600 text-white px-4 py-2 rounded-lg"
+      >
+        ＋ 利用者登録
+      </button>
+
+      {/* 既存の利用者一覧など… */}
+
+      {/* 2️⃣ ここで ResidentModal を配置 */}
+      <ResidentModal
+        isOpen={isResidentModalOpen}
+        onClose={() => setIsResidentModalOpen(false)}
+        onSubmit={handleResidentSubmit}
+        editResident={editingResident}           // ※新規なら null
+        groupHomes={groupHomes}
+        expansionRecords={expansionRecords}
+      />
+    </div>
+  );
 
   // 利用可能な権限を取得（全デフォルトロールから）
   const getAllAvailablePermissions = () => {
