@@ -139,7 +139,7 @@ const {
   roomNumber,
   moveInDate,
   moveOutDate,
-  memo,
+  memo
 } = req.body;
 
 const sql = `
@@ -151,15 +151,15 @@ const sql = `
 `;
 
 const values = [
-  Number(groupHomeId), // ✅ ここがポイント！
+  Number(groupHomeId),
   name,
-  nameKana || "",       // フォームに無くてもOKな項目はフォールバック
-  gender || null,
-  birthdate || null,
-  disabilityLevel || null,
-  disabilityStartDate || null,
-  roomNumber || null,
-  moveInDate || null,
+  nameKana,
+  gender,
+  birthdate,
+  disabilityLevel,
+  disabilityStartDate,
+  roomNumber,
+  moveInDate,
   moveOutDate || null,
   memo || ""
 ];
