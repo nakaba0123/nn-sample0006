@@ -462,29 +462,6 @@ useEffect(() => {
   };
 
   /* ---------- 画面 ---------- */
-  return (
-    <div>
-      {/* 例：利用者一覧の上に登録ボタン */}
-      <button
-        onClick={handleOpenResidentModal}
-        className="bg-emerald-600 text-white px-4 py-2 rounded-lg"
-      >
-        ＋ 利用者登録
-      </button>
-
-      {/* 既存の利用者一覧など… */}
-
-      {/* 2️⃣ ここで ResidentModal を配置 */}
-      <ResidentModal
-        isOpen={isResidentModalOpen}
-        onClose={() => setIsResidentModalOpen(false)}
-        onSubmit={handleResidentSubmit}
-        editResident={editingResident}           // ※新規なら null
-        groupHomes={groupHomes}
-        expansionRecords={expansionRecords}
-      />
-    </div>
-  );
 
   const handleUsageRecordUpdate = (records: UsageRecord[]) => {
     setUsageRecords(records);
@@ -705,6 +682,23 @@ const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
 
   return (
     <AuthProvider users={users}>
+      <div className="p-4">
+        <button
+          onClick={handleOpenResidentModal}
+          className="bg-emerald-600 text-white px-4 py-2 rounded-lg"
+        >
+          ＋ 利用者登録
+        </button>
+      </div>
+      <ResidentModal
+        isOpen={isResidentModalOpen}
+        onClose={() => setIsResidentModalOpen(false)}
+        onSubmit={handleResidentSubmit}
+        editResident={editingResident}
+        groupHomes={groupHomes}
+        expansionRecords={expansionRecords}
+      />
+
       <div className="min-h-screen bg-gray-50">
         {/* Header with User Selector */}
         <div className="bg-white shadow-sm border-b border-gray-200">
