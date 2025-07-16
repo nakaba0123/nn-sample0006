@@ -174,6 +174,8 @@ console.log("selectedUnit:", selectedUnit());
       updatedAt: now,
     };
 
+    console.log("➡️ onSubmitを呼ぶぞ！");
+
     onSubmit(resident);
     if (!editResident) {
       setFormData({
