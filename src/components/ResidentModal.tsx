@@ -133,7 +133,7 @@ const allUnits = (): { id: string; propertyName: string; unitName: string }[] =>
     if (!formData.moveInDate) next.moveInDate = "入居日を入力してください";
     if (!formData.groupHomeId) next.groupHomeId = "グループホームを選択してください";
     if (!formData.roomNumber) next.roomNumber = "部屋番号を選択してください";
-    if (!editResident && !formData.disabilityStartDate) next.disabilityStartDate = "開始日を入力してください";
+//    if (!editResident && !formData.disabilityStartDate) next.disabilityStartDate = "開始日を入力してください";
     if (formData.moveOutDate && formData.moveOutDate <= formData.moveInDate) next.moveOutDate = "退居日は入居日より後に";
     setErrors(next);
     return Object.keys(next).length === 0;
