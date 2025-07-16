@@ -129,29 +129,38 @@ app.post('/residents', (req, res) => {
   console.log("📦 POSTされた内容:", req.body);  // ←←← ここで確認
 
 const {
-  groupHomeId,
+  groupHomeId, // ← ✅ Reactから送られてくる正しい名前
   name,
+  nameKana,
   gender,
   birthdate,
-  roomNumber,
+  disabilityLevel,
+  disabilityStartDate,
   moveInDate,
+  moveOutDate,
+  roomNumber,
   memo,
 } = req.body;
 
 const sql = `
   INSERT INTO residents (
-    group_home_id, name, gender, birthdate,
-    room_number, admission_date, memo, created_at
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+    group_home_id, name, name_kana, gender, birthdate,
+    disability_level, disability_start_date,
+    room_number, admission_date, discharge_date, memo, created_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 `;
 
 const values = [
-  Number(groupHomeId),  // ← group_home_id に該当！
+  Number(groupHomeId),  // ← ここで group_home_id に対応させている
   name,
+  nameKana,
   gender,
   birthdate,
+  disabilityLevel,
+  disabilityStartDate,
   roomNumber,
   moveInDate,
+  moveOutDate || null,
   memo || ""
 ];
 
