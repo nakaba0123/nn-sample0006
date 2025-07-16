@@ -267,7 +267,91 @@ console.log("🧪 selectedUnit:", selected);
     </div>
   </section>
 
-  {/* 追加で disabilityLevel, groupHomeId, roomNumber, moveInDate などの入力欄も復活させてOK！ */}
+{/* 障害情報 */}
+<section className="bg-purple-50 rounded-lg p-4 border border-purple-200 space-y-5">
+  <h3 className="font-medium text-purple-800 flex items-center">
+    <User className="w-5 h-5 mr-2" />
+    障害情報
+  </h3>
+  <div className="grid md:grid-cols-2 gap-5">
+    <div>
+      <select
+        value={formData.disabilityLevel}
+        onChange={(e) => setFormData((p) => ({ ...p, disabilityLevel: e.target.value }))}
+        className="w-full rounded-lg border px-4 py-2 border-gray-300"
+      >
+        {["1以下", "2", "3", "4", "5", "6"].map((level) => (
+          <option key={level} value={level}>
+            支援区分 {level}
+          </option>
+        ))}
+      </select>
+    </div>
+    <div>
+      {input("disabilityStartDate", { type: "date", placeholder: "開始日 *" })}
+      {errors.disabilityStartDate && (
+        <p className="text-xs text-red-500 mt-1">{errors.disabilityStartDate}</p>
+      )}
+    </div>
+    <div className="md:col-span-2 text-right">
+      <button
+        type="button"
+        onClick={() => setIsDisModalOpen(true)}
+        className="text-sm text-blue-600 hover:underline"
+      >
+        障害歴を編集する
+      </button>
+    </div>
+  </div>
+</section>
+
+{/* 入居情報 */}
+<section className="bg-green-50 rounded-lg p-4 border border-green-200 space-y-5">
+  <h3 className="font-medium text-green-800 flex items-center">
+    <Home className="w-5 h-5 mr-2" />
+    入居情報
+  </h3>
+  <div className="grid md:grid-cols-2 gap-5">
+    <div>
+      <select
+        value={formData.groupHomeId}
+        onChange={(e) => setFormData((p) => ({ ...p, groupHomeId: e.target.value, roomNumber: "" }))}
+        className={`w-full rounded-lg border px-4 py-2 ${errors.groupHomeId ? "border-red-400 bg-red-50" : "border-gray-300"}`}
+      >
+        <option value="">物件・ユニットを選択 *</option>
+        {allUnits().map((unit) => (
+          <option key={unit.id} value={unit.id}>
+            {unit.propertyName}／{unit.unitName}
+          </option>
+        ))}
+      </select>
+      {errors.groupHomeId && <p className="text-xs text-red-500 mt-1">{errors.groupHomeId}</p>}
+    </div>
+    <div>
+      <select
+        value={formData.roomNumber}
+        onChange={(e) => setFormData((p) => ({ ...p, roomNumber: e.target.value }))}
+        className={`w-full rounded-lg border px-4 py-2 ${errors.roomNumber ? "border-red-400 bg-red-50" : "border-gray-300"}`}
+      >
+        <option value="">部屋番号を選択 *</option>
+        {availableRooms().map((room) => (
+          <option key={room} value={room}>
+            {room}
+          </option>
+        ))}
+      </select>
+      {errors.roomNumber && <p className="text-xs text-red-500 mt-1">{errors.roomNumber}</p>}
+    </div>
+    <div>
+      {input("moveInDate", { type: "date", placeholder: "入居日 *" })}
+      {errors.moveInDate && <p className="text-xs text-red-500 mt-1">{errors.moveInDate}</p>}
+    </div>
+    <div>
+      {input("moveOutDate", { type: "date", placeholder: "退居日（任意）" })}
+      {errors.moveOutDate && <p className="text-xs text-red-500 mt-1">{errors.moveOutDate}</p>}
+    </div>
+  </div>
+</section>
 
   <div className="flex justify-end space-x-3 pt-4 border-t">
     <button
