@@ -162,6 +162,7 @@ function App() {
   const [editingExpansion, setEditingExpansion] = useState<ExpansionRecord | null>(null);
   const [editingDepartment, setEditingDepartment] = useState<Department | null>(null);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [editingResident, setEditingResident] = useState<Resident | null>(null); // ← 追加
   const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);  // ← 追加
 
   const handleAttendanceSubmit = (data: AttendanceData) => {
@@ -584,9 +585,10 @@ const handleDeleteGroupHome = async (groupHomeId: string) => {
     }
   };
 
-  const handleEditResident = (resident: Resident) => {
-    handleResidentSubmit(resident);
-  };
+const handleEditResident = (resident: Resident) => {
+  setEditingResident(resident);      // 編集対象をセット
+  setIsResidentModalOpen(true);      // モーダルを開く
+};
 
   const handleDeleteResident = (residentId: string) => {
     if (window.confirm('この利用者を削除してもよろしいですか？')) {
