@@ -128,23 +128,32 @@ app.post('/residents', (req, res) => {
 
   console.log("📦 POSTされた内容:", req.body);  // ←←← ここで確認
 
-  const {
-    group_home_id,
-    name,
-    gender,
-    birthdate,
-    room_number,
-    admission_date,
-    memo
-  } = req.body;
+const {
+  groupHomeId,
+  name,
+  gender,
+  birthdate,
+  roomNumber,
+  moveInDate,
+  memo,
+} = req.body;
 
-  const sql = `
-    INSERT INTO residents (
-      group_home_id, name, gender, birthdate,
-      room_number, admission_date, memo, created_at
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
-  `;
+const sql = `
+  INSERT INTO residents (
+    group_home_id, name, gender, birthdate,
+    room_number, admission_date, memo, created_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+`;
+
+const values = [
+  Number(groupHomeId),  // ← group_home_id に該当！
+  name,
+  gender,
+  birthdate,
+  roomNumber,
+  moveInDate,
+  memo || ""
+];
 
   pool.query(
     sql,
