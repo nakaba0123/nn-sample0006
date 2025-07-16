@@ -140,6 +140,11 @@ const allUnits = (): { id: string; propertyName: string; unitName: string }[] =>
   };
 
   const handleSubmit = (e: React.FormEvent) => {
+
+console.log("formData:", formData);
+console.log("selectedUnit:", selectedUnit());
+
+
     e.preventDefault();
     console.log("submit clicked");
     if (!validate()) return;
