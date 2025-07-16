@@ -129,16 +129,16 @@ app.post('/residents', (req, res) => {
   console.log("📦 POSTされた内容:", req.body);  // ←←← ここで確認
 
 const {
-  groupHomeId, // ← ✅ Reactから送られてくる正しい名前
+  groupHomeId,
   name,
   nameKana,
   gender,
   birthdate,
   disabilityLevel,
   disabilityStartDate,
+  roomNumber,
   moveInDate,
   moveOutDate,
-  roomNumber,
   memo,
 } = req.body;
 
@@ -151,31 +151,28 @@ const sql = `
 `;
 
 const values = [
-  Number(groupHomeId),  // ← ここで group_home_id に対応させている
+  Number(groupHomeId), // ✅ ここがポイント！
   name,
-  nameKana,
-  gender,
-  birthdate,
-  disabilityLevel,
-  disabilityStartDate,
-  roomNumber,
-  moveInDate,
+  nameKana || "",       // フォームに無くてもOKな項目はフォールバック
+  gender || null,
+  birthdate || null,
+  disabilityLevel || null,
+  disabilityStartDate || null,
+  roomNumber || null,
+  moveInDate || null,
   moveOutDate || null,
   memo || ""
 ];
 
-  pool.query(
-    sql,
-    [group_home_id, name, gender, birthdate, room_number, admission_date, memo],
-    (err, result) => {
-      if (err) {
-        console.error('登録失敗:', err);
-        res.status(500).json({ error: '登録失敗' });
-      } else {
-        res.status(201).json({ message: '利用者登録成功', id: result.insertId });
-      }
-    }
-  );
+pool.query(sql, values, (err, result) => {
+  if (err) {
+    console.error('登録失敗:', err);
+    res.status(500).json({ error: '登録失敗' });
+  } else {
+    res.status(201).json({ message: '利用者登録成功', id: result.insertId });
+  }
+});
+
 });
 
 app.get('/residents', (req, res) => {
