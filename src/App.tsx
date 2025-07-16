@@ -464,7 +464,7 @@ const handleResidentSubmit = async (resident: Resident) => {
       roomNumber: resident.roomNumber,
       moveInDate: resident.moveInDate,
       moveOutDate: resident.moveOutDate,
-      groupHomeId: resident.groupHomeId,
+      groupHomeId: Number(resident.groupHomeId),
     });
 
     // 2️⃣ 成功したら一覧再取得
