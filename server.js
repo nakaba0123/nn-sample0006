@@ -125,6 +125,9 @@ app.put('/group-homes/:id', (req, res) => {
 });
 
 app.post('/residents', (req, res) => {
+
+  console.log("📦 POSTされた内容:", req.body);  // ←←← ここで確認
+
   const {
     group_home_id,
     name,
