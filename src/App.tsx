@@ -257,7 +257,7 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
 const fetchGroupHomes = async () => {
   try {
     const res = await axios.get(
-      "https://nn-sample0006-production.up.railway.app/group-homes"
+      "https://nn-sample0006-production.up.railway.app/api/group-homes"
     );
 
     // ── API から来る snake_case → camelCase へ変換 ＆ 配列化 ──
