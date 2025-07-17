@@ -708,12 +708,6 @@ const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
   return (
     <AuthProvider users={users}>
       <div className="p-4">
-        <button
-          onClick={handleOpenResidentModal}
-          className="bg-emerald-600 text-white px-4 py-2 rounded-lg"
-        >
-          ＋ 利用者登録
-        </button>
       </div>
       <ResidentModal
         isOpen={isResidentModalOpen}
