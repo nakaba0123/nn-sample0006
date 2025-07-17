@@ -195,14 +195,14 @@ app.get('/api/residents', (req, res) => {
 app.delete('/api/residents/:id', (req, res) => {
   const residentId = req.params.id;
 
-  const deleteUsageRecordsSql = 'DELETE FROM usage_records WHERE resident_id = ?';
+//  const deleteUsageRecordsSql = 'DELETE FROM usage_records WHERE resident_id = ?';
   const deleteResidentSql = 'DELETE FROM residents WHERE id = ?';
 
-  pool.query(deleteUsageRecordsSql, [residentId], (err) => {
-    if (err) {
-      console.error('使用記録削除エラー:', err);
-      return res.status(500).json({ message: '使用記録の削除に失敗しました' });
-    }
+//  pool.query(deleteUsageRecordsSql, [residentId], (err) => {
+//    if (err) {
+//      console.error('使用記録削除エラー:', err);
+//      return res.status(500).json({ message: '使用記録の削除に失敗しました' });
+//    }
 
     pool.query(deleteResidentSql, [residentId], (err) => {
       if (err) {
@@ -213,7 +213,7 @@ app.delete('/api/residents/:id', (req, res) => {
       res.json({ message: '削除に成功しました' });
     });
   });
-});
+//});
 
 // =======================
 // 🌐 補助 API
