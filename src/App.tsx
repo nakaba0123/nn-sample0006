@@ -34,7 +34,7 @@ interface AttendanceData {
   timestamp: string;
 }
 
-const API_BASE_URL = 'https://nn-sample0006-production.up.railway.app';
+const API_BASE_URL = 'https://nn-sample0006-production.up.railway.app/api';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'attendance' | 'users' | 'grouphomes' | 'departments' | 'shifts' | 'masters' | 'residents' | 'usage'>('attendance');
