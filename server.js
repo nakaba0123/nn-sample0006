@@ -191,6 +191,32 @@ app.get('/residents', (req, res) => {
   });
 });
 
+// ✅ 利用者削除（関連 usage_records も削除）
+app.delete('/residents/:id', (req, res) => {
+  const residentId = req.params.id;
+
+  // まず関連する usage_records を削除（必要に応じて）
+  const deleteUsageRecordsSql = 'DELETE FROM usage_records WHERE resident_id = ?';
+  const deleteResidentSql = 'DELETE FROM residents WHERE id = ?';
+
+  pool.query(deleteUsageRecordsSql, [residentId], (err) => {
+    if (err) {
+      console.error('使用記録削除エラー:', err);
+      return res.status(500).json({ message: '使用記録の削除に失敗しました' });
+    }
+
+    // 次に利用者データ削除
+    pool.query(deleteResidentSql, [residentId], (err) => {
+      if (err) {
+        console.error('利用者削除エラー:', err);
+        return res.status(500).json({ message: '利用者の削除に失敗しました' });
+      }
+
+      res.json({ message: '削除に成功しました' });
+    });
+  });
+});
+
 // IP取得
 app.get('/my-ip', async (req, res) => {
   const fetch = (await import('node-fetch')).default;
