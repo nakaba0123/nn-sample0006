@@ -319,6 +319,17 @@ useEffect(() => {
   init();
 }, []);
 
+  return (
+    <div>
+      <h1>利用者一覧</h1>
+      {residents.map((r) => (
+        <div key={r.id}>
+          {r.name}（{r.roomNumber}）
+        </div>
+      ))}
+    </div>
+  );
+
   const handleExpansionSubmit = (data: ExpansionFormData) => {
     if (editingExpansion) {
       // Edit existing expansion
@@ -338,17 +349,6 @@ useEffect(() => {
       setExpansionRecords(prev => [newExpansion, ...prev]);
     }
   };
-
-  return (
-    <div>
-      <h1>利用者一覧</h1>
-      {residents.map((r) => (
-        <div key={r.id}>
-          {r.name}（{r.roomNumber}）
-        </div>
-      ))}
-    </div>
-  );
 
   const handleDepartmentSubmit = (data: DepartmentFormData) => {
     if (editingDepartment) {
