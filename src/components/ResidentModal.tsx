@@ -100,6 +100,8 @@ const ResidentModal: React.FC<Props> = ({
     return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   };
 
+import { mapResidentToForm } from '@/utils/mapResident';
+
 useEffect(() => {
   if (!isOpen) return;
 
@@ -107,19 +109,13 @@ useEffect(() => {
     const history = editResident.disabilityHistory || [];
     const currentDis = history.find(h => !h.endDate)?.disabilityLevel || editResident.disabilityLevel;
 
-    setFormData({
-      name: editResident.name,
-      nameKana: editResident.nameKana,
-      gender: editResident.gender ?? "",
-      birthdate: editResident.birthdate ?? "",
-      disabilityLevel: currentDis,
-      disabilityStartDate: history[0]?.startDate || editResident.disabilityStartDate || "",
-      groupHomeId: String(editResident.groupHomeId),
-      roomNumber: editResident.roomNumber,
-      moveInDate: editResident.moveInDate || "",
-      moveOutDate: editResident.moveOutDate || "",
+    const mapped = mapResidentToForm({
+      ...editResident,
+      disability_level: currentDis,
+      disability_start_date: history[0]?.startDate || editResident.disabilityStartDate,
     });
 
+    setFormData(mapped);
     setDisabilityHistory(history);
   } else {
     setFormData({
@@ -138,7 +134,6 @@ useEffect(() => {
     setDisabilityHistory([]);
   }
 }, [isOpen, editResident]);
-
 
   const validate = () => {
     const next: Partial<ResidentFormData> = {};
