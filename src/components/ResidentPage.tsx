@@ -115,9 +115,7 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
   };
 
   const handleDeleteResident = (residentId: string) => {
-    if (window.confirm('この利用者を削除してもよろしいですか？')) {
       onDeleteResident(residentId);
-    }
   };
 
   const handleCloseModal = () => {

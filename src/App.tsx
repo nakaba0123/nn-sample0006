@@ -613,13 +613,22 @@ const handleEditResident = (resident: Resident) => {
   setIsResidentModalOpen(true);      // モーダルを開く
 };
 
-  const handleDeleteResident = (residentId: string) => {
-    if (window.confirm('この利用者を削除してもよろしいですか？')) {
-      setResidents(prev => prev.filter(resident => resident.id !== residentId));
-      // 関連する利用実績記録も削除
-      setUsageRecords(prev => prev.filter(record => record.residentId !== residentId));
-    }
-  };
+const handleDeleteResident = async (residentId: string) => {
+  const confirmDelete = window.confirm('この利用者を削除してもよろしいですか？');
+  if (!confirmDelete) return;
+
+  try {
+    // MySQLのデータも削除
+    await axios.delete(`/api/residents/${residentId}`);
+
+    // フロントエンド側の状態を更新（一覧から除外）
+    setResidents(prev => prev.filter(resident => resident.id !== residentId));
+    setUsageRecords(prev => prev.filter(record => record.residentId !== residentId));
+  } catch (error) {
+    console.error('削除に失敗しました', error);
+    alert('削除に失敗しました');
+  }
+};
 
   const handleAddUser = () => {
     setEditingUser(null);
