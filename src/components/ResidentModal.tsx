@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { mapResidentToForm } from '@/utils/mapResident';
 import {
   X,
   User,
@@ -100,7 +101,6 @@ const ResidentModal: React.FC<Props> = ({
     return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   };
 
-import { mapResidentToForm } from '@/utils/mapResident';
 
 useEffect(() => {
   if (!isOpen) return;
