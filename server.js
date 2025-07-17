@@ -215,6 +215,66 @@ app.delete('/api/residents/:id', (req, res) => {
   });
 //});
 
+// 利用者情報の更新（PATCH）
+app.patch('/api/residents/:id', (req, res) => {
+  const residentId = req.params.id;
+  const {
+    group_home_id,
+    name,
+    name_kana,
+    gender,
+    birthdate,
+    disability_level,
+    disability_start_date,
+    room_number,
+    admission_date,
+    discharge_date,
+    memo,
+  } = req.body;
+
+  const sql = `
+    UPDATE residents
+    SET
+      group_home_id = ?,
+      name = ?,
+      name_kana = ?,
+      gender = ?,
+      birthdate = ?,
+      disability_level = ?,
+      disability_start_date = ?,
+      room_number = ?,
+      admission_date = ?,
+      discharge_date = ?,
+      memo = ?
+    WHERE id = ?
+  `;
+
+  const values = [
+    group_home_id,
+    name,
+    name_kana,
+    gender,
+    birthdate,
+    disability_level,
+    disability_start_date,
+    room_number,
+    admission_date,
+    discharge_date,
+    memo,
+    residentId,
+  ];
+
+  pool.query(sql, values, (err, results) => {
+    if (err) {
+      console.error('利用者更新エラー:', err);
+      return res.status(500).json({ message: '利用者の更新に失敗しました' });
+    }
+
+    res.json({ message: '利用者を更新しました' });
+  });
+});
+
+
 // =======================
 // 🌐 補助 API
 // =======================
