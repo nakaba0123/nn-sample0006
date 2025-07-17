@@ -219,6 +219,7 @@ if (!isOpen) {
 
 const selected = selectedUnit(); // ✅ isOpen が true になってから呼ぶ
 console.log("🧪 selectedUnit:", selected);
+console.log("formData: ", formData);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4">
