@@ -100,42 +100,45 @@ const ResidentModal: React.FC<Props> = ({
     return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   };
 
-  useEffect(() => {
-    if (!isOpen) return;
+useEffect(() => {
+  if (!isOpen) return;
 
-    if (editResident) {
-      const currentDis =
-        editResident.disabilityHistory.find((h) => !h.endDate)?.disabilityLevel ||
-        editResident.disabilityLevel;
-      setFormData({
-        name: editResident.name,
-        nameKana: editResident.nameKana,
-        gender: editResident.gender ?? "",
-        birthdate: editResident.birthdate ?? "",
-        disabilityLevel: currentDis,
-        disabilityStartDate: editResident.disabilityHistory[0]?.startDate || "",
-        groupHomeId: String(editResident.groupHomeId),
-        roomNumber: editResident.roomNumber,
-        moveInDate: editResident.moveInDate || "",
-        moveOutDate: editResident.moveOutDate || "",
-      });
-      setDisabilityHistory(editResident.disabilityHistory);
-    } else {
-      setFormData({
-        name: "",
-        nameKana: "",
-        gender: "",
-        birthdate: "",
-        disabilityLevel: "1以下",
-        disabilityStartDate: "",
-        groupHomeId: "",
-        roomNumber: "",
-        moveInDate: "",
-        moveOutDate: "",
-      });
-      setDisabilityHistory([]);
-    }
-  }, [isOpen, editResident]);
+  if (editResident) {
+    const history = editResident.disabilityHistory || [];
+    const currentDis = history.find(h => !h.endDate)?.disabilityLevel || editResident.disabilityLevel;
+
+    setFormData({
+      name: editResident.name,
+      nameKana: editResident.nameKana,
+      gender: editResident.gender ?? "",
+      birthdate: editResident.birthdate ?? "",
+      disabilityLevel: currentDis,
+      disabilityStartDate: history[0]?.startDate || editResident.disabilityStartDate || "",
+      groupHomeId: String(editResident.groupHomeId),
+      roomNumber: editResident.roomNumber,
+      moveInDate: editResident.moveInDate || "",
+      moveOutDate: editResident.moveOutDate || "",
+    });
+
+    setDisabilityHistory(history);
+  } else {
+    setFormData({
+      name: "",
+      nameKana: "",
+      gender: "",
+      birthdate: "",
+      disabilityLevel: "1以下",
+      disabilityStartDate: "",
+      groupHomeId: "",
+      roomNumber: "",
+      moveInDate: "",
+      moveOutDate: "",
+    });
+
+    setDisabilityHistory([]);
+  }
+}, [isOpen, editResident]);
+
 
   const validate = () => {
     const next: Partial<ResidentFormData> = {};
