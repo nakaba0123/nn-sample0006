@@ -319,28 +319,6 @@ useEffect(() => {
   init();
 }, []);
 
-
-  return (
-    <div>
-      <h1>利用者登録</h1>
-      {/* フォーム部分 */}
-      <form>
-        {/* 名前、部屋番号などの入力項目 */}
-      </form>
-
-      {/* ⭐⭐ ここに追加 ⭐⭐ */}
-      <h2 style={{ marginTop: "2rem" }}>利用者一覧</h2>
-      <ul>
-        {residents.map((r) => (
-          <li key={r.id}>
-            {r.name}（{r.roomNumber}号室）
-          </li>
-        ))}
-      </ul>
-      {/* ここまで */}
-    </div>
-  );
-
   const handleExpansionSubmit = (data: ExpansionFormData) => {
     if (editingExpansion) {
       // Edit existing expansion
