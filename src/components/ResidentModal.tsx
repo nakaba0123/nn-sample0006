@@ -102,50 +102,38 @@ const ResidentModal: React.FC<Props> = ({
   };
 
 useEffect(() => {
-  if (!isOpen) return;
+  if (!isOpen || !editResident?.id) return;
 
-  if (editResident) {
+  // 👇 編集用の居住者データをAPIから取得！
+  fetch(`/api/residents/${editResident.id}`)
+    .then(res => res.json())
+    .then((residentFromAPI) => {
+      console.log("APIから取得した完全な居住者データ:", residentFromAPI);
 
-    console.log("editResident の中身:", editResident); // ← これ追加！1
+      const mappedResident = mapResident(residentFromAPI);
 
-    const mappedResident = mapResident(editResident);
+      const history = residentFromAPI.disabilityHistory || [];
+      const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
 
-    setFormData(mappedResident);
+      setFormData({
+        name: mappedResident.name,
+        nameKana: mappedResident.nameKana,
+        gender: mappedResident.gender || "",
+        birthdate: mappedResident.birthdate || "",
+        disabilityLevel: currentDis,
+        disabilityStartDate: history[0]?.startDate || mappedResident.disabilityStartDate || "",
+        groupHomeId: String(mappedResident.groupHomeId || ""),
+        roomNumber: mappedResident.roomNumber || "",
+        moveInDate: mappedResident.admissionDate || "",
+        moveOutDate: mappedResident.dischargeDate || "",
+      });
 
-    const history = editResident.disabilityHistory || [];
-    const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
-
-    setFormData({
-      name: mappedResident.name,
-      nameKana: mappedResident.nameKana,
-      gender: mappedResident.gender,
-      birthdate: mappedResident.birthdate,
-      disabilityLevel: currentDis,
-      disabilityStartDate: history[0]?.startDate || mappedResident.disabilityStartDate || "",
-      groupHomeId: String(mappedResident.groupHomeId),
-      roomNumber: mappedResident.roomNumber,
-      moveInDate: mappedResident.admissionDate || "",
-      moveOutDate: mappedResident.dischargeDate || "",
+      setDisabilityHistory(history);
+    })
+    .catch((err) => {
+      console.error("居住者データの取得に失敗しました:", err);
     });
 
-    setDisabilityHistory(history);
-  } else {
-    // 新規登録用の初期化
-    setFormData({
-      name: "",
-      nameKana: "",
-      gender: "",
-      birthdate: "",
-      disabilityLevel: "1以下",
-      disabilityStartDate: "",
-      groupHomeId: "",
-      roomNumber: "",
-      moveInDate: "",
-      moveOutDate: "",
-    });
-
-    setDisabilityHistory([]);
-  }
 }, [isOpen, editResident]);
 
   const validate = () => {
