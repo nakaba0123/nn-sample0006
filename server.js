@@ -284,6 +284,15 @@ app.get("/api/residents/:id", async (req, res) => {
   res.json(rows[0]);
 });
 
+app.get("/api/usage-records", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM usage_records");
+    res.json(rows);
+  } catch (error) {
+    console.error("📛 usage_records取得エラー:", error);
+    res.status(500).json({ error: "内部サーバーエラー" });
+  }
+});
 
 // =======================
 // 🌐 補助 API
