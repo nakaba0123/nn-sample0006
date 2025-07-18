@@ -140,13 +140,13 @@ setFormData({
   name: mappedResident.name,
   nameKana: mappedResident.nameKana,
   gender: mappedResident.gender || "",
-  birthdate: mappedResident.birthdate || "",
+  birthdate: formatDate(mappedResident.birthdate),
   disabilityLevel: currentDis,
-  disabilityStartDate: history[0]?.startDate || mappedResident.disabilityStartDate || "",
+  disabilityStartDate: formatDate(history[0]?.startDate || mappedResident.disabilityStartDate),
   groupHomeId: String(mappedResident.groupHomeId || ""),
   roomNumber: mappedResident.roomNumber || "",
-  moveInDate: mappedResident.admissionDate || "",
-  moveOutDate: mappedResident.dischargeDate || "",
+  moveInDate: formatDate(mappedResident.admissionDate),
+  moveOutDate: formatDate(mappedResident.dischargeDate),
 });
 
       setDisabilityHistory(history);
