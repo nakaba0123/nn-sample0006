@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require("path");
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise'); // ← ここが重要！！！
 require('dotenv').config();
 
 const app = express();
@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ✅ MySQL接続プールに変更
+// ✅ Promise対応のMySQL接続プールに変更
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
@@ -20,7 +20,7 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
   connectTimeout: 10000,
-  acquireTimeout: 10000,
+  // ✅ acquireTimeout は無効なので削除してもOK。警告出てたよね。
 });
 
 console.log("✅ MySQL接続プールを作成しました");
