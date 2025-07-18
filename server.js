@@ -274,7 +274,7 @@ app.patch('/api/residents/:id', (req, res) => {
   });
 });
 
-// server.js
+// server.js に ↓ これが必要！
 app.get("/api/residents/:id", async (req, res) => {
   const id = req.params.id;
   const [rows] = await pool.query("SELECT * FROM residents WHERE id = ?", [id]);
