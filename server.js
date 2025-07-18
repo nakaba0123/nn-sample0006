@@ -274,6 +274,16 @@ app.patch('/api/residents/:id', (req, res) => {
   });
 });
 
+// server.js
+app.get("/api/residents/:id", async (req, res) => {
+  const id = req.params.id;
+  const [rows] = await pool.query("SELECT * FROM residents WHERE id = ?", [id]);
+  if (rows.length === 0) {
+    return res.status(404).json({ error: "居住者が見つかりません" });
+  }
+  res.json(rows[0]);
+});
+
 
 // =======================
 // 🌐 補助 API
