@@ -105,6 +105,9 @@ useEffect(() => {
   if (!isOpen) return;
 
   if (editResident) {
+
+    console.log("editResident の中身:", editResident); // ← これ追加！1
+
     const mappedResident = mapResident(editResident);
     const history = editResident.disabilityHistory || [];
     const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
