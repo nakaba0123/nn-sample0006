@@ -109,6 +109,9 @@ useEffect(() => {
     console.log("editResident の中身:", editResident); // ← これ追加！1
 
     const mappedResident = mapResident(editResident);
+
+    setFormData(mappedResident);
+
     const history = editResident.disabilityHistory || [];
     const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
 
