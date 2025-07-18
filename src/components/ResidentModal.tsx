@@ -33,6 +33,11 @@ interface Props {
   expansionRecords: ExpansionRecord[];
 }
 
+function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return "";
+  return new Date(dateString).toISOString().split("T")[0]; // "yyyy-MM-dd"形式に変換
+}
+
 const ResidentModal: React.FC<Props> = ({
   isOpen,
   onClose,
