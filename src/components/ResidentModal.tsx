@@ -102,6 +102,10 @@ const ResidentModal: React.FC<Props> = ({
   };
 
 useEffect(() => {
+
+  console.log("🧪 isOpen:", isOpen);
+  console.log("🧪 editResident:", editResident);
+
   if (!isOpen || !editResident?.id) return;
 
   // 👇 編集用の居住者データをAPIから取得！
