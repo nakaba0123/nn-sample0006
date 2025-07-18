@@ -114,23 +114,39 @@ useEffect(() => {
     .then((residentFromAPI) => {
       console.log("APIから取得した完全な居住者データ:", residentFromAPI);
 
-      const mappedResident = mapResident(residentFromAPI);
+function mapResident(resident: any) {
+  return {
+    id: resident.id,
+    name: resident.name,
+    nameKana: resident.name_kana,
+    gender: resident.gender,
+    birthdate: resident.birthdate,
+    disabilityLevel: resident.disability_level,
+    disabilityStartDate: resident.disability_start_date,
+    groupHomeId: resident.group_home_id,
+    roomNumber: resident.room_number,
+    admissionDate: resident.admission_date,
+    dischargeDate: resident.discharge_date,
+    createdAt: resident.created_at,
+    updatedAt: resident.updated_at,
+  };
+}
 
       const history = residentFromAPI.disabilityHistory || [];
       const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
 
-      setFormData({
-        name: mappedResident.name,
-        nameKana: mappedResident.nameKana,
-        gender: mappedResident.gender || "",
-        birthdate: mappedResident.birthdate || "",
-        disabilityLevel: currentDis,
-        disabilityStartDate: history[0]?.startDate || mappedResident.disabilityStartDate || "",
-        groupHomeId: String(mappedResident.groupHomeId || ""),
-        roomNumber: mappedResident.roomNumber || "",
-        moveInDate: mappedResident.admissionDate || "",
-        moveOutDate: mappedResident.dischargeDate || "",
-      });
+setFormData({
+  name: mappedResident.name,
+  nameKana: mappedResident.nameKana,
+  gender: mappedResident.gender || "",
+  birthdate: mappedResident.birthdate || "",
+  disabilityLevel: currentDis,
+  disabilityStartDate: history[0]?.startDate || mappedResident.disabilityStartDate || "",
+  groupHomeId: String(mappedResident.groupHomeId || ""),
+  roomNumber: mappedResident.roomNumber || "",
+  moveInDate: mappedResident.admissionDate || "",
+  moveOutDate: mappedResident.dischargeDate || "",
+});
 
       setDisabilityHistory(history);
     })
