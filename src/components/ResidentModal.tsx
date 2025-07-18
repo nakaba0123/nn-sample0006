@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { mapResidentToForm } from '../util/mapResident';
+import { mapResident } from '../util/mapResident';
 import {
   X,
   User,
