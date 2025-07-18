@@ -1,18 +1,30 @@
-// pages/api/residents/[id].ts
-import { NextApiRequest, NextApiResponse } from 'next';
+// [id].ts
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
+  const {
+    query: { id },
+    method,
+  } = req;
 
-  if (req.method === 'GET') {
-    // ダミー例。実際はDB接続
-    res.status(200).json({
-      id,
-      name: "出口",
-      roomNumber: "104号",
-    });
+  if (method === 'GET') {
+    try {
+      // ここでDB接続して居住者情報を取得（仮）
+      const resident = {
+        id,
+        name: "テスト太郎",
+        roomNumber: "101号",
+        disabilityLevel: "1",
+      };
+
+      res.status(200).json(resident);
+    } catch (error) {
+      console.error('取得エラー:', error);
+      res.status(500).json({ error: '取得失敗' });
+    }
   } else {
-    res.status(405).json({ message: 'Method Not Allowed' });
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
 
