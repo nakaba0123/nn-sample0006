@@ -1,19 +1,19 @@
 // utils/mapResident.ts
 
-export function mapResident(apiData: any) {
+export function mapResident(resident: any) {
   return {
-    id: apiData.id,
-    groupHomeId: apiData.group_home_id,
-    name: apiData.name,
-    nameKana: apiData.name_kana,
-    gender: apiData.gender ?? "",
-    birthdate: apiData.birthdate ?? "",
-    disabilityLevel: apiData.disability_level ?? "",
-    disabilityStartDate: apiData.disability_start_date ?? "",
-    roomNumber: apiData.room_number ?? "",
-    admissionDate: apiData.admission_date ?? "",
-    dischargeDate: apiData.discharge_date ?? "",
-    memo: apiData.memo ?? "",
+    id: resident.id,
+    groupHomeId: resident.groupHomeId ?? "",
+    name: resident.name ?? "",
+    nameKana: resident.nameKana ?? "",
+    gender: resident.gender ?? "",
+    birthdate: resident.birthdate ?? "",
+    disabilityLevel: resident.disabilityLevel ?? "",
+    disabilityStartDate: resident.disabilityStartDate ?? "",
+    roomNumber: resident.roomNumber ?? "",
+    moveInDate: resident.moveInDate ?? "",
+    moveOutDate: resident.moveOutDate ?? "",
+    memo: resident.memo ?? "",
   };
 }
 
