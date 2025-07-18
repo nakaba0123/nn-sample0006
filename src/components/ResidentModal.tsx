@@ -101,23 +101,30 @@ const ResidentModal: React.FC<Props> = ({
     return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   };
 
-
 useEffect(() => {
   if (!isOpen) return;
 
   if (editResident) {
+    const mappedResident = mapResident(editResident);
     const history = editResident.disabilityHistory || [];
-    const currentDis = history.find(h => !h.endDate)?.disabilityLevel || editResident.disabilityLevel;
+    const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
 
-    const mapped = mapResidentToForm({
-      ...editResident,
-      disability_level: currentDis,
-      disability_start_date: history[0]?.startDate || editResident.disabilityStartDate,
+    setFormData({
+      name: mappedResident.name,
+      nameKana: mappedResident.nameKana,
+      gender: mappedResident.gender,
+      birthdate: mappedResident.birthdate,
+      disabilityLevel: currentDis,
+      disabilityStartDate: history[0]?.startDate || mappedResident.disabilityStartDate || "",
+      groupHomeId: String(mappedResident.groupHomeId),
+      roomNumber: mappedResident.roomNumber,
+      moveInDate: mappedResident.admissionDate || "",
+      moveOutDate: mappedResident.dischargeDate || "",
     });
 
-    setFormData(mapped);
     setDisabilityHistory(history);
   } else {
+    // 新規登録用の初期化
     setFormData({
       name: "",
       nameKana: "",
