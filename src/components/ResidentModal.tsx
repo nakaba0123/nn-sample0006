@@ -101,19 +101,6 @@ const ResidentModal: React.FC<Props> = ({
     return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   };
 
-useEffect(() => {
-
-  console.log("🧪 isOpen:", isOpen);
-  console.log("🧪 editResident:", editResident);
-
-  if (!isOpen || !editResident?.id) return;
-
-  // 👇 編集用の居住者データをAPIから取得！
-  fetch(`/api/residents/${editResident.id}`)
-    .then(res => res.json())
-    .then((residentFromAPI) => {
-      console.log("APIから取得した完全な居住者データ:", residentFromAPI);
-
 function mapResident(resident: any) {
   return {
     id: resident.id,
@@ -132,6 +119,20 @@ function mapResident(resident: any) {
   };
 }
 
+useEffect(() => {
+
+  console.log("🧪 isOpen:", isOpen);
+  console.log("🧪 editResident:", editResident);
+
+  if (!isOpen || !editResident?.id) return;
+
+  // 👇 編集用の居住者データをAPIから取得！
+  fetch(`/api/residents/${editResident.id}`)
+    .then(res => res.json())
+    .then((residentFromAPI) => {
+      console.log("APIから取得した完全な居住者データ:", residentFromAPI);
+
+      const mappedResident = mapResident(residentFromAPI); // ← ✨これが必要
       const history = residentFromAPI.disabilityHistory || [];
       const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
 
