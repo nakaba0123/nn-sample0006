@@ -166,29 +166,42 @@ app.delete('/api/residents/:id', async (req, res) => {
 
 app.patch('/api/residents/:id', async (req, res) => {
   const residentId = req.params.id;
-  const {
+  const { 
     group_home_id, name, name_kana, gender, birthdate,
     disability_level, disability_start_date, room_number,
     admission_date, discharge_date, memo
   } = req.body;
+
+  // 空文字をnullに変換
+  const disabilityStartDate =
+    !disability_start_date || disability_start_date === ""
+      ? null
+      : disability_start_date;
+  const dischargeDate =
+    !discharge_date || discharge_date === ""
+      ? null
+      : discharge_date;
+
   const sql = `
     UPDATE residents SET
       group_home_id = ?, name = ?, name_kana = ?, gender = ?,
       birthdate = ?, disability_level = ?, disability_start_date = ?,
       room_number = ?, admission_date = ?, discharge_date = ?, memo = ?
     WHERE id = ?`;
+
   const values = [
     group_home_id, name, name_kana, gender, birthdate,
-    disability_level, disability_start_date, room_number,
-    admission_date, discharge_date, memo, residentId
+    disability_level, disabilityStartDate, room_number,
+    admission_date, dischargeDate, memo, residentId
   ];
+
   try {
     await pool.query(sql, values);
     res.json({ message: '利用者を更新しました' });
   } catch (err) {
     console.error('利用者更新エラー:', err);
     res.status(500).json({ message: '利用者の更新に失敗しました' });
-  }
+  }   
 });
 
 app.get('/api/residents/:id', async (req, res) => {
