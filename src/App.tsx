@@ -482,6 +482,7 @@ const payload = {
 };
 
     console.log("送信する group_home_id:", payload.group_home_id);
+    console.log("送信payload:", payload);
 
     if (resident.id && typeof resident.id === "number") {
       // 既存利用者 → 更新（PATCH）
