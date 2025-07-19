@@ -460,19 +460,19 @@ const handleResidentSubmit = async (resident: Resident) => {
   try {
     const fallbackDate = new Date().toISOString().split('T')[0]; // 今日の日付
 
-    const payload = {
-      name: resident.name,
-      nameKana: resident.nameKana,
-      gender: resident.gender,
-      birthdate: resident.birthdate,
-      disabilityLevel: resident.disabilityLevel,
-      disabilityStartDate: resident.disabilityHistory?.[0]?.startDate || fallbackDate,
-      roomNumber: resident.roomNumber,
-      moveInDate: resident.moveInDate,
-      moveOutDate: resident.moveOutDate || null,
-      memo: "",
-      groupHomeId: Number(resident.groupHomeId),
-    };
+const payload = {
+  name: resident.name,
+  name_kana: resident.nameKana,
+  gender: resident.gender,
+  birthdate: resident.birthdate,
+  disability_level: resident.disabilityLevel,
+  disability_start_date: resident.disabilityHistory?.[0]?.startDate || fallbackDate,
+  room_number: resident.roomNumber,
+  admission_date: resident.moveInDate,
+  discharge_date: resident.moveOutDate || null,
+  memo: "",
+  group_home_id: Number(resident.groupHomeId),
+};
 
     if (resident.id && typeof resident.id === "number") {
       // 既存利用者 → 更新（PATCH）
