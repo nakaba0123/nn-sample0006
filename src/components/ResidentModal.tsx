@@ -209,7 +209,7 @@ console.log("✅ バリデーションエラー:", errors);
       disabilityHistory.find((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
 
     const resident: Resident = {
-      id: editResident?.id || `resident_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      id: editResident?.id ?? undefined,  // ← ここだけ直せばOK
       name: formData.name.trim(),
       nameKana: formData.nameKana.trim(),
       gender: formData.gender,
