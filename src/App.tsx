@@ -462,24 +462,24 @@ const handleResidentSubmit = async (resident: Resident) => {
 
     // 👇ここで数値変換＆バリデーション
 const groupHomeIdNumber = Number(resident.groupHomeId);
-if (groupHomeIdNumber === 0 || isNaN(groupHomeIdNumber)) {
+if (isNaN(groupHomeIdNumber) || groupHomeIdNumber <= 0) {
   alert("グループホームを選択してください！");
   return;
 }
 
-    const payload = {
-      name: resident.name,
-      name_kana: resident.nameKana,
-      gender: resident.gender,
-      birthdate: resident.birthdate,
-      disability_level: resident.disabilityLevel,
-      disability_start_date: resident.disabilityHistory?.[0]?.startDate || fallbackDate,
-      room_number: resident.roomNumber,
-      admission_date: resident.moveInDate,
-      discharge_date: resident.moveOutDate || null,
-      memo: "",
-      group_home_id: groupHomeIdNumber, // 👈ここで安全な値を使う！
-    };
+const payload = {
+  group_home_id: groupHomeIdNumber,
+  name: resident.name,
+  name_kana: resident.nameKana,
+  gender: resident.gender,
+  birthdate: resident.birthdate,
+  disability_level: resident.disabilityLevel,
+  disability_start_date: resident.disabilityHistory?.[0]?.startDate || fallbackDate,
+  room_number: resident.roomNumber,
+  admission_date: resident.moveInDate,
+  discharge_date: resident.moveOutDate || null,
+  memo: "",
+};
 
     if (resident.id && typeof resident.id === "number") {
       // 既存利用者 → 更新（PATCH）
