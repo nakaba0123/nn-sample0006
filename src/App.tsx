@@ -481,6 +481,8 @@ const payload = {
   memo: "",
 };
 
+    console.log("送信する group_home_id:", payload.group_home_id);
+
     if (resident.id && typeof resident.id === "number") {
       // 既存利用者 → 更新（PATCH）
       await axios.patch(`${API_BASE_URL}/residents/${resident.id}`, payload);
