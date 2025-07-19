@@ -151,11 +151,13 @@ app.get('/api/residents', async (req, res) => {
 
 app.delete('/api/residents/:id', async (req, res) => {
   const residentId = req.params.id;
+  console.log('削除対象のID:', residentId); // ← これ追加！
   try {
-    await pool.query('DELETE FROM residents WHERE id = ?', [residentId]);
+    const result = await pool.query('DELETE FROM residents WHERE id = ?', [residentId]);
+    console.log('削除結果:', result); // ← これも追加！
     res.json({ message: '削除に成功しました' });
   } catch (err) {
-    console.error('利用者削除エラー:', err);
+    console.error('利用者削除エラー:', err); // ← エラーログをちゃんと出す！
     res.status(500).json({ message: '利用者の削除に失敗しました' });
   }
 });
