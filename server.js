@@ -114,10 +114,10 @@ app.put('/api/group-homes/:id', async (req, res) => {
 // =======================
 app.post('/api/residents', async (req, res) => {
   const {
-    groupHomeId, name, nameKana, gender, birthdate,
-    disabilityLevel, disabilityStartDate, roomNumber,
-    moveInDate, moveOutDate, memo
-  } = req.body;
+    group_home_id, name, name_kana, gender, birthdate,
+    disability_level, disability_start_date, room_number,
+    admission_date, discharge_date, memo
+  } = req.body; 
 
   const sql = `
     INSERT INTO residents (
@@ -125,18 +125,20 @@ app.post('/api/residents', async (req, res) => {
       disability_level, disability_start_date,
       room_number, admission_date, discharge_date, memo, created_at
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
+
   const values = [
-    Number(groupHomeId), name, nameKana, gender, birthdate,
-    disabilityLevel, disabilityStartDate, roomNumber,
-    moveInDate, moveOutDate || null, memo || ""
+    Number(group_home_id), name, name_kana, gender, birthdate,
+    disability_level || null, disability_start_date || null, room_number || null,
+    admission_date || null, discharge_date || null, memo || ''
   ];
-  try {
+
+  try { 
     const [result] = await pool.query(sql, values);
     res.status(201).json({ message: '利用者登録成功', id: result.insertId });
   } catch (err) {
     console.error('登録失敗:', err);
     res.status(500).json({ error: '登録失敗' });
-  }
+  } 
 });
 
 app.get('/api/residents', async (req, res) => {
