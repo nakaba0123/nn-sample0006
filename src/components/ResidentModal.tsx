@@ -125,41 +125,53 @@ function mapResident(resident: any) {
 }
 
 useEffect(() => {
+  if (!isOpen) return;
 
-  console.log("🧪 isOpen:", isOpen);
-  console.log("🧪 editResident:", editResident);
+  if (!editResident) {
+    // 🟩 新規モードの場合は formData を初期化する
+    setFormData({
+      name: "",
+      nameKana: "",
+      gender: "",
+      birthdate: "",
+      disabilityLevel: "1以下",
+      disabilityStartDate: "",
+      groupHomeId: "",
+      roomNumber: "",
+      moveInDate: "",
+      moveOutDate: "",
+    });
+    setDisabilityHistory([]); // 履歴も空に
+    setErrors({});
+    return;
+  }
 
-  if (!isOpen || !editResident?.id) return;
-
-  // 👇 編集用の居住者データをAPIから取得！
+  // 🟦 編集モード時の処理
   fetch(`/api/residents/${editResident.id}`)
-    .then(res => res.json())
+    .then((res) => res.json())
     .then((residentFromAPI) => {
-      console.log("APIから取得した完全な居住者データ:", residentFromAPI);
-
-      const mappedResident = mapResident(residentFromAPI); // ← ✨これが必要
+      const mappedResident = mapResident(residentFromAPI);
       const history = residentFromAPI.disabilityHistory || [];
       const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
 
-setFormData({
-  name: mappedResident.name,
-  nameKana: mappedResident.nameKana,
-  gender: mappedResident.gender || "",
-  birthdate: formatDate(mappedResident.birthdate),
-  disabilityLevel: currentDis,
-  disabilityStartDate: formatDate(history[0]?.startDate || mappedResident.disabilityStartDate),
-  groupHomeId: String(mappedResident.groupHomeId || ""),
-  roomNumber: mappedResident.roomNumber || "",
-  moveInDate: formatDate(mappedResident.admissionDate),
-  moveOutDate: formatDate(mappedResident.dischargeDate),
-});
+      setFormData({
+        name: mappedResident.name,
+        nameKana: mappedResident.nameKana,
+        gender: mappedResident.gender || "",
+        birthdate: formatDate(mappedResident.birthdate),
+        disabilityLevel: currentDis,
+        disabilityStartDate: formatDate(history[0]?.startDate || mappedResident.disabilityStartDate),
+        groupHomeId: String(mappedResident.groupHomeId || ""),
+        roomNumber: mappedResident.roomNumber || "",
+        moveInDate: formatDate(mappedResident.admissionDate),
+        moveOutDate: formatDate(mappedResident.dischargeDate),
+      });
 
       setDisabilityHistory(history);
     })
     .catch((err) => {
       console.error("居住者データの取得に失敗しました:", err);
     });
-
 }, [isOpen, editResident]);
 
   const validate = () => {
