@@ -458,9 +458,9 @@ const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
   try {
-    const fallbackDate = new Date().toISOString().split('T')[0]; // ← 今日の日付 YYYY-MM-DD
+    const fallbackDate = new Date().toISOString().split('T')[0]; // 今日の日付
 
-    await axios.post(`${API_BASE_URL}/residents`, {
+    const payload = {
       name: resident.name,
       nameKana: resident.nameKana,
       gender: resident.gender,
@@ -472,16 +472,24 @@ const handleResidentSubmit = async (resident: Resident) => {
       moveOutDate: resident.moveOutDate || null,
       memo: "",
       groupHomeId: Number(resident.groupHomeId),
-    });
+    };
+
+    if (resident.id && typeof resident.id === "number") {
+      // 既存利用者 → 更新（PATCH）
+      await axios.patch(`${API_BASE_URL}/residents/${resident.id}`, payload);
+      alert("利用者を更新しました！");
+    } else {
+      // 新規利用者 → 登録（POST）
+      await axios.post(`${API_BASE_URL}/residents`, payload);
+      alert("利用者を登録しました！");
+    }
 
     await fetchResidents();
     setIsResidentModalOpen(false);
     setEditingResident(null);
-
-    alert("利用者を登録しました！");
   } catch (err) {
-    console.error("利用者登録エラー:", err);
-    alert("登録に失敗しました！");
+    console.error("利用者登録／更新エラー:", err);
+    alert("登録／更新に失敗しました！");
   }
 };
 
