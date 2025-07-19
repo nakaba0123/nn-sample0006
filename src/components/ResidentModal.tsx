@@ -354,18 +354,27 @@ console.log("formData: ", formData);
   </h3>
   <div className="grid md:grid-cols-2 gap-5">
     <div>
-      <select
-        value={formData.groupHomeId}
-        onChange={(e) => setFormData((p) => ({ ...p, groupHomeId: Number(e.target.value), roomNumber: "" }))}
-        className={`w-full rounded-lg border px-4 py-2 ${errors.groupHomeId ? "border-red-400 bg-red-50" : "border-gray-300"}`}
-      >
-        <option value="o">物件・ユニットを選択 *</option>
-        {allUnits().map((unit) => (
-          <option key={unit.id} value={unit.id}>
-            {unit.propertyName}／{unit.unitName}
-          </option>
-        ))}
-      </select>
+<select
+  value={formData.groupHomeId}
+  onChange={(e) =>
+    setFormData((p) => ({
+      ...p,
+      groupHomeId: e.target.value, // ✅ ここ！stringのまま
+      roomNumber: "",
+    }))
+  }
+  className={`w-full rounded-lg border px-4 py-2 ${
+    errors.groupHomeId ? "border-red-400 bg-red-50" : "border-gray-300"
+  }`}
+>
+  <option value="">物件・ユニットを選択 *</option>
+  {allUnits().map((unit) => (
+    <option key={unit.id} value={unit.id}>
+      {unit.propertyName}／{unit.unitName}
+    </option>
+  ))}
+</select>
+
       {errors.groupHomeId && <p className="text-xs text-red-500 mt-1">{errors.groupHomeId}</p>}
     </div>
     <div>
