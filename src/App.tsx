@@ -461,11 +461,11 @@ const handleResidentSubmit = async (resident: Resident) => {
     const fallbackDate = new Date().toISOString().split('T')[0]; // 今日の日付
 
     // 👇ここで数値変換＆バリデーション
-    const groupHomeIdNumber = Number(resident.groupHomeId);
-    if (!groupHomeIdNumber || isNaN(groupHomeIdNumber)) {
-      alert("グループホームを選択してください！");
-      return;
-    }
+const groupHomeIdNumber = Number(resident.groupHomeId);
+if (groupHomeIdNumber === 0 || isNaN(groupHomeIdNumber)) {
+  alert("グループホームを選択してください！");
+  return;
+}
 
     const payload = {
       name: resident.name,
