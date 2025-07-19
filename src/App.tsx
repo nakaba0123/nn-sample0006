@@ -474,7 +474,7 @@ const payload = {
   gender: resident.gender,
   birthdate: resident.birthdate,
   disability_level: resident.disabilityLevel,
-  disability_start_date: resident.disabilityHistory?.[0]?.startDate || fallbackDate,
+  disabilityStartDate: resident.disabilityHistory?.[0]?.startDate ?? null,
   room_number: resident.roomNumber,
   admission_date: resident.moveInDate,
   discharge_date: resident.moveOutDate || null,
