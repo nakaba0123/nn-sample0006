@@ -172,9 +172,6 @@ app.patch('/api/residents/:id', async (req, res) => {
     admission_date, discharge_date, memo
   } = req.body;
 
-console.log('[PATCH] 受信データ:', req.body);
-console.log('[PATCH] 対象ID:', residentId);
-
   // 空文字をnullに変換
   const disabilityStartDate =
     !disability_start_date || disability_start_date === ""
@@ -199,6 +196,8 @@ console.log('[PATCH] 対象ID:', residentId);
   ];
 
   try {
+console.log('[PATCH] 受信データ:', req.body);
+console.log('[PATCH] 対象ID:', residentId);
     await pool.query(sql, values);
     res.json({ message: '利用者を更新しました' });
   } catch (err) {
