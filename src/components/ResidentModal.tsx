@@ -205,8 +205,10 @@ console.log("✅ バリデーションエラー:", errors);
     }
 
     const now = new Date().toISOString();
-    const currentLevel =
-      disabilityHistory.find((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
+const disabilityHistory = editResident?.disabilityHistory ?? [];
+
+const currentLevel = 
+  disabilityHistory.find((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
 
     const resident: Resident = {
       id: editResident?.id ?? undefined,  // ← ここだけ直せばOK
