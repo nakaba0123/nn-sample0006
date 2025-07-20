@@ -172,7 +172,8 @@ app.patch('/api/residents/:id', async (req, res) => {
     admission_date, discharge_date, memo
   } = req.body;
 
-  console.log(req.body);
+console.log('[PATCH] 受信データ:', req.body);
+console.log('[PATCH] 対象ID:', residentId);
 
   // 空文字をnullに変換
   const disabilityStartDate =
