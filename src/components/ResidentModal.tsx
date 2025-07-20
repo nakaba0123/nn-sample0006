@@ -187,10 +187,12 @@ console.log("✅ バリデーションエラー:", errors);
     }
 
     const now = new Date().toISOString();
-const disabilityHistory = editResident?.disabilityHistory ?? [];
+// handleSubmit の中でこうする！
+const finalDisabilityHistory =
+  disabilityHistory.length > 0 ? disabilityHistory : editResident?.disabilityHistory ?? [];
 
-const currentLevel = 
-  disabilityHistory.find((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
+const currentLevel =
+  finalDisabilityHistory.find((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
 
     const resident: Resident = {
       id: editResident?.id ?? undefined,  // ← ここだけ直せばOK
@@ -199,7 +201,7 @@ const currentLevel =
       gender: formData.gender,
       birthdate: formData.birthdate,
       disabilityLevel: currentLevel,
-      disabilityHistory,
+      disabilityHistory: finalDisabilityHistory, 
       groupHomeId: Number(formData.groupHomeId),
       groupHomeName: u.propertyName,
       unitName: u.unitName,
