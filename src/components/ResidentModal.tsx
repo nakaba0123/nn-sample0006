@@ -106,24 +106,6 @@ const ResidentModal: React.FC<Props> = ({
     return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   };
 
-function mapResident(resident: any) {
-  return {
-    id: resident.id,
-    name: resident.name,
-    nameKana: resident.name_kana,
-    gender: resident.gender,
-    birthdate: resident.birthdate,
-    disabilityLevel: resident.disability_level,
-    disabilityStartDate: resident.disability_start_date,
-    groupHomeId: resident.group_home_id,
-    roomNumber: resident.room_number,
-    admissionDate: resident.admission_date,
-    dischargeDate: resident.discharge_date,
-    createdAt: resident.created_at,
-    updatedAt: resident.updated_at,
-  };
-}
-
 useEffect(() => {
   if (!isOpen) return;
 
