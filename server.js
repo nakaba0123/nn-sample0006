@@ -166,44 +166,41 @@ app.delete('/api/residents/:id', async (req, res) => {
 
 app.patch('/api/residents/:id', async (req, res) => {
   const residentId = req.params.id;
-  const { 
+  const {
     group_home_id, name, name_kana, gender, birthdate,
-    disability_level, disability_start_date, room_number,
+    disabilityHistory, room_number,
     admission_date, discharge_date, memo
   } = req.body;
 
-  // 空文字をnullに変換
-  const disabilityStartDate =
-    !disability_start_date || disability_start_date === ""
-      ? null
-      : disability_start_date;
-  const dischargeDate =
-    !discharge_date || discharge_date === ""
-      ? null
-      : discharge_date;
+  const now = new Date();
+
+  const current = disabilityHistory.find((h) => !h.endDate);
+  const disability_level = current?.disabilityLevel || null;
+  const disability_start_date = current?.startDate || null;
+
+  const dischargeDate = !discharge_date || discharge_date === "" ? null : discharge_date;
 
   const sql = `
     UPDATE residents SET
       group_home_id = ?, name = ?, name_kana = ?, gender = ?,
       birthdate = ?, disability_level = ?, disability_start_date = ?,
-      room_number = ?, admission_date = ?, discharge_date = ?, memo = ?
-    WHERE id = ?`;
-
+      room_number = ?, admission_date = ?, discharge_date = ?, memo = ?, updated_at = ?
+    WHERE id = ?
+  `;
   const values = [
     group_home_id, name, name_kana, gender, birthdate,
-    disability_level, disabilityStartDate, room_number,
-    admission_date, dischargeDate, memo, residentId
+    disability_level, disability_start_date,
+    room_number, admission_date, dischargeDate, memo, now, residentId
   ];
 
   try {
-console.log('[PATCH] 受信データ:', req.body);
-console.log('[PATCH] 対象ID:', residentId);
+    console.log('[PATCH] 更新データ:', values);
     await pool.query(sql, values);
     res.json({ message: '利用者を更新しました' });
   } catch (err) {
     console.error('利用者更新エラー:', err);
     res.status(500).json({ message: '利用者の更新に失敗しました' });
-  }   
+  }
 });
 
 app.get('/api/residents/:id', async (req, res) => {
@@ -225,6 +222,31 @@ app.get('/api/usage-records', async (req, res) => {
   } catch (err) {
     console.error('📛 usage_records取得エラー:', err);
     res.status(500).json({ error: '内部サーバーエラー' });
+  }
+});
+
+app.post('/api/disability_histories', async (req, res) => {
+  const { resident_id, disability_level, start_date, end_date } = req.body;
+
+  const sql = `
+    INSERT INTO disability_histories
+      (resident_id, disability_level, start_date, end_date)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  const values = [
+    resident_id,
+    disability_level,
+    start_date,
+    end_date || null  // null許容
+  ];
+
+  try {
+    const [result] = await pool.query(sql, values);
+    res.status(201).json({ message: '障害履歴を登録しました', id: result.insertId });
+  } catch (err) {
+    console.error('障害履歴登録エラー:', err);
+    res.status(500).json({ message: '障害履歴の登録に失敗しました' });
   }
 });
 
