@@ -38,6 +38,8 @@ function formatDate(dateString: string | null | undefined): string {
   return new Date(dateString).toISOString().split("T")[0]; // "yyyy-MM-dd"形式に変換
 }
 
+const isEditMode = !!editResident;
+
 const ResidentModal: React.FC<Props> = ({
   isOpen,
   onClose,
@@ -322,20 +324,27 @@ console.log("formData: ", formData);
   </h3>
   <div className="grid md:grid-cols-2 gap-5">
     <div>
-      <select
-        value={formData.disabilityLevel}
-        onChange={(e) => setFormData((p) => ({ ...p, disabilityLevel: e.target.value }))}
-        className="w-full rounded-lg border px-4 py-2 border-gray-300"
-      >
-        {["1以下", "2", "3", "4", "5", "6"].map((level) => (
-          <option key={level} value={level}>
-            支援区分 {level}
-          </option>
-        ))}
-      </select>
+<select
+  value={formData.disabilityLevel}
+  onChange={(e) =>
+    setFormData((p) => ({ ...p, disabilityLevel: e.target.value }))
+  }
+  className="w-full rounded-lg border px-4 py-2 border-gray-300"
+  disabled={isEditMode} // ? 編集時は変更できないように
+>
+  {["1以下", "2", "3", "4", "5", "6"].map((level) => (
+    <option key={level} value={level}>
+      支援区分 {level}
+    </option>
+  ))}
+</select>
     </div>
     <div>
-      {input("disabilityStartDate", { type: "date", placeholder: "開始日 *" })}
+{input("disabilityStartDate", {
+  type: "date",
+  placeholder: "開始日 *",
+  readOnly: isEditMode, // ? 編集時は手入力不可
+})}
       {errors.disabilityStartDate && (
         <p className="text-xs text-red-500 mt-1">{errors.disabilityStartDate}</p>
       )}
