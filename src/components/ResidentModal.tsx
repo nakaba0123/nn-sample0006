@@ -38,7 +38,6 @@ function formatDate(dateString: string | null | undefined): string {
   return new Date(dateString).toISOString().split("T")[0]; // "yyyy-MM-dd"形式に変換
 }
 
-const isEditMode = !!editResident;
 
 const ResidentModal: React.FC<Props> = ({
   isOpen,
