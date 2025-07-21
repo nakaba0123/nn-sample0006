@@ -250,6 +250,24 @@ app.post('/api/disability_histories', async (req, res) => {
   }
 });
 
+app.get('/api/disability_histories', async (req, res) => {
+  const residentId = req.query.resident_id;
+  if (!residentId) {
+    return res.status(400).json({ error: "resident_id is required" });
+  }
+
+  try {
+    const [rows] = await db.query(
+      `SELECT * FROM disability_histories WHERE resident_id = ? ORDER BY start_date DESC`,
+      [residentId]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error("障害履歴の取得エラー:", error);
+    res.status(500).json({ error: "データ取得に失敗しました" });
+  }
+});
+
 // =======================
 // 🌐 補助 API
 // =======================
