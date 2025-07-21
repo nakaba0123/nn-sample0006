@@ -48,6 +48,7 @@ const ResidentModal: React.FC<Props> = ({
   groupHomes,
   expansionRecords,
 }) => {
+  const isEditMode = !!editResident;
   const [formData, setFormData] = useState<ResidentFormData>({
     name: "",
     nameKana: "",
