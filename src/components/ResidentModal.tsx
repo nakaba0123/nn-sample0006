@@ -123,19 +123,30 @@ useEffect(() => {
       moveInDate: "",
       moveOutDate: "",
     });
-    setDisabilityHistory([]); // 履歴も空に
+    setDisabilityHistory([]); // 初期化
     setErrors({});
     return;
   }
 
+
   // 🟦 編集モード時の処理
-  fetch(`/api/residents/${editResident.id}`)
-    .then((res) => res.json())
-    .then((residentFromAPI) => {
+  const fetchResidentAndHistories = async () => {
+    try {
+      const [residentRes, historyRes] = await Promise.all([
+        fetch(`/api/residents/${editResident.id}`),
+        fetch(`/api/disability_histories?resident_id=${editResident.id}`),
+      ]);
+
+      if (!residentRes.ok || !historyRes.ok) {
+        throw new Error("データの取得に失敗しました");
+      }
+
+      const residentFromAPI = await residentRes.json();
+      const history = await historyRes.json();
+
       const mappedResident = mapResident(residentFromAPI);
-      const history = residentFromAPI.disabilityHistory ?? []; // ← null 対策！
       const currentDis =
-        history.find((h) => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
+        history.find((h: any) => !h.end_date)?.disability_level || mappedResident.disabilityLevel;
 
       setFormData({
         name: mappedResident.name,
@@ -143,7 +154,7 @@ useEffect(() => {
         gender: mappedResident.gender || "",
         birthdate: formatDate(mappedResident.birthdate),
         disabilityLevel: currentDis,
-        disabilityStartDate: formatDate(history[0]?.startDate || mappedResident.disabilityStartDate),
+        disabilityStartDate: formatDate(history[0]?.start_date || mappedResident.disabilityStartDate),
         groupHomeId: String(mappedResident.groupHomeId || ""),
         roomNumber: mappedResident.roomNumber || "",
         moveInDate: formatDate(mappedResident.admissionDate),
@@ -151,11 +162,13 @@ useEffect(() => {
       });
 
       setDisabilityHistory(history);
-    })
-    .catch((err) => {
-      console.error("居住者データの取得に失敗しました:", err);
-      setDisabilityHistory([]); // ← エラー時も fallback！
-    });
+    } catch (err) {
+      console.error("データ取得失敗:", err);
+      setDisabilityHistory([]);
+    }
+  };
+
+  fetchResidentAndHistories();
 }, [isOpen, editResident]);
 
   const validate = () => {
