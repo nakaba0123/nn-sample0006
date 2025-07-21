@@ -130,44 +130,47 @@ useEffect(() => {
 
 
   // 🟦 編集モード時の処理
-  const fetchResidentAndHistories = async () => {
-    try {
-      const [residentRes, historyRes] = await Promise.all([
-        fetch(`/api/residents/${editResident.id}`),
-        fetch(`/api/disability_histories?resident_id=${editResident.id}`),
-      ]);
+const fetchResidentAndHistories = async () => {
+  try {
+    const [residentRes, historyRes] = await Promise.all([
+      fetch(`/api/residents/${editResident.id}`, {
+        headers: { "Cache-Control": "no-cache" },
+      }),
+      fetch(`/api/disability_histories?resident_id=${editResident.id}`, {
+        headers: { "Cache-Control": "no-cache" },
+      }),
+    ]);
 
-      if (!residentRes.ok || !historyRes.ok) {
-        throw new Error("データの取得に失敗しました");
-      }
-
-      const residentFromAPI = await residentRes.json();
-      const history = await historyRes.json();
-
-      const mappedResident = mapResident(residentFromAPI);
-      const currentDis =
-        history.find((h: any) => !h.end_date)?.disability_level || mappedResident.disabilityLevel;
-
-      setFormData({
-        name: mappedResident.name,
-        nameKana: mappedResident.nameKana,
-        gender: mappedResident.gender || "",
-        birthdate: formatDate(mappedResident.birthdate),
-        disabilityLevel: currentDis,
-        disabilityStartDate: formatDate(history[0]?.start_date || mappedResident.disabilityStartDate),
-        groupHomeId: String(mappedResident.groupHomeId || ""),
-        roomNumber: mappedResident.roomNumber || "",
-        moveInDate: formatDate(mappedResident.admissionDate),
-        moveOutDate: formatDate(mappedResident.dischargeDate),
-      });
-
-      setDisabilityHistory(history);
-    } catch (err) {
-      console.error("データ取得失敗:", err);
-      setDisabilityHistory([]);
+    if (!residentRes.ok || !historyRes.ok) {
+      throw new Error("データの取得に失敗しました");
     }
-  };
 
+    const residentFromAPI = await residentRes.json();
+    const history = await historyRes.json();
+
+    const mappedResident = mapResident(residentFromAPI);
+    const currentDis =
+      history.find((h: any) => !h.end_date)?.disability_level || mappedResident.disabilityLevel;
+
+    setFormData({
+      name: mappedResident.name,
+      nameKana: mappedResident.nameKana,
+      gender: mappedResident.gender || "",
+      birthdate: formatDate(mappedResident.birthdate),
+      disabilityLevel: currentDis,
+      disabilityStartDate: formatDate(history[0]?.start_date || mappedResident.disabilityStartDate),
+      groupHomeId: String(mappedResident.groupHomeId || ""),
+      roomNumber: mappedResident.roomNumber || "",
+      moveInDate: formatDate(mappedResident.admissionDate),
+      moveOutDate: formatDate(mappedResident.dischargeDate),
+    });
+
+    setDisabilityHistory(history);
+  } catch (err) {
+    console.error("データ取得失敗:", err);
+    setDisabilityHistory([]);
+  }
+};
   fetchResidentAndHistories();
 }, [isOpen, editResident]);
 
