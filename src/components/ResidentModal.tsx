@@ -133,8 +133,9 @@ useEffect(() => {
     .then((res) => res.json())
     .then((residentFromAPI) => {
       const mappedResident = mapResident(residentFromAPI);
-      const history = residentFromAPI.disabilityHistory || [];
-      const currentDis = history.find(h => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
+      const history = residentFromAPI.disabilityHistory ?? []; // ← null 対策！
+      const currentDis =
+        history.find((h) => !h.endDate)?.disabilityLevel || mappedResident.disabilityLevel;
 
       setFormData({
         name: mappedResident.name,
@@ -153,6 +154,7 @@ useEffect(() => {
     })
     .catch((err) => {
       console.error("居住者データの取得に失敗しました:", err);
+      setDisabilityHistory([]); // ← エラー時も fallback！
     });
 }, [isOpen, editResident]);
 
@@ -189,10 +191,12 @@ console.log("✅ バリデーションエラー:", errors);
     const now = new Date().toISOString();
 // handleSubmit の中でこうする！
 const finalDisabilityHistory =
-  disabilityHistory.length > 0 ? disabilityHistory : editResident?.disabilityHistory ?? [];
+  disabilityHistory.length > 0
+    ? disabilityHistory
+    : editResident?.disabilityHistory ?? []; // ← null fallback!!
 
 const currentLevel =
-  finalDisabilityHistory.find((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
+  finalDisabilityHistory?.find?.((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
 
     const resident: Resident = {
       id: editResident?.id ?? undefined,  // ← ここだけ直せばOK
