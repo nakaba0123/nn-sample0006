@@ -11,13 +11,16 @@ interface DisabilityHistoryModalProps {
   existingHistory: DisabilityHistory[];
 }
 
-const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  onSubmit, 
+const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
+  residentId,
+  isOpen,
+  onClose,
+  onSubmit,
   editHistory,
   existingHistory
 }) => {
+  // ここで residentId が使えるようになります！
+  console.log("? residentId:", residentId); // ← 動作確認にも便利！
   const [formData, setFormData] = useState<DisabilityHistoryFormData>({
     disabilityLevel: '1以下',
     startDate: '',
