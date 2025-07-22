@@ -336,7 +336,7 @@ console.log("formData: ", formData);
     setFormData((p) => ({ ...p, disabilityLevel: e.target.value }))
   }
   className="w-full rounded-lg border px-4 py-2 border-gray-300"
-  disabled={isEditMode} // ? 編集時は変更できないように
+  disabled={true} // ? 編集時は変更できないように
 >
   {["1以下", "2", "3", "4", "5", "6"].map((level) => (
     <option key={level} value={level}>
@@ -349,7 +349,7 @@ console.log("formData: ", formData);
 {input("disabilityStartDate", {
   type: "date",
   placeholder: "開始日 *",
-  readOnly: isEditMode, // ? 編集時は手入力不可
+  readOnly: true, // ? 編集時は手入力不可
 })}
       {errors.disabilityStartDate && (
         <p className="text-xs text-red-500 mt-1">{errors.disabilityStartDate}</p>
