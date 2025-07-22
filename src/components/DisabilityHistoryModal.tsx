@@ -3,6 +3,7 @@ import { X, Shield, Calendar } from 'lucide-react';
 import { DisabilityHistory, DisabilityHistoryFormData } from '../types/Resident';
 
 interface DisabilityHistoryModalProps {
+  residentId: number;
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: DisabilityHistoryFormData) => void;
@@ -117,6 +118,7 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
     
     if (validateForm()) {
       onSubmit({
+        residentId, // ?? これを追加！
         disabilityLevel: formData.disabilityLevel,
         startDate: formData.startDate,
         endDate: formData.endDate || undefined
