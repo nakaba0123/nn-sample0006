@@ -169,7 +169,7 @@ console.log("mappedResident", mappedResident);
       disabilityStartDate: formatDate(history[0]?.start_date || mappedResident.disabilityStartDate),
       groupHomeId: String(mappedResident.groupHomeId || ""),
       roomNumber: mappedResident.roomNumber || "",
-      moveInDate: formatDate(mappedResident.admissionDate),
+      moveInDate: formatDate(mappedResident.moveInDate),
       moveOutDate: formatDate(mappedResident.dischargeDate),
     });
 
