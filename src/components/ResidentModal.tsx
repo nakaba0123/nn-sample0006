@@ -443,7 +443,7 @@ console.log("formData: ", formData);
 <DisabilityHistoryModal
   isOpen={isDisModalOpen}
   onClose={() => setIsDisModalOpen(false)}
-  residentId={residentId}
+  residentId={editResident?.id ?? 0} // ← 編集時はeditResident.id、新規時は仮の0
   existingHistory={disabilityHistory}
   onSubmit={(newHistory) => {
     setDisabilityHistory((prev) => [...prev, newHistory]);
