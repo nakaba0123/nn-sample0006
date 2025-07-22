@@ -440,14 +440,17 @@ console.log("formData: ", formData);
     </button>
   </div>
 </form>
-        <DisabilityHistoryModal
-          isOpen={isDisModalOpen}
-          onClose={() => setIsDisModalOpen(false)}
-          disabilityHistory={disabilityHistory}
-          setDisabilityHistory={setDisabilityHistory}
-          onSubmit={(newHistory) => {
-            setDisabilityHistory((prev) => [...prev, newHistory]);
-        />
+<DisabilityHistoryModal
+  isOpen={isDisModalOpen}
+  onClose={() => setIsDisModalOpen(false)}
+  residentId={residentId}
+  existingHistory={disabilityHistory}
+  onSubmit={(newHistory) => {
+    setDisabilityHistory((prev) => [...prev, newHistory]);
+  }}
+>
+  {/* 子要素がある場合ここに書く */}
+</DisabilityHistoryModal>
       </div>
     </div>
   );
