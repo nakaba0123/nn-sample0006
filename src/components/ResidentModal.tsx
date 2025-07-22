@@ -150,7 +150,13 @@ const fetchResidentAndHistories = async () => {
     const residentFromAPI = await residentRes.json();
     const history = await historyRes.json();
 
+console.log("residentFromAPI", residentFromAPI);
+console.log("history", history);
+
     const mappedResident = mapResident(residentFromAPI);
+
+console.log("mappedResident", mappedResident);
+
     const currentDis =
       history.find((h: any) => !h.end_date)?.disability_level || mappedResident.disabilityLevel;
 
