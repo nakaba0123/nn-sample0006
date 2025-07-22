@@ -3,16 +3,16 @@
 export function mapResident(resident: any) {
   return {
     id: resident.id,
-    groupHomeId: resident.groupHomeId ?? "",
+    groupHomeId: resident.group_home_id ?? "",
     name: resident.name ?? "",
-    nameKana: resident.nameKana ?? "",
+    nameKana: resident.name_kana ?? "",
     gender: resident.gender ?? "",
     birthdate: resident.birthdate ?? "",
-    disabilityLevel: resident.disabilityLevel ?? "",
-    disabilityStartDate: resident.disabilityStartDate ?? "",
-    roomNumber: resident.roomNumber ?? "",
-    moveInDate: resident.moveInDate ?? "",
-    moveOutDate: resident.moveOutDate ?? "",
+    disabilityLevel: resident.disability_level ?? "",
+    disabilityStartDate: resident.disability_start_date ?? "",
+    roomNumber: resident.room_number ?? "",
+    moveInDate: resident.admission_date ?? "",
+    moveOutDate: resident.discharge_date ?? "",
     memo: resident.memo ?? "",
   };
 }
