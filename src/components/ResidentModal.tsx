@@ -445,6 +445,8 @@ console.log("formData: ", formData);
           onClose={() => setIsDisModalOpen(false)}
           disabilityHistory={disabilityHistory}
           setDisabilityHistory={setDisabilityHistory}
+          onSubmit={(newHistory) => {
+            setDisabilityHistory((prev) => [...prev, newHistory]);
         />
       </div>
     </div>
