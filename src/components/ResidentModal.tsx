@@ -446,6 +446,7 @@ console.log("formData: ", formData);
   residentId={editResident?.id ?? 0} // ← 編集時はeditResident.id、新規時は仮の0
   existingHistory={disabilityHistory}
 onSubmit={async (newHistory) => {
+  console.log("? newHistory:", newHistory);
   try {
     const response = await fetch('/api/disability_histories', {
       method: 'POST',
