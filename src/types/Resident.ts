@@ -24,6 +24,7 @@ export interface DisabilityHistory {
 }
 
 export interface DisabilityHistoryFormData {
+  residentId: number; // ? 必要！
   disabilityLevel: '1以下' | '2' | '3' | '4' | '5' | '6';
   startDate: string;
   endDate?: string;

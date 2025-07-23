@@ -32,12 +32,14 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
   useEffect(() => {
     if (editHistory) {
       setFormData({
+        residentId, // ← これを入れる！ 
         disabilityLevel: editHistory.disabilityLevel,
         startDate: editHistory.startDate,
         endDate: editHistory.endDate || ''
       });
     } else {
       setFormData({
+        residentId, // ← これを入れる！
         disabilityLevel: '1以下',
         startDate: '',
         endDate: ''
