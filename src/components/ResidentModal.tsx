@@ -462,9 +462,12 @@ onSubmit={async (newHistory) => {
 
     const result = await response.json();
 
-    // 登録成功時に state 更新（オプション）
+    // 登録成功時に state 更新
     setDisabilityHistory((prev) => [...prev, { ...newHistory, id: result.id }]);
     console.log("? 登録成功:", result);
+
+    // ? モーダルを閉じる
+    setIsDisModalOpen(false); // ←これを追加！
 
   } catch (error) {
     console.error("? 登録失敗:", error);
