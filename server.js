@@ -225,7 +225,7 @@ app.get('/api/usage-records', async (req, res) => {
   }
 });
 
-iapp.post('/api/residents', async (req, res) => {
+app.post('/api/residents', async (req, res) => {
   try {
     const {
       name, nameKana, gender, birthdate,
