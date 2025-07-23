@@ -226,20 +226,20 @@ app.get('/api/usage-records', async (req, res) => {
 });
 
 app.post('/api/disability_histories', async (req, res) => {
-  const { resident_id, disability_level, start_date, end_date } = req.body;
+const { resident_id, disability_level, start_date, end_date } = req.body;
 
-  const sql = `
-    INSERT INTO disability_histories
-      (resident_id, disability_level, start_date, end_date)
-    VALUES (?, ?, ?, ?)
-  `;
+const sql = `
+  INSERT INTO disability_histories
+    (resident_id, disability_level, start_date, end_date)
+  VALUES (?, ?, ?, ?)
+`;
 
-  const values = [
-    resident_id,
-    disability_level,
-    start_date,
-    end_date || null  // null許容
-  ];
+const values = [
+  resident_id || null,
+  disability_level || null,
+  start_date || null,
+  end_date || null
+];
 
   try {
     const [result] = await pool.query(sql, values);
