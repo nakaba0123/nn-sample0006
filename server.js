@@ -225,31 +225,38 @@ app.get('/api/usage-records', async (req, res) => {
   }
 });
 
-app.post('/api/disability_histories', async (req, res) => {
-  console.log("POST /api/disability_histories が呼ばれました！");
-  console.log("req.body:", req.body);
-
-  const { residentId, disabilityLevel, startDate, endDate } = req.body;
-
-  const sql = `
-    INSERT INTO disability_histories
-      (resident_id, disability_level, start_date, end_date)
-    VALUES (?, ?, ?, ?)
-  `;
-
-  const values = [
-    residentId || null,
-    disabilityLevel || null,
-    startDate || null,
-    endDate || null
-  ];
-
+iapp.post('/api/residents', async (req, res) => {
   try {
+    const {
+      name, nameKana, gender, birthdate,
+      disabilityLevel, groupHomeId, groupHomeName, unitName,
+      roomNumber, moveInDate, moveOutDate,
+      status, createdAt, updatedAt
+    } = req.body;
+
+    const sql = `
+      INSERT INTO residents (
+        name, name_kana, gender, birthdate,
+        disability_level, group_home_id, group_home_name, unit_name,
+        room_number, move_in_date, move_out_date,
+        status, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      name, nameKana, gender, birthdate,
+      disabilityLevel, groupHomeId, groupHomeName, unitName,
+      roomNumber, moveInDate, moveOutDate,
+      status, createdAt, updatedAt
+    ];
+
     const [result] = await pool.query(sql, values);
-    res.status(201).json({ message: '障害履歴を登録しました', id: result.insertId });
+
+    res.status(201).json({ message: "登録成功", id: result.insertId });
+
   } catch (err) {
-    console.error('障害履歴登録エラー:', err);
-    res.status(500).json({ message: '障害履歴の登録に失敗しました' });
+    console.error("利用者登録エラー:", err);
+    res.status(500).json({ message: "利用者の登録に失敗しました" });
   }
 });
 
