@@ -199,56 +199,91 @@ console.log("mappedResident", mappedResident);
     return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!validate()) return;
 
-console.log("✅ フォームデータ:", formData);
-console.log("✅ バリデーションエラー:", errors);
+  console.log("? フォームデータ:", formData);
+  console.log("? バリデーションエラー:", errors);
 
-    const u = selectedUnit();
-    if (!u) {
-      console.error("unit が取得できませんでした");
-      return;
+  const u = selectedUnit();
+  if (!u) {
+    console.error("unit が取得できませんでした");
+    return;
+  }
+
+  const now = new Date().toISOString();
+
+  const finalDisabilityHistory =
+    disabilityHistory.length > 0
+      ? disabilityHistory
+      : editResident?.disabilityHistory ?? [];
+
+  const currentLevel =
+    finalDisabilityHistory?.find?.((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
+
+  const resident: Omit<Resident, "id"> = {
+    name: formData.name.trim(),
+    nameKana: formData.nameKana.trim(),
+    gender: formData.gender,
+    birthdate: formData.birthdate,
+    disabilityLevel: currentLevel,
+    disabilityHistory: [], // ← 先に登録しないので空で
+    groupHomeId: Number(formData.groupHomeId),
+    groupHomeName: u.propertyName,
+    unitName: u.unitName,
+    roomNumber: formData.roomNumber,
+    moveInDate: formData.moveInDate,
+    moveOutDate: formData.moveOutDate || undefined,
+    status: !formData.moveOutDate
+      ? "active"
+      : new Date(formData.moveOutDate) <= new Date()
+      ? "inactive"
+      : "active",
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  try {
+    const res = await fetch('/api/residents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(resident),
+    });
+
+    if (!res.ok) throw new Error("利用者登録に失敗しました");
+
+    const result = await res.json();
+    const newResidentId = result.id;
+
+    console.log("? 利用者登録成功:", newResidentId);
+
+    for (const h of finalDisabilityHistory) {
+      const historyRes = await fetch('/api/disability_histories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          residentId: newResidentId,
+          disabilityLevel: h.disabilityLevel,
+          startDate: h.startDate,
+          endDate: h.endDate || null,
+        }),
+      });
+
+      if (!historyRes.ok) {
+        console.warn("?? 障害履歴登録に失敗しました", h);
+      } else {
+        console.log("? 障害履歴登録成功:", h);
+      }
     }
 
-    const now = new Date().toISOString();
-// handleSubmit の中でこうする！
-const finalDisabilityHistory =
-  disabilityHistory.length > 0
-    ? disabilityHistory
-    : editResident?.disabilityHistory ?? []; // ← null fallback!!
-
-const currentLevel =
-  finalDisabilityHistory?.find?.((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
-
-    const resident: Resident = {
-      id: editResident?.id ?? undefined,  // ← ここだけ直せばOK
-      name: formData.name.trim(),
-      nameKana: formData.nameKana.trim(),
-      gender: formData.gender,
-      birthdate: formData.birthdate,
-      disabilityLevel: currentLevel,
-      disabilityHistory: finalDisabilityHistory, 
-      groupHomeId: Number(formData.groupHomeId),
-      groupHomeName: u.propertyName,
-      unitName: u.unitName,
-      roomNumber: formData.roomNumber,
-      moveInDate: formData.moveInDate,
-      moveOutDate: formData.moveOutDate || undefined,
-      status: !formData.moveOutDate
-        ? "active"
-        : new Date(formData.moveOutDate) <= new Date()
-        ? "inactive"
-        : "active",
-      createdAt: editResident?.createdAt || now,
-      updatedAt: now,
-    };
-
-    console.log("➡️ ResidentModal から onSubmit 呼出", resident);
-    onSubmit(resident);
     onClose();
-  };
+
+  } catch (err) {
+    console.error("? 登録失敗:", err);
+    alert("登録に失敗しました");
+  }
+};
 
   const input = (key: keyof ResidentFormData, props = {}) => (
     <input
