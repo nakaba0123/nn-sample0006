@@ -226,20 +226,23 @@ app.get('/api/usage-records', async (req, res) => {
 });
 
 app.post('/api/disability_histories', async (req, res) => {
-const { resident_id, disability_level, start_date, end_date } = req.body;
+  console.log("POST /api/disability_histories が呼ばれました！");
+  console.log("req.body:", req.body);
 
-const sql = `
-  INSERT INTO disability_histories
-    (resident_id, disability_level, start_date, end_date)
-  VALUES (?, ?, ?, ?)
-`;
+  const { resident_id, disability_level, start_date, end_date } = req.body;
 
-const values = [
-  resident_id || null,
-  disability_level || null,
-  start_date || null,
-  end_date || null
-];
+  const sql = `
+    INSERT INTO disability_histories
+      (resident_id, disability_level, start_date, end_date)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  const values = [
+    resident_id || null,
+    disability_level || null,
+    start_date || null,
+    end_date || null
+  ];
 
   try {
     const [result] = await pool.query(sql, values);
