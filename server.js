@@ -237,11 +237,11 @@ app.post('/api/disability_histories', async (req, res) => {
 
   const { residentId, disabilityLevel, startDate, endDate } = req.body;
 
-  const sql = 
+  const sql = `
     INSERT INTO disability_histories
       (resident_id, disability_level, start_date, end_date)
     VALUES (?, ?, ?, ?)
-  ;
+  `;
 
   const values = [
     residentId || null,
