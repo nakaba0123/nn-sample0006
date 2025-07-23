@@ -445,9 +445,32 @@ console.log("formData: ", formData);
   onClose={() => setIsDisModalOpen(false)}
   residentId={editResident?.id ?? 0} // ← 編集時はeditResident.id、新規時は仮の0
   existingHistory={disabilityHistory}
-  onSubmit={(newHistory) => {
-    setDisabilityHistory((prev) => [...prev, newHistory]);
-  }}
+onSubmit={async (newHistory) => {
+  try {
+    const response = await fetch('/api/disability_histories', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newHistory)
+    });
+
+    if (!response.ok) {
+      throw new Error('サーバーに障害履歴を送信できませんでした');
+    }
+
+    const result = await response.json();
+
+    // 登録成功時に state 更新（オプション）
+    setDisabilityHistory((prev) => [...prev, { ...newHistory, id: result.id }]);
+    console.log("? 登録成功:", result);
+
+  } catch (error) {
+    console.error("? 登録失敗:", error);
+    alert("障害履歴の登録に失敗しました");
+  }
+}}
+
 >
   {/* 子要素がある場合ここに書く */}
 </DisabilityHistoryModal>
