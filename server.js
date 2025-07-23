@@ -229,7 +229,7 @@ app.post('/api/disability_histories', async (req, res) => {
   console.log("POST /api/disability_histories が呼ばれました！");
   console.log("req.body:", req.body);
 
-  const { resident_id, disability_level, start_date, end_date } = req.body;
+  const { residentId, disabilityLevel, startDate, endDate } = req.body;
 
   const sql = `
     INSERT INTO disability_histories
@@ -238,10 +238,10 @@ app.post('/api/disability_histories', async (req, res) => {
   `;
 
   const values = [
-    resident_id || null,
-    disability_level || null,
-    start_date || null,
-    end_date || null
+    residentId || null,
+    disabilityLevel || null,
+    startDate || null,
+    endDate || null
   ];
 
   try {
