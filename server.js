@@ -286,6 +286,48 @@ app.get('/api/disability_histories', async (req, res) => {
   }
 });
 
+app.post('/api/expansions', async (req, res) => {
+  console.log("POST /api/expansions が呼ばれました！");
+  console.log("req.body:", req.body);
+
+  const {
+    propertyName,
+    unitName,
+    expansionType,
+    newRooms,
+    commonRoom,
+    startDate
+  } = req.body;
+
+  const sql = `
+    INSERT INTO expansions (
+      property_name,
+      unit_name,
+      expansion_type,
+      new_rooms,
+      common_room,
+      start_date
+    ) VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  const values = [
+    propertyName || null,
+    unitName || null,
+    expansionType || null,
+    JSON.stringify(newRooms || []),  // TEXT型として保存
+    commonRoom || null,
+    startDate || null
+  ];
+
+  try {
+    const [result] = await pool.query(sql, values);
+    res.status(201).json({ message: '増床情報を登録しました', id: result.insertId });
+  } catch (err) {
+    console.error('増床登録エラー:', err);
+    res.status(500).json({ message: '増床登録に失敗しました' });
+  }
+});
+
 // =======================
 // 🌐 補助 API
 // =======================

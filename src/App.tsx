@@ -319,25 +319,41 @@ useEffect(() => {
   init();
 }, []);
 
-  const handleExpansionSubmit = (data: ExpansionFormData) => {
-    if (editingExpansion) {
-      // Edit existing expansion
-      setExpansionRecords(prev => prev.map(expansion => 
-        expansion.id === editingExpansion.id 
-          ? { ...expansion, ...data }
-          : expansion
-      ));
-      setEditingExpansion(null);
-    } else {
-      // Add new expansion
+const handleExpansionSubmit = async (data: ExpansionFormData) => {
+  if (editingExpansion) {
+    // 編集モード
+    setExpansionRecords(prev => prev.map(expansion =>
+      expansion.id === editingExpansion.id
+        ? { ...expansion, ...data }
+        : expansion
+    ));
+    setEditingExpansion(null);
+  } else {
+    // 新規登録モード → バックエンドへPOST
+    try {
+      const res = await fetch('/api/expansions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) throw new Error('登録失敗');
+
+      const result = await res.json(); // ← 成功時の応答(JSON)を取得しておくと便利
+      console.log('増床登録成功:', result);
+
+      // 状態の更新（任意）
       const newExpansion: ExpansionRecord = {
-        id: `exp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: result.id || `exp_${Date.now()}`,
         ...data,
         timestamp: new Date().toISOString()
       };
       setExpansionRecords(prev => [newExpansion, ...prev]);
+    } catch (err) {
+      console.error('増床登録エラー:', err);
     }
-  };
+  }
+};
 
   const handleDepartmentSubmit = (data: DepartmentFormData) => {
     if (editingDepartment) {
