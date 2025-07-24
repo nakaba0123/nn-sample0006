@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, Home, Plus, MapPin, ArrowRight } from 'lucide-react';
 import { GroupHome, ExpansionRecord } from '../types/GroupHome';
 import GroupHomeCard from './GroupHomeCard';
