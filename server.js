@@ -347,6 +347,25 @@ app.post('/api/expansions', async (req, res) => {
   }
 });
 
+app.get('/api/expansions', async (req, res) => {
+  const { group_home_id } = req.query;
+
+  const sql = group_home_id
+    ? 'SELECT * FROM expansions WHERE group_home_id = ? ORDER BY id DESC'
+    : 'SELECT * FROM expansions ORDER BY id DESC';
+
+  try {
+    const [rows] = group_home_id
+      ? await pool.query(sql, [group_home_id])
+      : await pool.query(sql);
+
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error('増床一覧取得エラー:', err);
+    res.status(500).json({ message: '取得に失敗しました' });
+  }
+});
+
 // =======================
 // 🌐 補助 API
 // =======================
