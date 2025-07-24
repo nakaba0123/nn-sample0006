@@ -286,6 +286,25 @@ app.get('/api/disability_histories', async (req, res) => {
   }
 });
 
+app.delete('/api/expansions/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const sql = 'DELETE FROM expansions WHERE id = ?';
+
+  try {
+    const [result] = await pool.query(sql, [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: '対象の増床記録が見つかりません' });
+    }
+
+    res.status(200).json({ message: '増床記録を削除しました' });
+  } catch (err) {
+    console.error('増床削除エラー:', err);
+    res.status(500).json({ message: '削除に失敗しました' });
+  }
+});
+
 app.post('/api/expansions', async (req, res) => {
   console.log("POST /api/expansions が呼ばれました！");
   console.log("req.body:", req.body);
