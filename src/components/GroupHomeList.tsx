@@ -4,6 +4,22 @@ import { GroupHome, ExpansionRecord } from '../types/GroupHome';
 import GroupHomeCard from './GroupHomeCard';
 import ExpansionCard from './ExpansionCard';
 
+const [expansions, setExpansions] = useState([]);
+
+useEffect(() => {
+  const fetchExpansions = async () => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/expansions`);
+      const data = await response.json();
+      setExpansions(data);  // ← ステートに保存！
+    } catch (err) {
+      console.error('増床データの取得に失敗しました:', err);
+    }
+  };
+
+  fetchExpansions(); // ← 初期読み込みで呼ぶ
+}, []);
+
 interface GroupHomeListProps {
   groupHomes: GroupHome[];
   expansionRecords: ExpansionRecord[];
@@ -167,7 +183,7 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                   <GroupHomeCard
                     key={groupHome.id}
                     groupHome={groupHome}
-                    expansions={expansionRecords}
+                    expansions={expansions.filter(exp => exp.propertyName === groupHome.propertyName)} // ←関連付け
                     onEdit={onEditGroupHome}
                     onDelete={onDeleteGroupHome}
                     onEditExpansion={onEditExpansion}
