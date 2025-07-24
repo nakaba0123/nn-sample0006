@@ -15,6 +15,8 @@ interface GroupHomeListProps {
   onDeleteExpansion: (expansionId: string) => void;
 }
 
+const apiBaseUrl = 'https://nn-sample0006-production.up.railway.app';
+
 const GroupHomeList: React.FC<GroupHomeListProps> = ({ 
   groupHomes, 
   expansionRecords,
