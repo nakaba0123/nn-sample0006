@@ -35,7 +35,6 @@ interface AttendanceData {
 }
 
 const API_BASE_URL = 'https://nn-sample0006-production.up.railway.app/api';
-const apiBaseUrl = 'https://nn-sample0006-production.up.railway.app';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'attendance' | 'users' | 'grouphomes' | 'departments' | 'shifts' | 'masters' | 'residents' | 'usage'>('attendance');
@@ -311,7 +310,7 @@ const fetchResidents = async () => {
 
 const fetchExpansionRecords = async () => {
   try {
-    const response = await fetch(`${apiBaseUrl}/expansion_records`);
+    const response = await fetch(`${API_BASE_URL}/expansion_records`);
     if (!response.ok) throw new Error('増床記録の取得に失敗しました');
     const data = await response.json();
     setExpansionRecords(data);
