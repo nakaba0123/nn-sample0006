@@ -169,7 +169,7 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                   <GroupHomeCard
                     key={groupHome.id}
                     groupHome={groupHome}
-                    expansions={expansions.filter(exp => exp.propertyName === groupHome.propertyName)} // ←関連付け
+                    expansions={expansionRecords.filter(exp => exp.propertyName === groupHome.propertyName)}
                     onEdit={onEditGroupHome}
                     onDelete={onDeleteGroupHome}
                     onEditExpansion={onEditExpansion}
