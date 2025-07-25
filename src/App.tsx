@@ -835,6 +835,7 @@ const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
             <PermissionGuard permissions={['grouphome.create', 'grouphome.edit', 'grouphome.delete']}>
               <GroupHomeList
                 groupHomes={groupHomes}
+                residents={residents}
                 expansionRecords={expansionRecords}
                 onAddGroupHome={handleAddGroupHome}
                 onAddExpansion={handleAddExpansion}
