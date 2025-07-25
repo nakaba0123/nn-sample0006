@@ -59,8 +59,8 @@ const filteredExpansions = expansionRecords.filter(expansion => {
     return addressParts[0] + (addressParts[1] ? addressParts[1].split(/[市区町村]/)[0] : '');
   }))].filter(city => city);
 
-  const totalRooms = groupHomes.reduce((sum, gh) => sum + gh.residentRooms.length, 0);
-  const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + exp.newRooms.length, 0);
+const totalRooms = groupHomes.reduce((sum, gh) => sum + (gh.residentRooms?.length ?? 0), 0);
+const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
 
   return (
     <div className="space-y-6">
