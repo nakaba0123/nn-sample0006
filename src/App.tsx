@@ -316,6 +316,7 @@ const fetchExpansionRecords = async () => {
     setExpansionRecords(data);
   } catch (error) {
     console.error('増床記録取得エラー:', error);
+    setExpansionRecords([]); // ← この1行を追加するだけ
   }
 };
 

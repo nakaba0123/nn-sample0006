@@ -111,7 +111,7 @@ const filteredExpansions = expansionRecords.filter(expansion => {
           }`}
         >
           <ArrowRight className="w-4 h-4 inline mr-2" />
-          増床記録 ({expansionRecords.length})
+          増床記録 ({Array.isArray(expansionRecords) ? expansionRecords.length : 0})
         </button>
       </div>
 
