@@ -308,12 +308,23 @@ const fetchResidents = async () => {
   }
 };
 
-// 1️⃣ 最初のマウント時に一覧取得
+const fetchExpansionRecords = async () => {
+  try {
+    const response = await fetch(`${apiBaseUrl}/expansion_records`);
+    if (!response.ok) throw new Error('増床記録の取得に失敗しました');
+    const data = await response.json();
+    setExpansionRecords(data);
+  } catch (error) {
+    console.error('増床記録取得エラー:', error);
+  }
+};
+
 useEffect(() => {
   const init = async () => {
     await Promise.all([
       fetchGroupHomes(),
-      fetchResidents(),   // ← 追加済み
+      fetchResidents(),
+      fetchExpansionRecords(), // ← 追加した行
     ]);
   };
   init();
