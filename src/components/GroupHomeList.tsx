@@ -41,12 +41,16 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
     return matchesSearch && matchesAddress;
   });
 
-  const filteredExpansions = expansionRecords.filter(expansion => {
-    const matchesSearch = expansion.propertyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         expansion.unitName.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesSearch;
-  });
+const filteredExpansions = expansionRecords.filter(expansion => {
+  const propName = expansion.propertyName || "";
+  const unitName = expansion.unitName || "";
+  const search = searchTerm.toLowerCase();
+
+  return (
+    propName.toLowerCase().includes(search) ||
+    unitName.toLowerCase().includes(search)
+  );
+});
 
   const cities = [...new Set(groupHomes.map(gh => {
     const addressParts = gh.address.split(/[都道府県市区町村]/);
