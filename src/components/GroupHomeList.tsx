@@ -31,23 +31,6 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
   const [addressFilter, setAddressFilter] = useState('');
   const [activeView, setActiveView] = useState<'facilities' | 'expansions'>('facilities');
 
-  // ✅ 🔽ここに移動！
-  const [expansions, setExpansions] = useState<ExpansionRecord[]>([]);
-
-  useEffect(() => {
-    const fetchExpansions = async () => {
-      try {
-        const response = await fetch(`${apiBaseUrl}/api/expansions`);
-        const data = await response.json();
-        setExpansions(data);  // ← ステートに保存！
-      } catch (err) {
-        console.error('増床データの取得に失敗しました:', err);
-      }
-    };
-
-    fetchExpansions();
-  }, []);
-
   const filteredGroupHomes = groupHomes.filter(groupHome => {
     const matchesSearch = groupHome.propertyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          groupHome.unitName.toLowerCase().includes(searchTerm.toLowerCase()) ||
