@@ -62,6 +62,14 @@ const filteredExpansions = expansionRecords.filter(expansion => {
 const totalRooms = groupHomes.reduce((sum, gh) => sum + (gh.residentRooms?.length ?? 0), 0);
 const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
 
+  // 💥ここでログ！！
+  console.log('🧪 DEBUG: Expansion match check', {
+    groupHomeName: groupHome.propertyName,
+    matchedExpansions: matchedExpansions.map(exp => exp.propertyName),
+    fullExpansionsList: expansionRecords.map(e => e.propertyName),
+  });
+
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -175,7 +183,11 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
                   <GroupHomeCard
                     key={groupHome.id}
                     groupHome={groupHome}
-                    expansions={expansionRecords}
+                    expansions={expansionRecords.filter(
+                      exp =>
+                        exp.propertyName?.trim().toLowerCase() ===
+                        groupHome.propertyName?.trim().toLowerCase()
+                    )}
                     onEdit={onEditGroupHome}
                     onDelete={onDeleteGroupHome}
                     onEditExpansion={onEditExpansion}
