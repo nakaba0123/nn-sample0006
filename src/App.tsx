@@ -310,7 +310,7 @@ const fetchResidents = async () => {
 
 const fetchExpansionRecords = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/expansion_records`);
+    const response = await fetch(`${API_BASE_URL}/expansions`);
     if (!response.ok) throw new Error('増床記録の取得に失敗しました');
     const data = await response.json();
     setExpansionRecords(data);
