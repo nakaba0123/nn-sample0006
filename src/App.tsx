@@ -311,21 +311,26 @@ const fetchResidents = async () => {
 const fetchExpansionRecords = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/expansions`);
-    if (!response.ok) throw new Error('増床記録の取得に失敗しました');
+    if (!response.ok) throw new Error("増床記録の取得に失敗しました");
     const data = await response.json();
 
-    // new_rooms を配列にパースして整形！
     const parsedData = data.map((record) => ({
-      ...record,
+      id: record.id,
+      propertyName: record.property_name,
+      unitName: record.unit_name,
+      expansionType: record.expansion_type,
       newRooms: Array.isArray(record.new_rooms)
         ? record.new_rooms
-        : JSON.parse(record.new_rooms || '[]'),
+        : JSON.parse(record.new_rooms || "[]"),
+      commonRoom: record.common_room,
+      startDate: record.start_date,
+      createdAt: record.created_at,
     }));
 
     setExpansionRecords(parsedData);
   } catch (error) {
-    console.error('増床記録取得エラー:', error);
-    setExpansionRecords([]); // ← 応急処置もナイス
+    console.error("増床記録取得エラー:", error);
+    setExpansionRecords([]);
   }
 };
 
