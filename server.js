@@ -290,7 +290,7 @@ app.delete('/api/expansions/:id', async (req, res) => {
   const expansionId = req.params.id;
 
   try {
-    const [result] = await db.execute(
+    const [result] = await pool.execute(
       'DELETE FROM expansions WHERE id = ?',
       [expansionId]
     );
