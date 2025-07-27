@@ -286,22 +286,20 @@ app.get('/api/disability_histories', async (req, res) => {
   }
 });
 
-const handleDeleteExpansion = async (expansionId: string) => {
-  if (!window.confirm('この増床記録を削除してもよろしいですか？')) return;
+app.delete('/api/expansions/:id', async (req, res) => {
+  const expansionId = req.params.id;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/expansions/${expansionId}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) throw new Error('削除に失敗しました');
-    setExpansionRecords(prev => prev.filter(exp => exp.id !== expansionId));
-    alert('増床記録を削除しました');
-  } catch (error) {
-    console.error('増床削除エラー:', error);
-    alert('削除に失敗しました');
+    const [result] = await db.execute(
+      'DELETE FROM expansions WHERE id = ?',
+      [expansionId]
+    );
+    res.status(200).json({ message: '削除成功' });
+  } catch (err) {
+    console.error('増床削除エラー:', err);
+    res.status(500).json({ error: '削除失敗' });
   }
-};
+});
 
 app.post('/api/expansions', async (req, res) => {
   console.log("POST /api/expansions が呼ばれました！");
