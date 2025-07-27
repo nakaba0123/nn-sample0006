@@ -614,11 +614,24 @@ const handleDeleteGroupHome = async (groupHomeId: string) => {
     setIsExpansionModalOpen(true);
   };
 
-  const handleDeleteExpansion = (expansionId: string) => {
-    if (window.confirm('この増床記録を削除してもよろしいですか？')) {
-      setExpansionRecords(prev => prev.filter(exp => exp.id !== expansionId));
-    }
-  };
+const handleDeleteExpansion = async (expansionId: string) => {
+  if (!window.confirm('この増床記録を削除してもよろしいですか？')) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/expansions/${expansionId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) throw new Error('削除に失敗しました');
+
+    // フロント側の状態からも削除
+    setExpansionRecords(prev => prev.filter(exp => exp.id !== expansionId));
+    alert('増床記録を削除しました');
+  } catch (error) {
+    console.error('増床削除エラー:', error);
+    alert('削除に失敗しました');
+  }
+};
 
   const handleEditDepartment = (department: Department) => {
     setEditingDepartment(department);
