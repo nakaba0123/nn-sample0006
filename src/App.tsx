@@ -254,6 +254,23 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
   }
 };
 
+// ----------------------------------------------
+// 🔁 汎用リトライ付き fetch ヘルパー
+// ----------------------------------------------
+const withRetry = async (fn: () => Promise<void>, retries = 1) => {
+  try {
+    await fn();
+  } catch (err) {
+    console.warn("初回失敗、リトライします...", err);
+    if (retries > 0) {
+      await new Promise((r) => setTimeout(r, 1000)); // 1秒待ってから再試行
+      return withRetry(fn, retries - 1);
+    } else {
+      console.error("リトライ失敗:", err);
+    }
+  }
+};
+
 const fetchGroupHomes = async () => {
   try {
     const res = await axios.get(
