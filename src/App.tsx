@@ -337,9 +337,9 @@ const fetchExpansionRecords = async () => {
 useEffect(() => {
   const init = async () => {
     await Promise.all([
-      fetchGroupHomes(),
-      fetchResidents(),
-      fetchExpansionRecords(), // ← 追加した行
+      withRetry(fetchGroupHomes),
+      withRetry(fetchResidents),
+      withRetry(fetchExpansionRecords),
     ]);
   };
   init();
