@@ -125,46 +125,38 @@ app.put('/api/group-homes/:id', async (req, res) => {
 // =======================
 // 👤 利用者 API
 // =======================
-app.patch('/api/residents/:id', async (req, res) => {
-  const residentId = req.params.id;
-  const {
-    group_home_id, group_home_name, unit_name,
-    name, name_kana, gender, birthdate,
-    disabilityHistory, room_number,
-    move_in_date, move_out_date, memo
-  } = req.body;
-
-  const now = new Date();
-
-  const current = disabilityHistory.find((h) => !h.endDate);
-  const disability_level = current?.disabilityLevel || null;
-  const disability_start_date = current?.startDate || null;
-
-const sql = `
-  UPDATE residents SET
-    group_home_id = ?, group_home_name = ?, unit_name = ?,
-    name = ?, name_kana = ?, gender = ?, birthdate = ?,
-    disability_level = ?, disability_start_date = ?,
-    room_number = ?, move_in_date = ?, move_out_date = ?,
-    memo = ?, updated_at = ?
-  WHERE id = ?
-`;
-
-const values = [
-  group_home_id, group_home_name, unit_name,
-  name, name_kana, gender, birthdate,
-  disability_level, disability_start_date,
-  room_number, admission_date, dischargeDate,
-  memo, now, residentId
-];
-
+app.post('/api/residents', async (req, res) => {
   try {
-    console.log('[PATCH] 更新データ:', values);
-    await pool.query(sql, values);
-    res.json({ message: '利用者を更新しました' });
+    const {
+      name, nameKana, gender, birthdate,
+      disabilityLevel, groupHomeId, groupHomeName, unitName,
+      roomNumber, moveInDate, moveOutDate,
+      status, createdAt, updatedAt
+    } = req.body;
+
+    const sql = 
+      INSERT INTO residents (
+        name, name_kana, gender, birthdate,
+        disability_level, group_home_id, group_home_name, unit_name,
+        room_number, move_in_date, move_out_date,
+        status, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ;
+
+    const values = [
+      name, nameKana, gender, birthdate,
+      disabilityLevel, groupHomeId, groupHomeName, unitName,
+      roomNumber, moveInDate, moveOutDate,
+      status, createdAt, updatedAt
+    ];
+
+    const [result] = await pool.query(sql, values);
+
+    res.status(201).json({ message: "登録成功", id: result.insertId });
+
   } catch (err) {
-    console.error('利用者更新エラー:', err);
-    res.status(500).json({ message: '利用者の更新に失敗しました' });
+    console.error("利用者登録エラー:", err);
+    res.status(500).json({ message: "利用者の登録に失敗しました" });
   }
 });
 
@@ -194,9 +186,10 @@ app.delete('/api/residents/:id', async (req, res) => {
 app.patch('/api/residents/:id', async (req, res) => {
   const residentId = req.params.id;
   const {
-    group_home_id, name, name_kana, gender, birthdate,
+    group_home_id, group_home_name, unit_name,
+    name, name_kana, gender, birthdate,
     disabilityHistory, room_number,
-    admission_date, discharge_date, memo
+    move_in_date, move_out_date, memo
   } = req.body;
 
   const now = new Date();
@@ -205,19 +198,21 @@ app.patch('/api/residents/:id', async (req, res) => {
   const disability_level = current?.disabilityLevel || null;
   const disability_start_date = current?.startDate || null;
 
-  const dischargeDate = !discharge_date || discharge_date === "" ? null : discharge_date;
-
   const sql = `
     UPDATE residents SET
-      group_home_id = ?, name = ?, name_kana = ?, gender = ?,
-      birthdate = ?, disability_level = ?, disability_start_date = ?,
+      group_home_id = ?, group_home_name = ?, unit_name = ?,
+      name = ?, name_kana = ?, gender = ?, birthdate = ?,
+      disability_level = ?, disability_start_date = ?,
       room_number = ?, move_in_date = ?, move_out_date = ?, memo = ?, updated_at = ?
     WHERE id = ?
   `;
+
   const values = [
-    group_home_id, name, name_kana, gender, birthdate,
+    group_home_id, group_home_name, unit_name,
+    name, name_kana, gender, birthdate,
     disability_level, disability_start_date,
-    room_number, move_in_date, move_out_date, memo, now, residentId
+    room_number, move_in_date || null, move_out_date || null, memo, now,
+    residentId
   ];
 
   try {
