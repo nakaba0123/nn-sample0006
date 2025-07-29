@@ -531,6 +531,8 @@ if (isNaN(groupHomeIdNumber) || groupHomeIdNumber <= 0) {
 
 const payload = {
   group_home_id: groupHomeIdNumber,
+  group_home_name: selectedUnit?.propertyName || "",
+  unit_name: selectedUnit?.unitName || "",
   name: resident.name,
   name_kana: resident.nameKana,
   gender: resident.gender,
@@ -540,8 +542,8 @@ const payload = {
     ? resident.disabilityHistory[0].startDate
     : null,
   room_number: resident.roomNumber,
-  admission_date: resident.moveInDate,
-  discharge_date: resident.moveOutDate || null,
+  move_in_date: resident.moveInDate,
+  move_out_date: resident.moveOutDate || null,
   memo: "",
 };
 
