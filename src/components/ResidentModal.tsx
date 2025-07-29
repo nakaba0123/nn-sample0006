@@ -244,12 +244,32 @@ const handleSubmit = async (e: React.FormEvent) => {
     updatedAt: now,
   };
 
+const residentPayload = {
+  name: resident.name,
+  name_kana: resident.nameKana,
+  gender: resident.gender,
+  birthdate: resident.birthdate,
+  disability_level: resident.disabilityLevel,
+  group_home_id: resident.groupHomeId,
+  group_home_name: resident.groupHomeName,
+  unit_name: resident.unitName,
+  room_number: resident.roomNumber,
+  move_in_date: resident.moveInDate,
+  move_out_date: resident.moveOutDate || null,
+  memo: null,
+  created_at: resident.createdAt,
+  updated_at: resident.updatedAt,
+};
+
+
   try {
-    const res = await fetch('/api/residents', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(resident),
-    });
+console.log("🔥 登録直前データ（residentPayload）:", residentPayload);
+
+const res = await fetch('/api/residents', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(residentPayload),
+});
 
     if (!res.ok) throw new Error("利用者登録に失敗しました");
 
