@@ -529,6 +529,8 @@ if (isNaN(groupHomeIdNumber) || groupHomeIdNumber <= 0) {
   return;
 }
 
+const selectedUnit = resident.selectedUnit; // または別の該当プロパティ
+
 const payload = {
   group_home_id: groupHomeIdNumber,
   group_home_name: selectedUnit?.propertyName || "",
