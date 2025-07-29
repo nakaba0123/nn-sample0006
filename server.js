@@ -140,22 +140,23 @@ app.patch('/api/residents/:id', async (req, res) => {
   const disability_level = current?.disabilityLevel || null;
   const disability_start_date = current?.startDate || null;
 
-  const sql = `
-    UPDATE residents SET
-      group_home_id = ?, group_home_name = ?, unit_name = ?,
-      name = ?, name_kana = ?, gender = ?, birthdate = ?,
-      disability_level = ?, disability_start_date = ?,
-      room_number = ?, move_in_date = ?, move_out_date = ?, memo = ?, updated_at = ?
-    WHERE id = ?
-  `;
+const sql = `
+  UPDATE residents SET
+    group_home_id = ?, group_home_name = ?, unit_name = ?,
+    name = ?, name_kana = ?, gender = ?, birthdate = ?,
+    disability_level = ?, disability_start_date = ?,
+    room_number = ?, move_in_date = ?, move_out_date = ?,
+    memo = ?, updated_at = ?
+  WHERE id = ?
+`;
 
-  const values = [
-    group_home_id, group_home_name, unit_name,
-    name, name_kana, gender, birthdate,
-    disability_level, disability_start_date,
-    room_number, move_in_date || null, move_out_date || null, memo, now,
-    residentId
-  ];
+const values = [
+  group_home_id, group_home_name, unit_name,
+  name, name_kana, gender, birthdate,
+  disability_level, disability_start_date,
+  room_number, admission_date, dischargeDate,
+  memo, now, residentId
+];
 
   try {
     console.log('[PATCH] 更新データ:', values);
