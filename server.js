@@ -23,6 +23,19 @@ const pool = mysql.createPool({
 
 console.log("✅ MySQL接続プールを作成しました");
 
+// 🔁 定期PingでMySQLの接続を維持
+setInterval(async () => {
+  try {
+    const connection = await pool.getConnection();
+    await connection.ping();
+    connection.release();
+    console.log("[MySQL] Ping 成功 ✅");
+  } catch (err) {
+    console.warn("[MySQL] Ping失敗 🚨", err);
+  }
+}, 1000 * 30); // ← 30秒ごとにPing！
+
+
 // =======================
 // 🏠 グループホーム API
 // =======================
