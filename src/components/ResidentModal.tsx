@@ -207,6 +207,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   console.log("? バリデーションエラー:", errors);
 
   const u = selectedUnit();
+  console.log("💡 selectedUnit の値:", u); // ← これ追加
   if (!u) {
     console.error("unit が取得できませんでした");
     return;
