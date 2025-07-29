@@ -131,7 +131,7 @@ app.post('/api/residents', async (req, res) => {
       name, nameKana, gender, birthdate,
       disabilityLevel, groupHomeId, groupHomeName, unitName,
       roomNumber, moveInDate, moveOutDate,
-      status, createdAt, updatedAt
+      memo, createdAt, updatedAt
     } = req.body;
 
 const sql = `
@@ -139,7 +139,7 @@ const sql = `
     name, name_kana, gender, birthdate,
     disability_level, group_home_id, group_home_name, unit_name,
     room_number, move_in_date, move_out_date,
-    status, created_at, updated_at
+    memo, created_at, updated_at
   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
 
@@ -147,7 +147,7 @@ const sql = `
       name, nameKana, gender, birthdate,
       disabilityLevel, groupHomeId, groupHomeName, unitName,
       roomNumber, moveInDate, moveOutDate,
-      status, createdAt, updatedAt
+      memo, createdAt, updatedAt
     ];
 
     const [result] = await pool.query(sql, values);
