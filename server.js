@@ -136,19 +136,21 @@ app.post('/api/residents', async (req, res) => {
 
 const sql = `
   INSERT INTO residents (
+    group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disability_level, group_home_id, group_home_name, unit_name,
-    room_number, move_in_date, move_out_date,
+    disability_level, room_number,
+    move_in_date, move_out_date,
     memo, created_at, updated_at
   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
 
-    const values = [
-      name, nameKana, gender, birthdate,
-      disabilityLevel, groupHomeId, groupHomeName, unitName,
-      roomNumber, moveInDate, moveOutDate,
-      memo, createdAt, updatedAt
-    ];
+const values = [
+  group_home_id, group_home_name, unit_name,
+  name, name_kana, gender, birthdate,
+  disability_level, room_number,
+  move_in_date || null, move_out_date || null,
+  memo, now, now
+];
 
     const [result] = await pool.query(sql, values);
 
