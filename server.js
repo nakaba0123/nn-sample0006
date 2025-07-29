@@ -194,7 +194,8 @@ app.patch('/api/residents/:id', async (req, res) => {
 
   const now = new Date();
 
-  const current = disabilityHistory.find((h) => !h.endDate);
+  const history = Array.isArray(disabilityHistory) ? disabilityHistory : [];
+  const current = history.find((h) => !h.endDate);
   const disability_level = current?.disabilityLevel || null;
   const disability_start_date = current?.startDate || null;
 
