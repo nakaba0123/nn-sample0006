@@ -279,6 +279,12 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     onClose();
 
+    // 成功した利用者データを onSubmit に渡す（一覧更新を親がやる）
+    onSubmit({
+      ...resident,
+      id: newResidentId,
+    });
+
   } catch (err) {
     console.error("? 登録失敗:", err);
     alert("登録に失敗しました");

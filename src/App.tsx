@@ -516,6 +516,9 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
 const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
+  // 最新一覧を取得（or ローカル state に追加して setState）
+  await fetchResidents(); // ← これでリスト更新！
+
   try {
     const fallbackDate = new Date().toISOString().split('T')[0]; // 今日の日付
 
