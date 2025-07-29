@@ -134,14 +134,14 @@ app.post('/api/residents', async (req, res) => {
       status, createdAt, updatedAt
     } = req.body;
 
-    const sql = 
-      INSERT INTO residents (
-        name, name_kana, gender, birthdate,
-        disability_level, group_home_id, group_home_name, unit_name,
-        room_number, move_in_date, move_out_date,
-        status, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ;
+const sql = `
+  INSERT INTO residents (
+    name, name_kana, gender, birthdate,
+    disability_level, group_home_id, group_home_name, unit_name,
+    room_number, move_in_date, move_out_date,
+    status, created_at, updated_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
 
     const values = [
       name, nameKana, gender, birthdate,
