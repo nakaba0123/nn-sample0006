@@ -11,8 +11,8 @@ export function mapResident(resident: any) {
     disabilityLevel: resident.disability_level ?? "",
     disabilityStartDate: resident.disability_start_date ?? "",
     roomNumber: resident.room_number ?? "",
-    moveInDate: resident.admission_date ?? "",
-    moveOutDate: resident.discharge_date ?? "",
+    moveInDate: resident.move_in_date ?? "", // ← 修正！
+    moveOutDate: resident.move_out_date ?? "", // ← 修正！
     memo: resident.memo ?? "",
   };
 }
