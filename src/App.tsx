@@ -516,56 +516,9 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
 const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
-  try {
-    const fallbackDate = new Date().toISOString().split('T')[0]; // 今日の日付
-
-    // 👇ここで数値変換＆バリデーション
-const groupHomeIdNumber = Number(resident.groupHomeId);
-if (isNaN(groupHomeIdNumber) || groupHomeIdNumber <= 0) {
-  alert("グループホームを選択してください！");
-  return;
-}
-
-const selectedUnit = resident.selectedUnit; // または別の該当プロパティ
-
-const payload = {
-  group_home_id: groupHomeIdNumber,
-  group_home_name: selectedUnit?.propertyName || "",
-  unit_name: selectedUnit?.unitName || "",
-  name: resident.name,
-  name_kana: resident.nameKana,
-  gender: resident.gender,
-  birthdate: resident.birthdate,
-  disability_level: resident.disabilityLevel,
-  disabilityStartDate: (resident.disabilityHistory && resident.disabilityHistory.length > 0)
-    ? resident.disabilityHistory[0].startDate
-    : null,
-  room_number: resident.roomNumber,
-  move_in_date: resident.moveInDate,
-  move_out_date: resident.moveOutDate || null,
-  memo: "",
-};
-
-    console.log("送信する group_home_id:", payload.group_home_id);
-    console.log("送信payload:", payload);
-
-    if (resident.id && typeof resident.id === "number") {
-      // 既存利用者 → 更新（PATCH）
-      await axios.patch(`${API_BASE_URL}/residents/${resident.id}`, payload);
-      alert("利用者を更新しました！");
-    } else {
-      // 新規利用者 → 登録（POST）
-      await axios.post(`${API_BASE_URL}/residents`, payload);
-      alert("利用者を登録しました！");
-    }
-
-    await fetchResidents();
-    setIsResidentModalOpen(false);
-    setEditingResident(null);
-  } catch (err) {
-    console.error("利用者登録／更新エラー:", err);
-    alert("登録／更新に失敗しました！");
-  }
+  await fetchResidents();
+  setIsResidentModalOpen(false);
+  setEditingResident(null);
 };
 
   /* ---------- 画面 ---------- */
