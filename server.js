@@ -131,7 +131,7 @@ app.post('/api/residents', async (req, res) => {
   const {
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disability_level, room_number,
+    disability_level, disability_start_date, room_number,
     move_in_date, move_out_date,
     memo
   } = req.body;
@@ -140,16 +140,16 @@ app.post('/api/residents', async (req, res) => {
     INSERT INTO residents (
       group_home_id, group_home_name, unit_name,
       name, name_kana, gender, birthdate,
-      disability_level, room_number,
+      disability_level, disability_start_date, room_number,
       move_in_date, move_out_date,
       memo, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disability_level, room_number,
+    disability_level, disability_start_date, room_number,
     move_in_date || null, move_out_date || null,
     memo, now, now
   ];
@@ -192,7 +192,7 @@ app.patch('/api/residents/:id', async (req, res) => {
   const {
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disabilityHistory, room_number,
+    disabilityHistory, disability_start_date, room_number,
     move_in_date, move_out_date, memo
   } = req.body;
 

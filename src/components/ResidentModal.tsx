@@ -251,6 +251,7 @@ const residentPayload = {
   gender: resident.gender,
   birthdate: resident.birthdate,
   disability_level: resident.disabilityLevel,
+  disability_start_date: formData.disabilityStartDate || null, // ←これを追加
   group_home_id: resident.groupHomeId,
   group_home_name: resident.groupHomeName,
   unit_name: resident.unitName,
