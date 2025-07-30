@@ -197,16 +197,38 @@ app.get('/api/residents', async (req, res) => {
   }
 });
 
+// =======================
+// ❌ 利用者＋障害歴の削除 API（2テーブル同時）
+// =======================
 app.delete('/api/residents/:id', async (req, res) => {
   const residentId = req.params.id;
-  console.log('削除対象のID:', residentId); // ← これ追加！
+  console.log('削除対象のID:', residentId);
+
+  const connection = await pool.getConnection(); // ← コネクション取得
+
   try {
-    const result = await pool.query('DELETE FROM residents WHERE id = ?', [residentId]);
-    console.log('削除結果:', result); // ← これも追加！
-    res.json({ message: '削除に成功しました' });
+    await connection.beginTransaction(); // 🔸 トランザクション開始
+
+    // 1. 障害歴削除
+    await connection.query('DELETE FROM disability_histories WHERE resident_id = ?', [residentId]);
+
+    // 2. 利用者削除
+    const [result] = await connection.query('DELETE FROM residents WHERE id = ?', [residentId]);
+
+    await connection.commit(); // 🔸 コミット
+    console.log('削除結果:', result);
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ message: '指定された利用者が存在しません' });
+    } else {
+      res.json({ message: '利用者と障害歴を削除しました' });
+    }
   } catch (err) {
-    console.error('利用者削除エラー:', err); // ← エラーログをちゃんと出す！
+    await connection.rollback(); // 🔸 ロールバック
+    console.error('利用者削除エラー:', err);
     res.status(500).json({ message: '利用者の削除に失敗しました' });
+  } finally {
+    connection.release(); // 🔸 コネクション解放
   }
 });
 
