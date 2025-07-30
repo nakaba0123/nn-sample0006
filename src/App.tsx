@@ -516,9 +516,18 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
 const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
-  await fetchResidents();
-  setIsResidentModalOpen(false);
-  setEditingResident(null);
+  try {
+    await fetchResidents(); // ✅ 一覧を更新
+
+    alert("利用者を登録しました！"); // ✅ 成功メッセージ
+
+  } catch (err) {
+    console.error("利用者登録後の更新失敗:", err);
+    alert("利用者一覧の取得に失敗しました。");
+  }
+
+  setIsResidentModalOpen(false); // ✅ モーダル閉じる
+  setEditingResident(null);      // ✅ 編集状態解除
 };
 
   /* ---------- 画面 ---------- */
