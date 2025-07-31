@@ -189,7 +189,15 @@ app.post('/api/residents', async (req, res) => {
 
 app.get('/api/residents', async (req, res) => {
   try {
-    const [results] = await pool.query('SELECT * FROM residents ORDER BY move_in_date DESC');
+    const [results] = await pool.query(`
+      SELECT 
+        r.*, 
+        g.name AS group_home_name,
+        g.unit_name
+      FROM residents r
+      LEFT JOIN group_homes g ON r.group_home_id = g.id
+      ORDER BY r.move_in_date DESC
+    `);
     res.json(results);
   } catch (err) {
     console.error('取得失敗:', err);
