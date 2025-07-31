@@ -13,7 +13,7 @@ export function mapResident(resident: any) {
     roomNumber: resident.room_number ?? "",
     moveInDate: resident.move_in_date ?? "", // ← 修正！
     moveOutDate: resident.move_out_date ?? "", // ← 修正！
-    memo: resident.memo ?? "",
+    status: resident.status ?? "",
 
     // ✅ 追加！
     groupHomeName: resident.group_home_name ?? "",
