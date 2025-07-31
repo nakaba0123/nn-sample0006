@@ -134,7 +134,7 @@ app.post('/api/residents', async (req, res) => {
     name, name_kana, gender, birthdate,
     disability_level, disability_start_date, room_number,
     move_in_date, move_out_date,
-    memo
+    status
   } = req.body;
 
   try {
@@ -147,7 +147,7 @@ app.post('/api/residents', async (req, res) => {
         name, name_kana, gender, birthdate,
         disability_level, disability_start_date, room_number,
         move_in_date, move_out_date,
-        memo, created_at, updated_at
+        status, created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
@@ -156,7 +156,7 @@ app.post('/api/residents', async (req, res) => {
       name, name_kana, gender, birthdate,
       disability_level, disability_start_date, room_number,
       move_in_date || null, move_out_date || null,
-      memo, now, now
+      status, now, now
     ];
 
     const [residentResult] = await connection.query(residentSql, residentValues);
@@ -246,7 +246,7 @@ app.patch('/api/residents/:id', async (req, res) => {
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
     disabilityHistory, disability_start_date, room_number,
-    move_in_date, move_out_date, memo
+    move_in_date, move_out_date, status
   } = req.body;
 
   const now = new Date();
@@ -261,7 +261,7 @@ app.patch('/api/residents/:id', async (req, res) => {
       group_home_id = ?, group_home_name = ?, unit_name = ?,
       name = ?, name_kana = ?, gender = ?, birthdate = ?,
       disability_level = ?, disability_start_date = ?,
-      room_number = ?, move_in_date = ?, move_out_date = ?, memo = ?, updated_at = ?
+      room_number = ?, move_in_date = ?, move_out_date = ?, status = ?, updated_at = ?
     WHERE id = ?
   `;
 
@@ -269,7 +269,7 @@ app.patch('/api/residents/:id', async (req, res) => {
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
     disability_level, disability_start_date,
-    room_number, move_in_date || null, move_out_date || null, memo, now,
+    room_number, move_in_date || null, move_out_date || null, status, now,
     residentId
   ];
 
