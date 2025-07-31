@@ -317,6 +317,8 @@ const fetchResidents = async () => {
         moveInDate: r.move_in_date,
         moveOutDate: r.move_out_date,
         groupHomeId: r.group_home_id,
+        groupHomeName: r.group_home_name,  // ← 追加！！
+        unitName: r.unit_name,             // ← 追加！！
         createdAt: r.created_at,
       }))
     );
