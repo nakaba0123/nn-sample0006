@@ -36,6 +36,8 @@ export interface ResidentFormData {
   disabilityLevel: '1以下' | '2' | '3' | '4' | '5' | '6'; // 初期区分
   disabilityStartDate: string; // 初期区分の開始日
   groupHomeId: string;
+  groupHomeName: string; // 🔺追加
+  unitName: string;      // 🔺追加
   roomNumber: string;
   moveInDate?: string;
   moveOutDate?: string;
