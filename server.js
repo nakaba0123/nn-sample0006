@@ -192,7 +192,7 @@ app.get('/api/residents', async (req, res) => {
     const [results] = await pool.query(`
       SELECT 
         r.*, 
-        g.name AS group_home_name,
+        g.group_home_name,
         g.unit_name
       FROM residents r
       LEFT JOIN group_homes g ON r.group_home_id = g.id
