@@ -121,6 +121,8 @@ useEffect(() => {
       disabilityLevel: "1以下",
       disabilityStartDate: "",
       groupHomeId: "",
+      groupHomeName: "",   // ← ★追加
+      unitName: "",             // ← ★追加
       roomNumber: "",
       moveInDate: "",
       moveOutDate: "",
@@ -168,6 +170,8 @@ console.log("mappedResident", mappedResident);
       disabilityLevel: currentDis,
       disabilityStartDate: formatDate(history[0]?.start_date || mappedResident.disabilityStartDate),
       groupHomeId: String(mappedResident.groupHomeId || ""),
+      groupHomeName: mappedResident.groupHomeName || "",   // ← ★追加
+      unitName: mappedResident.unitName || "",             // ← ★追加
       roomNumber: mappedResident.roomNumber || "",
       moveInDate: formatDate(mappedResident.moveInDate),
       moveOutDate: formatDate(mappedResident.dischargeDate),
