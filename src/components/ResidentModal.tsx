@@ -262,7 +262,7 @@ const residentPayload = {
   room_number: resident.roomNumber,
   move_in_date: resident.moveInDate,
   move_out_date: resident.moveOutDate || null,
-  memo: null,
+  status: resident.status, // ← これを追加！
   created_at: resident.createdAt,
   updated_at: resident.updatedAt,
 };
