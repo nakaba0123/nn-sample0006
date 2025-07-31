@@ -319,6 +319,7 @@ const fetchResidents = async () => {
         groupHomeId: r.group_home_id,
         groupHomeName: r.group_home_name,  // ← 追加！！
         unitName: r.unit_name,             // ← 追加！！
+        status: r.status
         createdAt: r.created_at,
       }))
     );
