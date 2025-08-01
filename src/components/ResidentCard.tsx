@@ -57,10 +57,12 @@ const ResidentCard: React.FC<ResidentCardProps> = ({ resident, onEdit, onDelete 
   };
 
   // 現在の障害支援区分を取得
-  const getCurrentDisabilityLevel = () => {
-    const currentHistory = resident.disabilityHistory?.find(h => !h.endDate);
-    return currentHistory?.disabilityLevel || resident.disabilityLevel;
-  };
+const getCurrentDisabilityLevel = () => {
+  const currentHistory = resident.disabilityHistory?.find(h => !h.endDate);
+  console.log("👀 currentHistory:", currentHistory);
+  console.log("➡️ 返却する区分:", currentHistory?.disabilityLevel || resident.disabilityLevel);
+  return currentHistory?.disabilityLevel || resident.disabilityLevel;
+};
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200">
