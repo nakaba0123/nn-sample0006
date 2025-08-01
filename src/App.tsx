@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
+import { useCallback } from "react";  // ← これを追加
 import Navigation from './components/Navigation';
 import AttendancePage from './components/AttendancePage';
 import UserList from './components/UserList';
@@ -813,13 +814,19 @@ const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
     return Array.from(allPermissions.values());
   };
 
+const handleCloseResidentModal = useCallback(() => {
+  setIsResidentModalOpen(false);
+}, []);
+
+
+
   return (
     <AuthProvider users={users}>
       <div className="p-4">
       </div>
       <ResidentModal
         isOpen={isResidentModalOpen}
-        onClose={() => setIsResidentModalOpen(false)}
+        onClose={handleCloseResidentModal}  // ← これで毎回同じ関数インスタンスになる
         onSubmit={handleResidentSubmit}
         editResident={editingResident}
         groupHomes={groupHomes}
