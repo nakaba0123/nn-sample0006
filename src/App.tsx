@@ -386,6 +386,7 @@ useEffect(() => {
       withRetry(fetchDisabilityHistories),
     ]);
 
+    console.log("Resident:", resident);
     // 🔀 ここでマージ処理を一回だけやる
     const mergedResidents = fetchedResidents.map((resident) => {
       const history = histories.filter(
