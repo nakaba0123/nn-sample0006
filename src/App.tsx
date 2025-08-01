@@ -359,7 +359,7 @@ const fetchDisabilityHistories = async () => {
     const res = await axios.get(`${API_BASE_URL}/disability_histories`);
     console.log("取得した履歴:", res.data);
 
-    setDisabilityHistories(
+    setDisabilityHistory(
       res.data.map((d: any) => ({
         id: d.id,
         residentId: d.resident_id,
