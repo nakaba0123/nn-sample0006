@@ -108,8 +108,6 @@ function App() {
   const [groupHomes, setGroupHomes] = useState<GroupHome[]>([]);
   const [expansionRecords, setExpansionRecords] = useState<ExpansionRecord[]>([]);
 
-  const [disabilityHistories, setDisabilityHistories] = useState<DisabilityHistory[]>([]);
-
   const [shiftPreferences, setShiftPreferences] = useState<ShiftPreference[]>([]);
   const [residents, setResidents] = useState<Resident[]>([]);
   const [usageRecords, setUsageRecords] = useState<UsageRecord[]>([]);
@@ -168,7 +166,7 @@ function App() {
   const [editingResident, setEditingResident] = useState<Resident | null>(null); // ← 追加
   const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);  // ← 追加
   const [rawResidents, setRawResidents] = useState([]);
-
+  const [disabilityHistories, setDisabilityHistories] = useState([]);
 
 //  console.log("👀 モーダル状態:", isResidentModalOpen);
 
