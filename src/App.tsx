@@ -168,7 +168,6 @@ function App() {
   const [editingResident, setEditingResident] = useState<Resident | null>(null); // ← 追加
   const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);  // ← 追加
   const [rawResidents, setRawResidents] = useState([]);
-  const [disabilityHistories, setDisabilityHistories] = useState([]);
 
 
 //  console.log("👀 モーダル状態:", isResidentModalOpen);
