@@ -388,6 +388,21 @@ useEffect(() => {
   init();
 }, []);
 
+useEffect(() => {
+  if (residents.length > 0 && disabilityHistories.length > 0) {
+    const mergedResidents = residents.map((resident) => {
+      const history = disabilityHistories.filter(
+        (h) => h.residentId === resident.id
+      );
+      return {
+        ...resident,
+        disabilityHistory: history,
+      };
+    });
+    setResidents(mergedResidents);
+  }
+}, [residents, disabilityHistories]);
+
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
   if (editingExpansion) {
     // 編集モード
