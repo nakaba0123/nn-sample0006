@@ -280,7 +280,6 @@ const fetchGroupHomes = async () => {
       "https://nn-sample0006-production.up.railway.app/api/group-homes"
     );
 
-    // ── API から来る snake_case → camelCase へ変換 ＆ 配列化 ──
     const data = res.data.map((gh: any) => ({
       id: gh.id,
       propertyName: gh.property_name,
@@ -296,9 +295,10 @@ const fetchGroupHomes = async () => {
       createdAt: gh.created_at,
     }));
 
-    setGroupHomes(data);          // ← これ“だけ”で OK
+    return data; // ? ここを追加！setGroupHomes は App.tsx の useEffectでやる！
   } catch (err) {
     console.error("一覧取得エラー:", err);
+    return []; // ? 明示的に空配列を返すと、.mapエラー回避できる
   }
 };
 
