@@ -379,20 +379,16 @@ const fetchDisabilityHistories = async () => {
 
 useEffect(() => {
   const init = async () => {
-    await Promise.all([
+    const [groupHomes, fetchedResidents, expansions, histories] = await Promise.all([
       withRetry(fetchGroupHomes),
       withRetry(fetchResidents),
       withRetry(fetchExpansionRecords),
-      withRetry(fetchDisabilityHistories),  // ← これ追加！！
+      withRetry(fetchDisabilityHistories),
     ]);
-  };
-  init();
-}, []);
 
-useEffect(() => {
-  if (residents.length > 0 && disabilityHistories.length > 0) {
-    const mergedResidents = residents.map((resident) => {
-      const history = disabilityHistories.filter(
+    // 🔀 ここでマージ処理を一回だけやる
+    const mergedResidents = fetchedResidents.map((resident) => {
+      const history = histories.filter(
         (h) => h.residentId === resident.id
       );
       return {
@@ -400,9 +396,15 @@ useEffect(() => {
         disabilityHistory: history,
       };
     });
-    setResidents(mergedResidents);
-  }
-}, [residents, disabilityHistories]);
+
+    setResidents(mergedResidents);  // ← ここでまとめて set
+    setDisabilityHistories(histories); // ← これも必要なら
+    setGroupHomes(groupHomes);
+    setExpansionRecords(expansions);
+  };
+
+  init();
+}, []);
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
   if (editingExpansion) {
