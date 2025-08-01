@@ -181,24 +181,25 @@ const getCurrentDisabilityLevel = () => {
             </span>
           </div>
           <div className="mt-2 text-xs text-purple-700">
-{resident.disabilityHistory
-  ?.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+{(resident.disabilityHistory ?? [])
+  .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
   .slice(0, 2)
   .map((history, index) => (
     <div key={history.id} className="flex justify-between">
       <span>
-        区分{history.level === 1 ? '1以下' : history.level}
+        区分{history.level === 1 ? '1以下' : history.level} 
       </span>
       <span>
         {formatDate(history.startDate)} - 
-        {(!history.endDate || 
-          history.endDate.startsWith('1899-11-30') || 
+        {(!history.endDate ||
+          history.endDate.startsWith('1899-11-30') ||
           history.endDate.startsWith('0000-00-00')) 
           ? '現在' 
           : formatDate(history.endDate)}
       </span>
     </div>
-  ))}
+))}
+
             {getDisabilityHistoryCount() > 2 && (
               <div className="text-purple-600 mt-1">他 {getDisabilityHistoryCount() - 2}件...</div>
             )}
