@@ -186,7 +186,7 @@ const getCurrentDisabilityLevel = () => {
               .slice(0, 2)
               .map((history, index) => (
                 <div key={history.id} className="flex justify-between">
-                  <span>区分{history.disabilityLevel}</span>
+                  <span>区分{history.level}</span>
                   <span>
                     {formatDate(history.startDate)} - {history.endDate ? formatDate(history.endDate) : '現在'}
                   </span>
