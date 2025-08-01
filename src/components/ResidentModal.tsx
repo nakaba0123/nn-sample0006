@@ -337,8 +337,8 @@ const res = await fetch('/api/residents', {
   );
 
 if (!isOpen) {
-//  console.log("🧪 ResidentModal レンダリング中");
-//  console.log("🧪 isOpen:", isOpen);
+  console.log("🧪 ResidentModal レンダリング中");
+  console.log("🧪 isOpen:", isOpen);
   return null; // ✅ selected はここでは呼ばない
 }
 
