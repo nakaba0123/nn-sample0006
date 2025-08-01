@@ -107,6 +107,8 @@ function App() {
   const [groupHomes, setGroupHomes] = useState<GroupHome[]>([]);
   const [expansionRecords, setExpansionRecords] = useState<ExpansionRecord[]>([]);
 
+  const [disabilityHistories, setDisabilityHistories] = useState<DisabilityHistory[]>([]);
+
   const [shiftPreferences, setShiftPreferences] = useState<ShiftPreference[]>([]);
   const [residents, setResidents] = useState<Resident[]>([]);
   const [usageRecords, setUsageRecords] = useState<UsageRecord[]>([]);
@@ -359,7 +361,7 @@ const fetchDisabilityHistories = async () => {
     const res = await axios.get(`${API_BASE_URL}/disability_histories`);
     console.log("取得した履歴:", res.data);
 
-    setDisabilityHistory(
+    setDisabilityHistories(
       res.data.map((d: any) => ({
         id: d.id,
         residentId: d.resident_id,
