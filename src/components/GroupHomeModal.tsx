@@ -46,7 +46,9 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
         address: editGroupHome.address,
         phoneNumber: editGroupHome.phoneNumber,
         commonRoom: editGroupHome.commonRoom,
-        residentRooms: editGroupHome.residentRooms.length > 0 ? editGroupHome.residentRooms : [''],
+        residentRooms: editGroupHome?.residentRooms?.length
+          ? editGroupHome.residentRooms
+          : [''],
         openingDate: formatDateForInput(editGroupHome.openingDate)
       });
     } else {
