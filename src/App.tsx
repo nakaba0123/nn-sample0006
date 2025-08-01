@@ -167,6 +167,9 @@ function App() {
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [editingResident, setEditingResident] = useState<Resident | null>(null); // ← 追加
   const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);  // ← 追加
+  const [rawResidents, setRawResidents] = useState([]);
+  const [disabilityHistories, setDisabilityHistories] = useState([]);
+
 
 //  console.log("👀 モーダル状態:", isResidentModalOpen);
 
@@ -386,10 +389,19 @@ useEffect(() => {
       withRetry(fetchDisabilityHistories),
     ]);
 
-    // 🔀 ここでマージ処理を一回だけやる
-    const mergedResidents = fetchedResidents.map((resident) => {
-      console.log("App.tsx内resident", resident);
-      const history = histories.filter(
+    setRawResidents(fetchedResidents);       // 一時保存
+    setDisabilityHistories(histories);       // 一時保存
+    setGroupHomes(groupHomes);
+    setExpansionRecords(expansions);
+  };
+
+  init();
+}, []);
+
+useEffect(() => {
+  if (rawResidents.length > 0 && disabilityHistories.length > 0) {
+    const mergedResidents = rawResidents.map((resident) => {
+      const history = disabilityHistories.filter(
         (h) => h.residentId === resident.id
       );
       return {
@@ -398,14 +410,9 @@ useEffect(() => {
       };
     });
 
-    setResidents(mergedResidents);  // ← ここでまとめて set
-    setDisabilityHistories(histories); // ← これも必要なら
-    setGroupHomes(groupHomes);
-    setExpansionRecords(expansions);
-  };
-
-  init();
-}, []);
+    setResidents(mergedResidents);
+  }
+}, [rawResidents, disabilityHistories]);
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
   if (editingExpansion) {
