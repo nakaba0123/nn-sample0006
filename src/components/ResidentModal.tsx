@@ -227,27 +227,37 @@ const handleSubmit = async (e: React.FormEvent) => {
   const currentLevel =
     finalDisabilityHistory?.find?.((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
 
-  const resident: Omit<Resident, "id"> = {
-    name: formData.name.trim(),
-    nameKana: formData.nameKana.trim(),
-    gender: formData.gender,
-    birthdate: formData.birthdate,
-    disabilityLevel: currentLevel,
-    disabilityHistory: [], // ← 先に登録しないので空で
-    groupHomeId: Number(formData.groupHomeId),
-    groupHomeName: u.propertyName,
-    unitName: u.unitName,
-    roomNumber: formData.roomNumber,
-    moveInDate: formData.moveInDate,
-    moveOutDate: formData.moveOutDate || undefined,
-    status: !formData.moveOutDate
-      ? "active"
-      : new Date(formData.moveOutDate) <= new Date()
-      ? "inactive"
-      : "active",
-    createdAt: now,
-    updatedAt: now,
-  };
+const resident: Omit<Resident, "id"> = {
+  name: formData.name.trim(),
+  nameKana: formData.nameKana.trim(),
+  gender: formData.gender,
+  birthdate: formData.birthdate,
+  disabilityLevel: currentLevel,
+  disabilityHistory: [
+    {
+      id: 0, // 仮ID（サーバー側で無視 or 自動採番される）
+      residentId: 0, // 同上
+      disabilityLevel: formData.disabilityLevel,
+      startDate: formData.disabilityStartDate,
+      endDate: "0000-00-00", // または null
+      createdAt: now,
+      updatedAt: now,
+    },
+  ],
+  groupHomeId: Number(formData.groupHomeId),
+  groupHomeName: u.propertyName,
+  unitName: u.unitName,
+  roomNumber: formData.roomNumber,
+  moveInDate: formData.moveInDate,
+  moveOutDate: formData.moveOutDate || undefined,
+  status: !formData.moveOutDate
+    ? "active"
+    : new Date(formData.moveOutDate) <= new Date()
+    ? "inactive"
+    : "active",
+  createdAt: now,
+  updatedAt: now,
+};
 
 const residentPayload = {
   name: resident.name,
