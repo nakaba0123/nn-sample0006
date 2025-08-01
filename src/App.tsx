@@ -260,20 +260,20 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
 // ----------------------------------------------
 // 🔁 汎用リトライ付き fetch ヘルパー
 // ----------------------------------------------
-const withRetry = async <T>(fn: () => Promise<T>, retries = 1): Promise<T | null> => {
+async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T | null> {
   try {
-    return await fn(); // ? ちゃんと返す！
+    return await fn(); // ?ちゃんと返す
   } catch (err) {
     console.warn("初回失敗、リトライします...", err);
     if (retries > 0) {
-      await new Promise((r) => setTimeout(r, 1000)); // 1秒待ってから再試行
+      await new Promise((r) => setTimeout(r, 1000));
       return withRetry(fn, retries - 1);
     } else {
       console.error("リトライ失敗:", err);
-      return null; // ?最終的に失敗したら null を返す
+      return null;
     }
   }
-};
+}
 
 const fetchGroupHomes = async () => {
   try {
