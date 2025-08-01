@@ -388,6 +388,7 @@ useEffect(() => {
 
     setRawResidents(fetchedResidents);       // 一時保存
     setDisabilityHistories(histories);       // 一時保存
+    console.log("取得したgroupHomes:", groupHomes);
     setGroupHomes(groupHomes);
     setExpansionRecords(expansions);
   };
