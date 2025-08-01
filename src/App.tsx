@@ -354,12 +354,33 @@ const fetchExpansionRecords = async () => {
   }
 };
 
+const fetchDisabilityHistories = async () => {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/disability_histories`);
+    console.log("取得した履歴:", res.data);
+
+    setDisabilityHistories(
+      res.data.map((d: any) => ({
+        id: d.id,
+        residentId: d.resident_id,
+        level: d.disability_level,
+        startDate: d.start_date,
+        endDate: d.end_date,
+        createdAt: d.created_at,
+      }))
+    );
+  } catch (err) {
+    console.error("fetchDisabilityHistories() エラー:", err);
+  }
+};
+
 useEffect(() => {
   const init = async () => {
     await Promise.all([
       withRetry(fetchGroupHomes),
       withRetry(fetchResidents),
       withRetry(fetchExpansionRecords),
+      withRetry(fetchDisabilityHistories),  // ← これ追加！！
     ]);
   };
   init();
