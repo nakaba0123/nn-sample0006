@@ -396,19 +396,20 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  if (rawResidents.length > 0 && disabilityHistories.length > 0) {
-    const mergedResidents = rawResidents.map((resident) => {
-      const history = disabilityHistories.filter(
-        (h) => h.residentId === resident.id
-      );
-      return {
-        ...resident,
-        disabilityHistory: history,
-      };
-    });
+  if (!rawResidents || !disabilityHistories) return; // ← 念のためnull/undefinedガード
+  if (rawResidents.length === 0 || disabilityHistories.length === 0) return;
 
-    setResidents(mergedResidents);
-  }
+  const mergedResidents = rawResidents.map((resident) => {
+    const history = disabilityHistories.filter(
+      (h) => h.residentId === resident.id
+    );
+    return {
+      ...resident,
+      disabilityHistory: history,
+    };
+  });
+
+  setResidents(mergedResidents);
 }, [rawResidents, disabilityHistories]);
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
