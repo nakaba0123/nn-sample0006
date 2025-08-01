@@ -9,7 +9,7 @@ interface ResidentCardProps {
 }
 
 const ResidentCard: React.FC<ResidentCardProps> = ({ resident, onEdit, onDelete }) => {
-//  console.log('ResidentCard の resident:', resident); // ★ここ！
+  console.log('ResidentCard の resident:', resident); // ★ここ！
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ja-JP');
   };
