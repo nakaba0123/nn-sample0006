@@ -379,13 +379,13 @@ const fetchDisabilityHistories = async () => {
 };
 
 useEffect(() => {
-  axios.get("/api/residents")
+  axios.get("/api/disability_histories")
     .then((res) => {
-      console.log("?? residents fetched:", res.data);
-      setRawResidents(res.data);
+      console.log("?? histories fetched:", res.data);
+      setDisabilityHistories(res.data);
     })
     .catch((err) => {
-      console.error("? residents fetch error:", err);
+      console.error("? histories fetch error:", err);
     });
 }, []);
 
