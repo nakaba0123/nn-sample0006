@@ -383,21 +383,27 @@ const [residents, setResidents] = useState([]);
 const [disabilityHistories, setDisabilityHistories] = useState([]);
 
 useEffect(() => {
-  const init = async () => {
-    const fetchedResidents = await withRetry(fetchResidents);
-    setRawResidents(fetchedResidents);
-    const fetchedHistories = await withRetry(fetchDisabilityHistories);
-    setDisabilityHistories(fetchedHistories);
-  };
-  init();
+  axios.get("/api/residents")
+    .then((res) => {
+      console.log("?? residents fetched:", res.data);
+      setRawResidents(res.data);
+    })
+    .catch((err) => {
+      console.error("? residents fetch error:", err);
+    });
 }, []);
 
 useEffect(() => {
   if (rawResidents.length > 0 && disabilityHistories.length > 0) {
     const mergedResidents = rawResidents.map((resident) => {
-      const history = disabilityHistories.filter(
-        (h) => h.residentId === resident.id
-      );
+      const history = disabilityHistories
+        .filter((h) => h.residentId === resident.id)
+        .map((h) => ({
+          id: h.id,
+          startDate: h.startDate,
+          endDate: h.endDate,
+          level: h.disabilityLevel, // ?? これがキー！
+        }));
       return {
         ...resident,
         disabilityHistory: history,
