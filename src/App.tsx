@@ -378,10 +378,6 @@ const fetchDisabilityHistories = async () => {
   }
 };
 
-const [rawResidents, setRawResidents] = useState([]);
-const [residents, setResidents] = useState([]);
-const [disabilityHistories, setDisabilityHistories] = useState([]);
-
 useEffect(() => {
   axios.get("/api/residents")
     .then((res) => {
