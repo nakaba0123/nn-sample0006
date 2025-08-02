@@ -37,33 +37,33 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
 
   const [errors, setErrors] = useState<Partial<GroupHomeFormData>>({});
 
-  useEffect(() => {
-    if (editGroupHome) {
-      setFormData({
-        propertyName: editGroupHome.propertyName,
-        unitName: editGroupHome.unitName,
-        postalCode: editGroupHome.postalCode,
-        address: editGroupHome.address,
-        phoneNumber: editGroupHome.phoneNumber,
-        commonRoom: editGroupHome.commonRoom,
-        residentRooms: editGroupHome?.residentRooms?.length
-          ? editGroupHome.residentRooms
-          : [''],
-        openingDate: formatDateForInput(editGroupHome.openingDate)
-      });
-    } else {
-      setFormData({
-        propertyName: '',
-        unitName: '',
-        postalCode: '',
-        address: '',
-        phoneNumber: '',
-        commonRoom: '1室',
-        residentRooms: [''],
-        openingDate: ''
-      });
-    }
-  }, [editGroupHome, isOpen]);
+useEffect(() => {
+  if (editGroupHome) {
+    setFormData({
+      propertyName: editGroupHome.propertyName,
+      unitName: editGroupHome.unitName,
+      postalCode: editGroupHome.postalCode,
+      address: editGroupHome.address,
+      phoneNumber: editGroupHome.phoneNumber,
+      commonRoom: editGroupHome.commonRoom,
+      residentRooms: Array.isArray(editGroupHome.residentRooms) && editGroupHome.residentRooms.length > 0
+        ? editGroupHome.residentRooms
+        : [''],
+      openingDate: formatDateForInput(editGroupHome.openingDate)
+    });
+  } else {
+    setFormData({
+      propertyName: '',
+      unitName: '',
+      postalCode: '',
+      address: '',
+      phoneNumber: '',
+      commonRoom: '1室',
+      residentRooms: [''],
+      openingDate: ''
+    });
+  }
+}, [editGroupHome, isOpen]);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<GroupHomeFormData> = {};
