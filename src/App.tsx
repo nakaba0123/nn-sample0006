@@ -390,6 +390,8 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  console.log("rawResidents: ", rawResidents);
+  console.log("disabilityHistories: ", disabilityHistories);
   if (rawResidents.length > 0 && disabilityHistories.length > 0) {
     const mergedResidents = rawResidents.map((resident) => {
       console.log("?? rawResidents", rawResidents);
