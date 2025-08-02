@@ -381,9 +381,10 @@ const fetchDisabilityHistories = async () => {
 useEffect(() => {
   const init = async () => {
     const fetchedResidents = await withRetry(fetchResidents);
-    setRawResidents(fetchedResidents);
+    setRawResidents(Array.isArray(fetchedResidents) ? fetchedResidents : []);
+
     const fetchedHistories = await withRetry(fetchDisabilityHistories);
-    setDisabilityHistories(fetchedHistories);
+    setDisabilityHistories(Array.isArray(fetchedHistories) ? fetchedHistories : []);
   };
   init();
 }, []);
