@@ -379,37 +379,28 @@ const fetchDisabilityHistories = async () => {
 };
 
 useEffect(() => {
-  axios.get("/api/residents")
-    .then((res) => {
-      console.log("?? residents fetched:", res.data);
-      setRawResidents(res.data);
-    })
-    .catch((err) => {
-      console.error("? residents fetch error:", err);
-    });
+  const init = async () => {
+    const fetchedResidents = await withRetry(fetchResidents);
+    setRawResidents(fetchedResidents);
+    const fetchedHistories = await withRetry(fetchDisabilityHistories);
+    setDisabilityHistories(fetchedHistories);
+  };
+  init();
 }, []);
 
 useEffect(() => {
-  if (rawResidents.length === 0 || disabilityHistories.length === 0) return;
-
-  console.log("? Ready to merge!");
-
-  const mergedResidents = rawResidents.map((resident) => {
-    const history = disabilityHistories
-      .filter((h) => String(h.residentId) === String(resident.id))
-      .map((h) => ({
-        id: h.id,
-        startDate: h.startDate,
-        endDate: h.endDate,
-        level: h.disabilityLevel,
-      }));
-    return {
-      ...resident,
-      disabilityHistory: history,
-    };
-  });
-
-  setResidents(mergedResidents);
+  if (rawResidents.length > 0 && disabilityHistories.length > 0) {
+    const mergedResidents = rawResidents.map((resident) => {
+      const history = disabilityHistories.filter(
+        (h) => h.residentId === resident.id
+      );
+      return {
+        ...resident,
+        disabilityHistory: history,
+      };
+    });
+    setResidents(mergedResidents);
+  }
 }, [rawResidents, disabilityHistories]);
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
