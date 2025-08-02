@@ -380,27 +380,38 @@ const fetchDisabilityHistories = async () => {
 
 useEffect(() => {
   const init = async () => {
-    const fetchedResidents = await withRetry(fetchResidents);
-    setRawResidents(fetchedResidents);
-    const fetchedHistories = await withRetry(fetchDisabilityHistories);
-    setDisabilityHistories(fetchedHistories);
+    const [groupHomes, fetchedResidents, expansions, histories] = await Promise.all([
+      withRetry(fetchGroupHomes),
+      withRetry(fetchResidents),
+      withRetry(fetchExpansionRecords),
+      withRetry(fetchDisabilityHistories),
+    ]);
+
+    setRawResidents(fetchedResidents);       // 一時保存
+    setDisabilityHistories(histories);       // 一時保存
+    console.log("取得したgroupHomes:", groupHomes);
+    setGroupHomes(groupHomes);
+    setExpansionRecords(expansions);
   };
+
   init();
 }, []);
 
 useEffect(() => {
-  if (rawResidents.length > 0 && disabilityHistories.length > 0) {
-    const mergedResidents = rawResidents.map((resident) => {
-      const history = disabilityHistories.filter(
-        (h) => h.residentId === resident.id
-      );
-      return {
-        ...resident,
-        disabilityHistory: history,
-      };
-    });
-    setResidents(mergedResidents);
-  }
+  if (!rawResidents || !disabilityHistories) return; // ← 念のためnull/undefinedガード
+  if (rawResidents.length === 0 || disabilityHistories.length === 0) return;
+
+  const mergedResidents = rawResidents.map((resident) => {
+    const history = disabilityHistories.filter(
+      (h) => h.residentId === resident.id
+    );
+    return {
+      ...resident,
+      disabilityHistory: history,
+    };
+  });
+
+  setResidents(mergedResidents);
 }, [rawResidents, disabilityHistories]);
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
