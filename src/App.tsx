@@ -378,6 +378,10 @@ const fetchDisabilityHistories = async () => {
   }
 };
 
+const [rawResidents, setRawResidents] = useState([]);
+const [residents, setResidents] = useState([]);
+const [disabilityHistories, setDisabilityHistories] = useState([]);
+
 useEffect(() => {
   const init = async () => {
     const fetchedResidents = await withRetry(fetchResidents);
