@@ -392,8 +392,10 @@ useEffect(() => {
 useEffect(() => {
   if (rawResidents.length > 0 && disabilityHistories.length > 0) {
     const mergedResidents = rawResidents.map((resident) => {
+      console.log("?? rawResidents", rawResidents);
+      console.log("?? disabilityHistories", disabilityHistories); 
       const history = disabilityHistories
-        .filter((h) => h.residentId === resident.id)
+        .filter((h) => String(h.residentId) === String(resident.id))
         .map((h) => ({
           id: h.id,
           startDate: h.startDate,
