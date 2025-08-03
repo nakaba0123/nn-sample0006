@@ -379,14 +379,25 @@ const fetchDisabilityHistories = async () => {
 };
 
 useEffect(() => {
-  axios.get("/api/residents")
-    .then((res) => {
-      console.log("?? residents fetched:", res.data);
-      setRawResidents(res.data);
-    })
-    .catch((err) => {
-      console.error("? residents fetch error:", err);
-    });
+  const fetchData = async () => {
+    try {
+      const [residentsRes, historiesRes] = await Promise.all([
+        axios.get("/api/residents"),
+        axios.get("/api/disability_histories")
+      ]);
+
+      console.log("? residents fetched:", residentsRes.data);
+      console.log("? histories fetched:", historiesRes.data);
+
+      setRawResidents(residentsRes.data);
+      setDisabilityHistories(historiesRes.data); // ← ??ここが必要！
+
+    } catch (err) {
+      console.error("データ取得エラー:", err);
+    }
+  };
+
+  fetchData();
 }, []);
 
 useEffect(() => {
