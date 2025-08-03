@@ -383,13 +383,25 @@ const fetchDisabilityHistories = async () => {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const [residentsRes, historiesRes] = await Promise.all([
+      const [residentsRes,
+             historiesRes,
+             groupHomesRes,
+             expansionsRes,
+      ] = await Promise.all([
         axios.get("/api/residents"),
         axios.get("/api/disability_histories")
+        withRetry(() => axios.get("/api/group-homes")), // ← 追加！
+        withRetry(() => axios.get("/api/expansions")), // ← 追加！
+      ]);
+
+
       ]);
 
       console.log("? residents fetched:", residentsRes.data);
       console.log("? histories fetched:", historiesRes.data);
+      console.log("? groupHomes fetched:", groupHomesRes.data); // ← これ
+      console.log("? expansions fetched:", expansionsRes.data); // ← これ
+
 
       setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data); // ← ??ここが必要！
