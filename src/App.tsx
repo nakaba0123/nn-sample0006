@@ -391,7 +391,7 @@ useEffect(() => {
         axios.get("/api/residents"),
         axios.get("/api/disability_histories"),
         withRetry(() => axios.get("/api/group-homes")), // ← 追加！
-        withRetry(() => axios.get("/api/expansions")), // ← 追加！
+        withRetry(() => axios.get("/api/expansions")) // ← 追加！
       ]);
 
       console.log("? residents fetched:", residentsRes.data);
