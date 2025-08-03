@@ -110,8 +110,8 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
     // 各グループ内で部屋番号順にソート
     grouped.forEach((residents, key) => {
       residents.sort((a, b) => {
-        const aNum = parseInt(a.roomNumber.replace(/\D/g, ''), 10);
-        const bNum = parseInt(b.roomNumber.replace(/\D/g, ''), 10);
+        const aNum = parseInt((a.roomNumber ?? '').replace(/\D/g, ''), 10);
+        const bNum = parseInt((b.roomNumber ?? '').replace(/\D/g, ''), 10);
         if (!isNaN(aNum) && !isNaN(bNum)) {
           return aNum - bNum;
         }
