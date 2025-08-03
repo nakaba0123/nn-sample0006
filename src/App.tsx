@@ -427,22 +427,25 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  if (rawResidents.length > 0 && disabilityHistories.length > 0) {
-    const mergedResidents = rawResidents.map((resident) => {
-      const history = disabilityHistories
-        .filter((h) => h.residentId === resident.id)
-        .map((h) => ({
-          id: h.id,
-          startDate: h.startDate,
-          endDate: h.endDate,
-          level: h.disabilityLevel, // ?? これがキー！
-        }));
-      return {
-        ...resident,
-        disabilityHistory: history,
-      };
-    });
-    setResidents(mergedResidents);
+  if (
+    Array.isArray(rawResidents) && rawResidents.length > 0 &&
+    Array.isArray(disabilityHistories) && disabilityHistories.length > 0
+  ) {
+  const mergedResidents = rawResidents.map((resident) => {
+    const history = disabilityHistories
+      .filter((h) => h.residentId === resident.id)
+      .map((h) => ({
+        id: h.id,
+        startDate: h.startDate,
+        endDate: h.endDate,
+        level: h.disabilityLevel,
+      }));
+    return {
+      ...resident,
+      disabilityHistory: history,
+    };
+  });
+  setResidents(mergedResidents);
   }
 }, [rawResidents, disabilityHistories]);
 
