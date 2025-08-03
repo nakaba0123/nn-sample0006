@@ -66,7 +66,7 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
   const inactiveResidents = residents.filter(r => getAutoStatus(r) === 'inactive').length;
   
   // 総部屋数を計算（初期登録分 + 増床分）
-  const totalRooms = groupHomes.reduce((sum, gh) => sum + gh.residentRooms.length, 0) +
+  const totalRooms = groupHomes.reduce((sum, gh) => sum + (gh.residentRooms?.length ?? 0), 0) +
                     expansionRecords.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   
   const occupancyRate = totalRooms > 0 ? Math.round((activeResidents / totalRooms) * 100) : 0;
