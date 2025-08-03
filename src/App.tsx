@@ -402,8 +402,8 @@ useEffect(() => {
 
       setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data); // ← ??ここが必要！
-      setGroupHomes(groupHomesRes.data); // ← 追加！
-//      setExpansionRecords(expansionsRes.data); // ← 追加！
+//      setGroupHomes(groupHomesRes.data); // ← 追加！
+      setExpansionRecords(expansionsRes.data); // ← 追加！
 
 
     } catch (err) {
