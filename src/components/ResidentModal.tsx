@@ -219,10 +219,12 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   const now = new Date().toISOString();
 
-  const finalDisabilityHistory =
-    disabilityHistory.length > 0
-      ? disabilityHistory
-      : editResident?.disabilityHistory ?? [];
+const finalDisabilityHistory =
+  Array.isArray(disabilityHistory) && disabilityHistory.length > 0
+    ? disabilityHistory
+    : Array.isArray(editResident?.disabilityHistory)
+      ? editResident.disabilityHistory
+      : [];
 
   const currentLevel =
     finalDisabilityHistory?.find?.((h) => !h.endDate)?.disabilityLevel || formData.disabilityLevel;
