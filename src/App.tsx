@@ -381,6 +381,16 @@ const fetchDisabilityHistories = async () => {
   }
 };
 
+// チャーママが優しく作ったよ?
+const mapDisabilityHistory = (raw: any): DisabilityHistory => ({
+  id: raw.id,
+  residentId: raw.resident_id,
+  disabilityLevel: raw.disability_level,
+  startDate: raw.start_date,
+  endDate: raw.end_date,
+  createdAt: raw.created_at,
+});
+
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -402,7 +412,8 @@ useEffect(() => {
 
 
       setRawResidents(residentsRes.data);
-      setDisabilityHistories(historiesRes.data); // ← ??ここが必要！
+      setDisabilityHistories(res.data.map(mapDisabilityHistory));
+
       setGroupHomes(groupHomesRes?.data || []); // ← 追加！
       setExpansionRecords(expansionsRes?.data || []); // ← 追加！
 
