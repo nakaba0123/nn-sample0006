@@ -119,7 +119,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
             <span className="text-xs text-gray-500">{groupHome.residentRooms?.length}室</span>
           </div>
           <div className="flex flex-wrap gap-2 mb-4">
-            {groupHome.residentRooms.slice(0, 6).map((room, index) => (
+            {groupHome.residentRooms?.slice(0, 6).map((room, index) => (
               <span
                 key={index}
                 className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
