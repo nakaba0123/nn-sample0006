@@ -281,6 +281,8 @@ const fetchGroupHomes = async () => {
       "https://nn-sample0006-production.up.railway.app/api/group-homes"
     );
 
+    console.log("? group home raw response:", res.data); // ← ここ追加！
+
     const data = res.data.map((gh: any) => ({
       id: gh.id,
       propertyName: gh.property_name,
