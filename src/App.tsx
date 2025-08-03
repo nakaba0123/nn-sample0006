@@ -405,6 +405,9 @@ useEffect(() => {
 
       setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data); // ← ??ここが必要！
+      setGroupHomes(groupHomesRes.data); // ← 追加！
+      setExpansionRecords(expansionsRes.data); // ← 追加！
+
 
     } catch (err) {
       console.error("データ取得エラー:", err);
