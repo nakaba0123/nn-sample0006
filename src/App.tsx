@@ -382,22 +382,21 @@ const fetchDisabilityHistories = async () => {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const [
-        residentsRes,
-        historiesRes,
-        groupHomesRes,
-        expansionRecordsRes,
-      ] = await Promise.all([
-        axios.get("/api/residents"),
-        axios.get("/api/disability_histories"),
-        withRetry(() => axios.get("/api/group_homes")), // ← 追加！
-        withRetry(() => axios.get("/api/expansion_records")), // ← 追加！
-      ]);
-
+const [
+  residentsRes, 
+  historiesRes,
+  groupHomesRes,
+  expansionsRes,  // ← 名前も変えとこ！
+] = await Promise.all([
+  axios.get("/api/residents"),
+  axios.get("/api/disability_histories"),
+  withRetry(() => axios.get("/api/group-homes")),     // ? 修正！
+  withRetry(() => axios.get("/api/expansions")),      // ? 修正！
+]);
       console.log("? residents fetched:", residentsRes.data);
       console.log("? histories fetched:", historiesRes.data);
-      console.log("? groupHomes fetched:", groupHomesRes?.data); // ← これ
-      console.log("? expansions fetched:", expansionRecordsRes?.data); // ← これ
+      console.log("? groupHomes fetched:", groupHomesRes.data); // ← これ
+      console.log("? expansions fetched:", expansionsRes.data); // ← これ
 
       setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data);
