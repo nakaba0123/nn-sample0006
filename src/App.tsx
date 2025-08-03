@@ -401,7 +401,7 @@ const [
       setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data);
       setGroupHomes(groupHomesRes?.data || []); // ← 追加！
-      setExpansionRecords(expansionRecordsRes?.data || []); // ← 追加！
+      setExpansionRecords(expansionsRes?.data || []); // ← 追加！
 
     } catch (err) {
       console.error("データ取得エラー:", err);
