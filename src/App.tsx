@@ -369,12 +369,13 @@ const fetchDisabilityHistories = async () => {
       res.data.map((d: any) => ({
         id: d.id,
         residentId: d.resident_id,
-        level: d.disability_level,
+        disabilityLevel: d.disability_level,  // ? これが必要！
         startDate: d.start_date,
         endDate: d.end_date,
         createdAt: d.created_at,
       }))
     );
+
   } catch (err) {
     console.error("fetchDisabilityHistories() エラー:", err);
   }
@@ -402,8 +403,8 @@ useEffect(() => {
 
       setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data); // ← ??ここが必要！
-//      setGroupHomes(groupHomesRes?.data || []); // ← 追加！
-//      setExpansionRecords(expansionsRes?.data || []); // ← 追加！
+      setGroupHomes(groupHomesRes?.data || []); // ← 追加！
+      setExpansionRecords(expansionsRes?.data || []); // ← 追加！
 
 
     } catch (err) {
