@@ -34,9 +34,10 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
   const [activeView, setActiveView] = useState<'facilities' | 'expansions'>('facilities');
 
   const filteredGroupHomes = groupHomes.filter(groupHome => {
-    const matchesSearch = groupHome.propertyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         groupHome.unitName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         groupHome.address.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      (groupHome.propertyName?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+      (groupHome.unitName?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+      (groupHome.address?.toLowerCase() ?? "").includes(searchTerm.toLowerCase());
     
     const matchesAddress = !addressFilter || groupHome.address.includes(addressFilter);
     
@@ -49,8 +50,8 @@ const filteredExpansions = expansionRecords.filter(expansion => {
   const search = searchTerm.toLowerCase();
 
   return (
-    propName.toLowerCase().includes(search) ||
-    unitName.toLowerCase().includes(search)
+   (propName?.toLowerCase() ?? "").includes(search) || 
+   (unitName?.toLowerCase() ?? "").includes(search)
   );
 });
 
