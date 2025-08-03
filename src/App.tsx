@@ -412,7 +412,7 @@ useEffect(() => {
 
 
       setRawResidents(residentsRes.data);
-      setDisabilityHistories(res.data.map(mapDisabilityHistory));
+      setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
 
       setGroupHomes(groupHomesRes?.data || []); // ← 追加！
       setExpansionRecords(expansionsRes?.data || []); // ← 追加！
