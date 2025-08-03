@@ -103,10 +103,10 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
               <span className="text-sm font-medium text-blue-800">総居室数</span>
             </div>
             <p className="text-blue-700 font-semibold">
-              {groupHome.residentRooms.length + totalExpansionRooms}室
+              {groupHome.residentRooms?.length + totalExpansionRooms}室
               {totalExpansionRooms > 0 && (
                 <span className="text-xs text-blue-600 ml-1">
-                  (基本{groupHome.residentRooms.length} + 増床{totalExpansionRooms})
+                  (基本{groupHome.residentRooms?.length} + 増床{totalExpansionRooms})
                 </span>
               )}
             </p>
@@ -116,7 +116,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
         <div className="border-t border-gray-100 pt-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-700">基本居室</span>
-            <span className="text-xs text-gray-500">{groupHome.residentRooms.length}室</span>
+            <span className="text-xs text-gray-500">{groupHome.residentRooms?.length}室</span>
           </div>
           <div className="flex flex-wrap gap-2 mb-4">
             {groupHome.residentRooms.slice(0, 6).map((room, index) => (
@@ -127,9 +127,9 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
                 {room}
               </span>
             ))}
-            {groupHome.residentRooms.length > 6 && (
+            {groupHome.residentRooms?.length > 6 && (
               <span className="px-2 py-1 bg-gray-200 text-gray-600 text-xs rounded-full">
-                +{groupHome.residentRooms.length - 6}室
+                +{groupHome.residentRooms?.length - 6}室
               </span>
             )}
           </div>
