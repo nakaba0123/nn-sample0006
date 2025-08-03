@@ -35,7 +35,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
 
   // この物件に関連する増床記録を取得
   const relatedExpansions = expansions.filter(exp => exp.propertyName === groupHome.propertyName);
-  const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + exp.newRooms.length, 0);
+  const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
@@ -195,7 +195,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
                       </div>
                       <div className="text-xs">
                         <span className="text-gray-500">居室数:</span>
-                        <span className="text-gray-800 ml-1">{expansion.newRooms.length}室</span>
+                        <span className="text-gray-800 ml-1">{expansion.newRooms?.length ?? 0}室</span>
                       </div>
                     </div>
 

@@ -36,7 +36,9 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
         propertyName: editExpansion.propertyName,
         unitName: editExpansion.unitName,
         expansionType: editExpansion.expansionType,
-        newRooms: editExpansion.newRooms.length > 0 ? editExpansion.newRooms : [''],
+        newRooms: Array.isArray(editExpansion.newRooms) && editExpansion.newRooms.length > 0
+          ? editExpansion.newRooms
+          : [''],
         commonRoom: editExpansion.commonRoom || '',
         startDate: editExpansion.startDate
       });
@@ -163,7 +165,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
   };
 
   const removeNewRoom = (index: number) => {
-    if (formData.newRooms.length > 1) {
+    if ((formData.newRooms?.length ?? 0) > 1) {
       setFormData(prev => ({
         ...prev,
         newRooms: prev.newRooms.filter((_, i) => i !== index)
@@ -378,7 +380,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
                     className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                     placeholder={`新居室${index + 1}（例：${201 + index}号室）`}
                   />
-                  {formData.newRooms.length > 1 && (
+                  {(formData.newRooms?.length ?? 0)> 1 && (
                     <button
                       type="button"
                       onClick={() => removeNewRoom(index)}
