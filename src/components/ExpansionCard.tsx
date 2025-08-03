@@ -69,7 +69,7 @@ const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDele
           <Users className="w-4 h-4 text-gray-400" />
           <div>
             <p className="text-xs text-gray-500">新居室数</p>
-            <p className="font-medium text-gray-800">{expansion.newRooms.length}室</p>
+            <p className="font-medium text-gray-800">{expansion.newRooms?.length ?? 0}室</p>
           </div>
         </div>
       </div>
