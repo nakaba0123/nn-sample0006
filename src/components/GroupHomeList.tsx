@@ -171,36 +171,25 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
                 </p>
               </div>
             ) : (
-<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  {
-    filteredGroupHomes.map((groupHome) => {
-      const matchedExpansions = expansionRecords.filter(
-        exp =>
-          exp.propertyName?.trim().toLowerCase() ===
-          groupHome.propertyName?.trim().toLowerCase()
-      );
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+{groupHomes.map((gh) => {
+  const matchedExpansions = expansionRecords.filter(
+    exp => exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
+  );
 
-  // ? この位置なら groupHome が使える
-  console.log("?? DEBUG: Expansion match check", {
-    groupHomeName: groupHome.propertyName,
-    matchedExpansions: matchedExpansions.map(N => N.propertyName),
-    fullExpansionsList: expansionRecords.map(N => N.propertyName),
-  });
-
-      return (
-        <GroupHomeCard
-          key={gh.id}
-          groupHome={gh}
-          expansions={expansions}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onEditExpansion={onEditExpansion}
-          onDeleteExpansion={onDeleteExpansion}
-        />
-      );
-    })
-  }
-</div>
+  return (
+    <GroupHomeCard
+      key={gh.id}
+      groupHome={gh}
+      expansions={matchedExpansions}
+      onEdit={onEditGroupHome}
+      onDelete={onDeleteGroupHome}
+      onEditExpansion={onEditExpansion}
+      onDeleteExpansion={onDeleteExpansion}
+    />
+  );
+})}
+              </div>
 
 
             )
