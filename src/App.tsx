@@ -26,6 +26,7 @@ import { Role, RoleFormData, DEFAULT_ROLES } from './types/Role';
 import { ShiftPreference } from './types/ShiftPreference';
 import { Resident } from './types/Resident';
 import { UsageRecord } from './types/UsageRecord';
+import { mapGroupHome } from "../util/mapGroupHome"; // パスは適宜！1
 
 interface AttendanceData {
   name: string;
