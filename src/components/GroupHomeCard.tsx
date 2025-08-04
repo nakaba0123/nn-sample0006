@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import React from 'react';
 import { Home, MapPin, Phone, Calendar, Users, Edit, Trash2, Building, ArrowRight } from 'lucide-react';
 import { GroupHome, ExpansionRecord } from '../types/GroupHome';
@@ -21,6 +22,8 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   onDeleteExpansion
 }) => {
   console.log('🪵 受け取った groupHome:', groupHome);
+
+  const [groupHomes, setGroupHomes] = useState([]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ja-JP');
