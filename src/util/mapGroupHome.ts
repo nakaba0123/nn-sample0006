@@ -1,6 +1,6 @@
 // util/mapGroupHome.ts
 export const mapGroupHome = (gh: any) => ({
-  iconsole.log("💡 transforming group home:", gh);
+  console.log("💡 transforming group home:", gh);
   id: gh.id,
   propertyName: gh.property_name,
   unitName: gh.unit_name,
