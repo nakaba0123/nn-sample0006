@@ -14,6 +14,48 @@ interface GroupHomeCardProps {
   onDeleteExpansion: (expansionId: string) => void;
 }
 
+type Props = {
+  groupHome: {
+    propertyName: string;
+    unitName: string;
+    postalCode: string;
+    address: string;
+    phoneNumber: string;
+    commonRoom: string;
+    residentRooms: any[];
+    openingDate: string;
+    createdAt: string;
+  };
+  expansions?: any[]; // 必要に応じて追加
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onEditExpansion?: () => void;
+  onDeleteExpansion?: () => void;
+};
+
+export default function GroupHomeCard({
+  groupHome,
+  expansions,
+  onEdit,
+  onDelete,
+  onEditExpansion,
+  onDeleteExpansion,
+}: Props) {
+  return (
+    <div className="p-4 bg-white rounded-xl shadow">
+      <h2 className="text-xl font-bold mb-2">{groupHome.propertyName}</h2>
+      <p>ユニット名: {groupHome.unitName}</p>
+      <p>郵便番号: {groupHome.postalCode}</p>
+      <p>住所: {groupHome.address}</p>
+      <p>電話番号: {groupHome.phoneNumber}</p>
+      <p>共用部: {groupHome.commonRoom}</p>
+      <p>居室数: {groupHome.residentRooms?.length ?? 0}</p>
+      <p>開設日: {groupHome.openingDate}</p>
+      <p>登録日: {groupHome.createdAt}</p>
+    </div>
+  );
+}
+
 const GroupHomeCard: React.FC<GroupHomeCardProps> = ({ 
   groupHome, 
   expansions,
@@ -53,17 +95,6 @@ useEffect(() => {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
-    <div className="p-6">
-      <p>住所: {groupHome.address}</p>
-      <p>物件名: {groupHome.property_name}</p>
-      <p>共用部: {groupHome.common_room}</p>
-      <p>ユニット名: {groupHome.unit_name}</p>
-      <p>電話番号: {groupHome.phone_number}</p>
-      <p>郵便番号: {groupHome.postal_code}</p>
-      <p>開設日: {groupHome.opening_date}</p>
-      <p>居室一覧: {groupHome.resident_rooms?.join(", ")}</p>
-    </div>
-
       {/* メイン施設情報 */}
       <div className="p-6">
         <div className="flex items-start justify-between mb-4">
