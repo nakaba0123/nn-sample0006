@@ -174,7 +174,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
   };
 
   const updateNewRoom = (index: number, value: string) => {
-    const newRooms = [...formData.newRooms];
+    const newRooms = [...(formData.newRooms ?? [])]; // ← null/undefined 対策
     newRooms[index] = value;
     handleInputChange('newRooms', newRooms);
   };

@@ -68,11 +68,11 @@ useEffect(() => {
   const validateForm = (): boolean => {
     const newErrors: Partial<GroupHomeFormData> = {};
     
-    if (!formData.propertyName.trim()) {
+    if (!formData.propertyName?.trim()) {
       newErrors.propertyName = '物件名を入力してください';
     }
     
-    if (!formData.unitName.trim()) {
+    if (!formData.unitName?.trim()) {
       newErrors.unitName = 'ユニット名を入力してください';
     }
     
@@ -82,7 +82,7 @@ useEffect(() => {
       newErrors.postalCode = '正しい郵便番号を入力してください（例：123-4567）';
     }
     
-    if (!formData.address.trim()) {
+    if (!formData.address?.trim()) {
       newErrors.address = '所在地を入力してください';
     }
     
@@ -97,7 +97,7 @@ useEffect(() => {
     }
 
     // 居室の検証
-    const validRooms = formData.residentRooms.filter(room => room.trim() !== '');
+    const validRooms = formData.residentRooms?.filter(room => room.trim() !== '');
     if (validRooms.length === 0) {
       newErrors.residentRooms = '少なくとも1つの居室を入力してください';
     }
@@ -135,7 +135,7 @@ const handleSubmit = (e: React.FormEvent) => {
   };
 
   const removeResidentRoom = (index: number) => {
-    if (formData.residentRooms.length > 1) {
+    if (formData.residentRooms?.length > 1) {
       setFormData(prev => ({
         ...prev,
         residentRooms: prev.residentRooms.filter((_, i) => i !== index)
@@ -144,7 +144,7 @@ const handleSubmit = (e: React.FormEvent) => {
   };
 
   const updateResidentRoom = (index: number, value: string) => {
-    const newRooms = [...formData.residentRooms];
+    const newRooms = [...formData.residentRooms ?? ''];
     newRooms[index] = value;
     handleInputChange('residentRooms', newRooms);
   };
@@ -180,7 +180,7 @@ const handleSubmit = (e: React.FormEvent) => {
               </label>
               <input
                 type="text"
-                value={formData.propertyName}
+                value={formData.propertyName ?? ''}
                 onChange={(e) => handleInputChange('propertyName', e.target.value)}
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
                   errors.propertyName ? 'border-red-300 bg-red-50' : 'border-gray-300'
@@ -197,7 +197,7 @@ const handleSubmit = (e: React.FormEvent) => {
               </label>
               <input
                 type="text"
-                value={formData.unitName}
+                value={formData.unitName ?? ''}
                 onChange={(e) => handleInputChange('unitName', e.target.value)}
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
                   errors.unitName ? 'border-red-300 bg-red-50' : 'border-gray-300'
@@ -249,7 +249,7 @@ const handleSubmit = (e: React.FormEvent) => {
             </label>
             <input
               type="text"
-              value={formData.address}
+              value={formData.address ?? ''}
               onChange={(e) => handleInputChange('address', e.target.value)}
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
                 errors.address ? 'border-red-300 bg-red-50' : 'border-gray-300'
@@ -308,7 +308,7 @@ const handleSubmit = (e: React.FormEvent) => {
             </div>
             
             <div className="space-y-3">
-              {formData.residentRooms.map((room, index) => (
+              {formData.residentRooms?.map((room, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <input
                     type="text"
@@ -317,7 +317,7 @@ const handleSubmit = (e: React.FormEvent) => {
                     className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                     placeholder={`居室${index + 1}（例：101号室）`}
                   />
-                  {formData.residentRooms.length > 1 && (
+                  {formData.residentRooms?.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeResidentRoom(index)}
