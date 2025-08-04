@@ -94,7 +94,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
     }
 
     // 居室の検証
-    const validRooms = formData.newRooms.filter(room => room.trim() !== '');
+    const validRooms = formData.newRooms?.filter(room => room.trim() !== '');
     if (validRooms.length === 0) {
       newErrors.newRooms = '少なくとも1つの居室を入力してください';
     }
@@ -110,7 +110,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
       // 空の居室を除外し、タイプBの場合は共用室を除外
       const cleanedData: ExpansionFormData = {
         ...formData,
-        newRooms: formData.newRooms.filter(room => room.trim() !== ''),
+        newRooms: formData.newRooms?.filter(room => room.trim() !== ''),
         commonRoom: formData.expansionType === 'A' ? formData.commonRoom : undefined
       };
       
@@ -371,7 +371,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
             </div>
             
             <div className="space-y-3">
-              {formData.newRooms.map((room, index) => (
+              {formData.newRooms?.map((room, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <input
                     type="text"
@@ -422,7 +422,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
               {formData.expansionType === 'A' && formData.commonRoom && (
                 <p><strong>共用室:</strong> {formData.commonRoom}</p>
               )}
-              <p><strong>新居室:</strong> {formData.newRooms.filter(r => r.trim()).join(', ')}</p>
+              <p><strong>新居室:</strong> {formData.newRooms?.filter(r => r.trim()).join(', ')}</p>
               <p><strong>開始日:</strong> {formData.startDate}</p>
             </div>
           </div>
