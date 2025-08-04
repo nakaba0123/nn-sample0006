@@ -244,6 +244,16 @@ useEffect(() => {
         </div>
       )}
     </div>
+<Card>
+  <p>住所: {groupHome.address}</p>
+  <p>物件名: {groupHome.property_name}</p>
+  <p>共用部: {groupHome.common_room}</p>
+  <p>ユニット名: {groupHome.unit_name}</p>
+  <p>電話番号: {groupHome.phone_number}</p>
+  <p>郵便番号: {groupHome.postal_code}</p>
+  <p>開設日: {groupHome.opening_date}</p>
+  <p>居室一覧: {groupHome.resident_rooms?.join(", ")}</p>
+</Card>
   );
 };
 
