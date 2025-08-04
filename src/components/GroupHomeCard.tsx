@@ -33,29 +33,6 @@ type Props = {
   onDeleteExpansion?: () => void;
 };
 
-export default function GroupHomeCard({
-  groupHome,
-  expansions,
-  onEdit,
-  onDelete,
-  onEditExpansion,
-  onDeleteExpansion,
-}: Props) {
-  return (
-    <div className="p-4 bg-white rounded-xl shadow">
-      <h2 className="text-xl font-bold mb-2">{groupHome.propertyName}</h2>
-      <p>ユニット名: {groupHome.unitName}</p>
-      <p>郵便番号: {groupHome.postalCode}</p>
-      <p>住所: {groupHome.address}</p>
-      <p>電話番号: {groupHome.phoneNumber}</p>
-      <p>共用部: {groupHome.commonRoom}</p>
-      <p>居室数: {groupHome.residentRooms?.length ?? 0}</p>
-      <p>開設日: {groupHome.openingDate}</p>
-      <p>登録日: {groupHome.createdAt}</p>
-    </div>
-  );
-}
-
 const GroupHomeCard: React.FC<GroupHomeCardProps> = ({ 
   groupHome, 
   expansions,
