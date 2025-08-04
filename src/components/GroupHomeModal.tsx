@@ -76,7 +76,7 @@ useEffect(() => {
       newErrors.unitName = 'ユニット名を入力してください';
     }
     
-    if (!formData.postalCode.trim()) {
+    if (!formData.postalCode?.trim()) {
       newErrors.postalCode = '郵便番号を入力してください';
     } else if (!/^\d{3}-?\d{4}$/.test(formData.postalCode)) {
       newErrors.postalCode = '正しい郵便番号を入力してください（例：123-4567）';
@@ -86,7 +86,7 @@ useEffect(() => {
       newErrors.address = '所在地を入力してください';
     }
     
-    if (!formData.phoneNumber.trim()) {
+    if (!formData.phoneNumber?.trim()) {
       newErrors.phoneNumber = '電話番号を入力してください';
     } else if (!/^[\d-]+$/.test(formData.phoneNumber)) {
       newErrors.phoneNumber = '正しい電話番号を入力してください';
