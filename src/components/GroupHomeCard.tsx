@@ -19,6 +19,8 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   onEditExpansion,
   onDeleteExpansion
 }) => {
+  console.log('🪵 受け取った groupHome:', groupHome);
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ja-JP');
   };
