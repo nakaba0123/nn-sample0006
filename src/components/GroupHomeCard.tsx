@@ -61,7 +61,6 @@ useEffect(() => {
       <p>郵便番号: {groupHome.postal_code}</p>
       <p>開設日: {groupHome.opening_date}</p>
       <p>居室一覧: {groupHome.resident_rooms?.join(", ")}</p>
-    </Card>
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
       {/* メイン施設情報 */}
       <div className="p-6">
@@ -254,6 +253,7 @@ useEffect(() => {
         </div>
       )}
     </div>
+    </Card>
   );
 };
 
