@@ -90,7 +90,7 @@ const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDele
       <div className="mb-4">
         <p className="text-sm font-medium text-gray-700 mb-2">新しい居室</p>
         <div className="flex flex-wrap gap-2">
-          {expansion.newRooms.map((room, index) => (
+          {expansion.newRooms?.map((room, index) => (
             <span
               key={index}
               className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full"
