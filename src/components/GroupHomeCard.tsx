@@ -44,7 +44,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
 
 useEffect(() => {
-  axios.get("/api/group_homes").then((res) => {
+  axios.get("/api/group-homes").then((res) => {
     const mapped = res.data.map((gh) => mapGroupHome(gh));
     setGroupHomes(mapped);
   });
