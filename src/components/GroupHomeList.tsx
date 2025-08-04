@@ -189,11 +189,11 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
 
       return (
         <GroupHomeCard
-          key={groupHome.id}
-          groupHome={groupHome}
-          expansions={matchedExpansions}
-          onEdit={onEditGroupHome}
-          onDelete={onDeleteGroupHome}
+          key={gh.id}
+          groupHome={gh}
+          expansions={expansions}
+          onEdit={onEdit}
+          onDelete={onDelete}
           onEditExpansion={onEditExpansion}
           onDeleteExpansion={onDeleteExpansion}
         />
