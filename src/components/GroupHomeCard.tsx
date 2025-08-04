@@ -1,6 +1,7 @@
 import React from 'react';
 import { Home, MapPin, Phone, Calendar, Users, Edit, Trash2, Building, ArrowRight } from 'lucide-react';
 import { GroupHome, ExpansionRecord } from '../types/GroupHome';
+import { mapGroupHome } from "../util/mapGroupHome"; // パスは適宜！1
 
 interface GroupHomeCardProps {
   groupHome: GroupHome;
@@ -38,6 +39,13 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   // この物件に関連する増床記録を取得
   const relatedExpansions = expansions.filter(exp => exp.propertyName === groupHome.propertyName);
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
+
+useEffect(() => {
+  axios.get("/api/group_homes").then((res) => {
+    const mapped = res.data.map((gh) => mapGroupHome(gh));
+    setGroupHomes(mapped);
+  });
+}, []);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
