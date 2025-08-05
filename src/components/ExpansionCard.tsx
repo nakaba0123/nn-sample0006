@@ -1,4 +1,5 @@
 import React from 'react';
+import React, { useEffect } from 'react';
 import { ArrowRight, Building, Home, Calendar, Users, Edit, Trash2 } from 'lucide-react';
 import { ExpansionRecord } from '../types/GroupHome';
 
