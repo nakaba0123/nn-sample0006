@@ -187,6 +187,8 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 {groupHomes.map((gh) => {
+  console.log("グループホームGH", gh);
+  console.log("ExpansionRecords",expansionRecords);
   const matchedExpansions = expansionRecords.filter(
     exp => exp.property_name?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
   );
