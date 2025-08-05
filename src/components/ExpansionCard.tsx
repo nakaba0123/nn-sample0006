@@ -15,9 +15,13 @@ const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDele
       : { text: '単純増床', color: 'bg-blue-100 text-blue-700', icon: '📈' };
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ja-JP');
-  };
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    return '-';
+  }
+  return date.toLocaleDateString('ja-JP');
+};
 
   const typeInfo = getExpansionTypeDisplay(expansion.expansionType);
 
