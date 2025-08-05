@@ -1,5 +1,4 @@
-import React from 'react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react'; // ? useState を追加！
 import { ArrowRight, Building, Home, Calendar, Users, Edit, Trash2 } from 'lucide-react';
 import { ExpansionRecord } from '../types/GroupHome';
 
@@ -10,50 +9,49 @@ interface ExpansionCardProps {
 }
 
 const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDelete }) => {
+  const [expansions, setExpansions] = useState<ExpansionRecord[]>([]); // ? これがないと setExpansions が未定義になる！
+
   const getExpansionTypeDisplay = (type: 'A' | 'B') => {
-    return type === 'A' 
-      ? { text: '別ユニット増床', color: 'bg-green-100 text-green-700', icon: '🏢' }
-      : { text: '単純増床', color: 'bg-blue-100 text-blue-700', icon: '📈' };
+    return type === 'A'
+      ? { text: '別ユニット増床', color: 'bg-green-100 text-green-700', icon: '?' }
+      : { text: '単純増床', color: 'bg-blue-100 text-blue-700', icon: '?' };
   };
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) {
-    return '-';
-  }
-  return date.toLocaleDateString('ja-JP');
-};
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '-';
+    return date.toLocaleDateString('ja-JP');
+  };
 
   const typeInfo = getExpansionTypeDisplay(expansion.expansionType);
 
-function mapExpansionResponse(raw: any): ExpansionRecord {
-  return {
-    id: raw.id,
-    propertyName: raw.property_name,
-    unitName: raw.unit_name,
-    startDate: raw.start_date,
-    timestamp: raw.timestamp,
-    expansionType: raw.expansion_type,
-    newRooms: raw.new_rooms,
-    commonRoom: raw.common_room,
-    // 他のフィールドも必要に応じて
-  };
-}
+  function mapExpansionResponse(raw: any): ExpansionRecord {
+    return {
+      id: raw.id,
+      propertyName: raw.property_name,
+      unitName: raw.unit_name,
+      startDate: raw.start_date,
+      timestamp: raw.timestamp,
+      expansionType: raw.expansion_type,
+      newRooms: raw.new_rooms,
+      commonRoom: raw.common_room,
+    };
+  }
 
-async function fetchExpansions() {
-  const response = await fetch("/api/expansions");
-  const data = await response.json();
-  const expansions = data.map(mapExpansionResponse);
-  return expansions;
-}
+  async function fetchExpansions() {
+    const response = await fetch("/api/expansions");
+    const data = await response.json();
+    const expansions = data.map(mapExpansionResponse);
+    return expansions;
+  }
 
-useEffect(() => {
-  const loadExpansions = async () => {
-    const fetched = await fetchExpansions();
-    setExpansions(fetched);  // 状態に保存するなど
-  };
-  loadExpansions();
-}, []);
+  useEffect(() => {
+    const loadExpansions = async () => {
+      const fetched = await fetchExpansions();
+      setExpansions(fetched); // ? これで状態に保存される
+    };
+    loadExpansions();
+  }, []);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
