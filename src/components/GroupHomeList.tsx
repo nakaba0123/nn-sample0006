@@ -29,6 +29,17 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
   onEditExpansion,
   onDeleteExpansion
 }) => {
+
+groupHomes.forEach(gh => {
+  expansionRecords.forEach(exp => {
+    if (exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()) {
+      console.log(`? MATCH: GH "${gh.propertyName}" == EX "${exp.propertyName}"`);
+    } else {
+      console.log(`? NO MATCH: GH "${gh.propertyName}" vs EX "${exp.propertyName}"`);
+    }
+  });
+});
+
   const [searchTerm, setSearchTerm] = useState('');
   const [addressFilter, setAddressFilter] = useState('');
   const [activeView, setActiveView] = useState<'facilities' | 'expansions'>('facilities');
