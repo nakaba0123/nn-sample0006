@@ -42,6 +42,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   onDeleteExpansion
 }) => {
   console.log('🪵 受け取った groupHome:', groupHome);
+  console.log('🪵 受け取った expansions:', expansions);
 
   const [groupHomes, setGroupHomes] = useState([]);
 
