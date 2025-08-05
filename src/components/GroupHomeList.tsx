@@ -30,6 +30,9 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
   onDeleteExpansion
 }) => {
 
+console.log(" groupHomes:", groupHomes);
+console.log(" expansionRecords", expansionRecords);
+
 groupHomes.forEach(gh => {
   expansionRecords.forEach(exp => {
     if (exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()) {
