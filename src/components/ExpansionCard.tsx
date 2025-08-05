@@ -39,9 +39,20 @@ function mapExpansionResponse(raw: any): ExpansionRecord {
   };
 }
 
-const response = await fetch(...);
-const data = await response.json();
-const expansions = data.map(mapExpansionResponse);
+async function fetchExpansions() {
+  const response = await fetch("/api/expansions");
+  const data = await response.json();
+  const expansions = data.map(mapExpansionResponse);
+  return expansions;
+}
+
+useEffect(() => {
+  const loadExpansions = async () => {
+    const fetched = await fetchExpansions();
+    setExpansions(fetched);  // 状態に保存するなど
+  };
+  loadExpansions();
+}, []);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
