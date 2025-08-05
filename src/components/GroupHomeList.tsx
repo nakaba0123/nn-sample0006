@@ -189,9 +189,12 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
 {groupHomes.map((gh) => {
   console.log("グループホームGH", gh);
   console.log("ExpansionRecords",expansionRecords);
+  console.log("グループホームGHのpropertyName", gh.propertyName);
+  console.log("ExpansionRecordsのproperty_name",expansionRecords.property_name);
   const matchedExpansions = expansionRecords.filter(
     exp => exp.property_name?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
   );
+  console.log("matchedExpansions", matchedExpansions);
 
   return (
     <GroupHomeCard
