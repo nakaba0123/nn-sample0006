@@ -61,7 +61,9 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   };
 
   // この物件に関連する増床記録を取得
-  const relatedExpansions = expansions.filter(exp => exp.propertyName === groupHome.propertyName);
+  const relatedExpansions = expansions.filter(
+    exp => exp.property_name?.trim() === groupHome.propertyName?.trim()
+  );
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   console.log("?　relatedExpansions:", relatedExpansions);
   console.log("?? groupHome.propertyName:", groupHome.propertyName);
