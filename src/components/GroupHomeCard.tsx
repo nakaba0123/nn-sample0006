@@ -63,7 +63,10 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   const relatedExpansions = expansions.filter(exp => exp.propertyName === groupHome.propertyName);
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   console.log("?　relatedExpansions:", relatedExpansions);
-
+  console.log("?? groupHome.propertyName:", groupHome.propertyName);
+  expansions.forEach((exp, i) => {
+    console.log(`?? expansions[${i}].propertyName:`, exp.propertyName);
+  });
 
 useEffect(() => {
   axios.get("/api/group-homes").then((res) => {
