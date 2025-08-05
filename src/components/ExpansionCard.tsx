@@ -25,6 +25,24 @@ const formatDate = (dateString: string) => {
 
   const typeInfo = getExpansionTypeDisplay(expansion.expansionType);
 
+function mapExpansionResponse(raw: any): ExpansionRecord {
+  return {
+    id: raw.id,
+    propertyName: raw.property_name,
+    unitName: raw.unit_name,
+    startDate: raw.start_date,
+    timestamp: raw.timestamp,
+    expansionType: raw.expansion_type,
+    newRooms: raw.new_rooms,
+    commonRoom: raw.common_room,
+    // 他のフィールドも必要に応じて
+  };
+}
+
+const response = await fetch(...);
+const data = await response.json();
+const expansions = data.map(mapExpansionResponse);
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
