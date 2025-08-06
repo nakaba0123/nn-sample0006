@@ -78,6 +78,13 @@ const filteredExpansions = expansionRecords.filter(expansion => {
 const totalRooms = groupHomes.reduce((sum, gh) => sum + (gh.residentRooms?.length ?? 0), 0);
 const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
 
+  async function fetchExpansions() {
+    const response = await fetch("/api/expansions");
+    const data = await response.json();
+    const expansions = data.map(mapExpansionResponse);
+    return expansions;
+  }
+
   useEffect(() => {
     const loadExpansions = async () => {
       const fetched = await fetchExpansions();
