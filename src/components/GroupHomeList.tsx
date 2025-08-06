@@ -3,6 +3,7 @@ import { Search, Filter, Home, Plus, MapPin, ArrowRight } from 'lucide-react';
 import { GroupHome, ExpansionRecord } from '../types/GroupHome';
 import GroupHomeCard from './GroupHomeCard';
 import ExpansionCard from './ExpansionCard';
+import { mapExpansion } from '../util/mapExpansion'; // パスは適宜調整
 
 interface GroupHomeListProps {
   groupHomes: GroupHome[];
@@ -101,13 +102,14 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
     };
   }
 
-  useEffect(() => {
-    const loadExpansions = async () => {
-      const fetched = await fetchExpansions();
-      setExpansions(fetched); // ? これで状態に保存される
-    };
-    loadExpansions();
-  }, []);
+useEffect(() => {
+  const loadExpansions = async () => {
+    const fetched = await fetchExpansions();
+    const mapped = fetched.map(mapExpansion);  // ←ここで変換！
+    setExpansions(mapped);
+  };
+  loadExpansions();
+}, []);
 
   return (
     <div className="space-y-6">
