@@ -113,6 +113,7 @@ useEffect(() => {
     const fetched = await fetchExpansions();
     const mapped = fetched.map(mapExpansion); // ← ここを忘れずに！
     console.log("Mapped expansions:", mapped); // ← デバッグにも便利！
+    console.log("mapped.property_name", mapped.property_name);
     setExpansions(mapped); // ← ここにキャメルケース版をセット
   };
   loadExpansions();
