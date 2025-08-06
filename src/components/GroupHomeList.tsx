@@ -64,6 +64,9 @@ const filteredExpansions = expansionRecords.filter(expansion => {
   const unitName = expansion.unitName || "";
   const search = searchTerm.toLowerCase();
 
+  console.log("propName", propName");
+  console.log("unitName", unitName");
+
   return (
    (propName?.toLowerCase() ?? "").includes(search) || 
    (unitName?.toLowerCase() ?? "").includes(search)
@@ -242,7 +245,6 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
 
             )
           ) : (
-            {console.log("🔥 filteredExpansionsのlength", filteredExpansions.length)}
             filteredExpansions.length === 0 ? (
               <div className="text-center py-12">
                 <ArrowRight className="w-12 h-12 text-gray-300 mx-auto mb-4" />
