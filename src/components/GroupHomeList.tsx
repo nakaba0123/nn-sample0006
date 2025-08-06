@@ -60,17 +60,16 @@ groupHomes.forEach(gh => {
   });
 
 const filteredExpansions = expansionRecords.filter(expansion => {
-  const propName = expansion.propertyName || "";
-  const unitName = expansion.unitName || "";
+  const propName = expansion.property_name || "";
+  const unitName = expansion.unit_name || "";
   const search = searchTerm.toLowerCase();
 
-  console.log("expansionRecords", expansionRecords);
   console.log("propName", propName);
   console.log("unitName", unitName);
 
   return (
-   (propName?.toLowerCase() ?? "").includes(search) || 
-   (unitName?.toLowerCase() ?? "").includes(search)
+    propName.toLowerCase().includes(search) ||
+    unitName.toLowerCase().includes(search)
   );
 });
 
