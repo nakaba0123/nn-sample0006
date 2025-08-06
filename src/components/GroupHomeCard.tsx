@@ -71,6 +71,15 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
     console.log(`?? expansions[${i}].propertyName:`, exp.propertyName);
   });
 
+import { mapExpansionResponse } from "../util/mapExpansion"; // これも忘れず！
+
+const fetchExpansions = async () => {
+  const res = await axios.get("/api/expansions");
+  const mapped = res.data.map(mapExpansionResponse);
+  setExpansions(mapped);
+};
+
+
 useEffect(() => {
   axios.get("/api/group-homes").then((res) => {
     const mapped = res.data.map((gh) => mapGroupHome(gh));
