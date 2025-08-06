@@ -68,6 +68,9 @@ const filteredExpansions = expansionRecords.filter(expansion => {
   console.log("propName", propName);
   console.log("unitName", unitName);
 
+  console.log("propName.toLowerCase().includes(search)", propName.toLowerCase().includes(search));
+  console.log("unitName.toLowerCase().includes(search)", unitName.toLowerCase().includes(search));
+
   return (
     propName.toLowerCase().includes(search) ||
     unitName.toLowerCase().includes(search)
