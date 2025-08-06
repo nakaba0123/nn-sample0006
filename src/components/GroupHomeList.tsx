@@ -46,6 +46,7 @@ groupHomes.forEach(gh => {
   const [searchTerm, setSearchTerm] = useState('');
   const [addressFilter, setAddressFilter] = useState('');
   const [activeView, setActiveView] = useState<'facilities' | 'expansions'>('facilities');
+  const [expansions, setExpansions] = useState<ExpansionRecord[]>([]);
 
   const filteredGroupHomes = groupHomes.filter(groupHome => {
     const matchesSearch =
@@ -76,6 +77,14 @@ const filteredExpansions = expansionRecords.filter(expansion => {
 
 const totalRooms = groupHomes.reduce((sum, gh) => sum + (gh.residentRooms?.length ?? 0), 0);
 const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
+
+  useEffect(() => {
+    const loadExpansions = async () => {
+      const fetched = await fetchExpansions();
+      setExpansions(fetched); // ? これで状態に保存される
+    };
+    loadExpansions();
+  }, []);
 
   return (
     <div className="space-y-6">

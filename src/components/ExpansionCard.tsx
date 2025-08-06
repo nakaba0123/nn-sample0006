@@ -9,7 +9,6 @@ interface ExpansionCardProps {
 }
 
 const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDelete }) => {
-  const [expansions, setExpansions] = useState<ExpansionRecord[]>([]); // ? これがないと setExpansions が未定義になる！
 
   const getExpansionTypeDisplay = (type: 'A' | 'B') => {
     return type === 'A'
@@ -44,14 +43,6 @@ const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDele
     const expansions = data.map(mapExpansionResponse);
     return expansions;
   }
-
-  useEffect(() => {
-    const loadExpansions = async () => {
-      const fetched = await fetchExpansions();
-      setExpansions(fetched); // ? これで状態に保存される
-    };
-    loadExpansions();
-  }, []);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
