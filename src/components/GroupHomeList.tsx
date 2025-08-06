@@ -111,8 +111,11 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
 useEffect(() => {
   const loadExpansions = async () => {
     const fetched = await fetchExpansions();
+    console.log("Fetched expansions:", fetched);
     const mapped = fetched.map(mapExpansion);  // ←ここで変換！
+    console.log("Mapped expansios:", mapped);
     setExpansions(mapped);
+    console.log("expansionRecords", expansionRecords);
   };
   loadExpansions();
 }, []);
