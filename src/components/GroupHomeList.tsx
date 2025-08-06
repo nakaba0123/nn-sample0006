@@ -61,8 +61,8 @@ groupHomes.forEach(gh => {
   });
 
 const filteredExpansions = expansionRecords.filter(expansion => {
-  const propName = expansion.property_name || "";
-  const unitName = expansion.unit_name || "";
+  const propName = expansion.propertyNaame || "";
+  const unitName = expansion.unitName || "";
   const search = searchTerm.toLowerCase();
 
   console.log("expansionRecords", expansionRecords);
