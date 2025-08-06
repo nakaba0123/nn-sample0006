@@ -4,6 +4,7 @@ import React from 'react';
 import { Home, MapPin, Phone, Calendar, Users, Edit, Trash2, Building, ArrowRight } from 'lucide-react';
 import { GroupHome, ExpansionRecord } from '../types/GroupHome';
 import { mapGroupHome } from "../util/mapGroupHome"; // パスは適宜！1
+import { mapExpansionResponse } from "../util/mapExpansion"; // これも忘れず！
 
 interface GroupHomeCardProps {
   groupHome: GroupHome;
@@ -71,7 +72,6 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
     console.log(`?? expansions[${i}].propertyName:`, exp.propertyName);
   });
 
-import { mapExpansionResponse } from "../util/mapExpansion"; // これも忘れず！
 
 const fetchExpansions = async () => {
   const res = await axios.get("/api/expansions");
