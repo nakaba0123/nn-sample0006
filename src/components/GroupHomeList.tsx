@@ -64,8 +64,8 @@ const filteredExpansions = expansionRecords.filter(expansion => {
   const unitName = expansion.unitName || "";
   const search = searchTerm.toLowerCase();
 
-  console.log("propName", propName");
-  console.log("unitName", unitName");
+  console.log("propName", propName);
+  console.log("unitName", unitName);
 
   return (
    (propName?.toLowerCase() ?? "").includes(search) || 
