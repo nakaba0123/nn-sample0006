@@ -85,6 +85,19 @@ const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.new
     return expansions;
   }
 
+  function mapExpansionResponse(raw: any): ExpansionRecord {
+    return {
+      id: raw.id,
+      propertyName: raw.property_name,
+      unitName: raw.unit_name,
+      startDate: raw.start_date,
+      timestamp: raw.timestamp,
+      expansionType: raw.expansion_type,
+      newRooms: raw.new_rooms,
+      commonRoom: raw.common_room,
+    };
+  }
+
   useEffect(() => {
     const loadExpansions = async () => {
       const fetched = await fetchExpansions();
