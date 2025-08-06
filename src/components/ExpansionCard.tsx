@@ -10,6 +10,8 @@ interface ExpansionCardProps {
 
 const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDelete }) => {
 
+  console.log("ExpansionCard内のexpansion", expansion);
+
   const getExpansionTypeDisplay = (type: 'A' | 'B') => {
     return type === 'A'
       ? { text: '別ユニット増床', color: 'bg-green-100 text-green-700', icon: '?' }
