@@ -231,9 +231,9 @@ useEffect(() => {
   console.log("グループホームGH", gh);
   console.log("ExpansionRecords",expansionRecords);
   console.log("グループホームGHのpropertyName", gh.propertyName);
-  console.log("ExpansionRecordsのproperty_name",expansionRecords.property_name);
+  console.log("ExpansionRecordsのpropertyName",expansionRecords.propertyName);
   const matchedExpansions = expansionRecords.filter(
-    exp => exp.property_name?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
+    exp => exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
   );
   console.log("matchedExpansions", matchedExpansions);
 
