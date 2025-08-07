@@ -488,7 +488,7 @@ console.log("formData: ", formData);
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 {disabilityHistory
   .filter((history) => history.startDate) // startDate が存在するものだけ
-  .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+  .sort((a, b) => Date.parse(b.startDate) - Date.parse(a.startDate))
   .map((history) => (
     <DisabilityHistoryCard
       key={history.id}
