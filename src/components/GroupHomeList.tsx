@@ -276,7 +276,7 @@ useEffect(() => {
                 {filteredExpansions.map((expansion) => (
                   <ExpansionCard
                     key={expansion.id}
-                    expansion={mapExpansion(expansion)}
+                    expansion={{ ...expansion, new_rooms: newRooms }} // ← 上書き渡し
                     onEdit={onEditExpansion}
                     onDelete={onDeleteExpansion}
                   />
