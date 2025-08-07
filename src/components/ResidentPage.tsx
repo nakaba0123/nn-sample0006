@@ -18,6 +18,20 @@ interface ResidentPageProps {
   onDeleteResident: (residentId: string) => void;
 }
 
+function camelizeKeys(obj: any) {
+  if (Array.isArray(obj)) {
+    return obj.map(v => camelizeKeys(v));
+  } else if (obj !== null && obj.constructor === Object) {
+    return Object.fromEntries(
+      Object.entries(obj).map(([key, value]) => [
+        key.replace(/_([a-z])/g, (_, char) => char.toUpperCase()),
+        camelizeKeys(value),
+      ])
+    );
+  }
+  return obj;
+}
+
 const ResidentPage: React.FC<ResidentPageProps> = ({
   residents,
   groupHomes,
@@ -280,7 +294,7 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
               {filteredResidents.map((resident) => (
                 <ResidentCard
                   key={resident.id}
-                  resident={resident}
+                  resident={camelizeKeys(resident)}
                   onEdit={handleEditResident}
                   onDelete={handleDeleteResident}
                 />
