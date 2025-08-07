@@ -68,7 +68,9 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
 }) => {
   console.log('🪵 受け取った groupHome:', groupHome);
   console.log('🪵 受け取った expansions:', expansions);
-  const camelExpansions = (expansions?? []).map(convertExpansionToCamelCase);
+  const camelExpansions = Array.isArray(expansions)
+    ? expansions.map(convertExpansionToCamelCase)
+    : [];
   console.log('🪵 受け取った camelExpansions:', camelExpansions);
 
 
@@ -95,9 +97,9 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   console.log("?　relatedExpansions:", relatedExpansions);
   console.log("?? groupHome.propertyName:", groupHome.propertyName);
-  camelExpansions.forEach((exp, i) => {
-    console.log(`?? camelExpansions[${i}].propertyName:`, exp.propertyName);
-  });
+//  camelExpansions.forEach((exp, i) => {
+//    console.log(`?? camelExpansions[${i}].propertyName:`, exp.propertyName);
+//  });
 
 
 const fetchExpansions = async () => {
