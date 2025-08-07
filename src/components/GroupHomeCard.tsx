@@ -15,6 +15,19 @@ interface GroupHomeCardProps {
   onDeleteExpansion: (expansionId: string) => void;
 }
 
+type Expansion = {
+  id: number;
+  groupHomeId: number;
+  propertyName: string;
+  unitName: string;
+  expansionType: string;
+  newRooms: string[];
+  commonRoom: string;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+};
+
 type Props = {
   groupHome: {
     propertyName: string;
@@ -27,7 +40,7 @@ type Props = {
     openingDate: string;
     createdAt: string;
   };
-  expansions?: any[]; // 必要に応じて追加
+  expansions?: Expansion[];
   onEdit?: () => void;
   onDelete?: () => void;
   onEditExpansion?: () => void;
