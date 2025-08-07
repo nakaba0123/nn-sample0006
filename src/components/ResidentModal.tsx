@@ -486,16 +486,17 @@ console.log("formData: ", formData);
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {disabilityHistory
-                        .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
-                        .map((history) => (
-                          <DisabilityHistoryCard
-                            key={history.id}
-                            history={history}
-                            onEdit={handleEditDisabilityHistory}
-                            onDelete={handleDeleteDisabilityHistory}
-                          />
-                        ))}
+{disabilityHistory
+  .filter((history) => history.startDate) // startDate が存在するものだけ
+  .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+  .map((history) => (
+    <DisabilityHistoryCard
+      key={history.id}
+      history={history}
+      onEdit={handleEditDisabilityHistory}
+      onDelete={handleDeleteDisabilityHistory}
+    />
+))}
                     </div>
                   )}
                 </div>
