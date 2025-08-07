@@ -107,7 +107,7 @@ const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDele
 
       <div className="pt-4 border-t border-gray-100">
         <div className="flex items-center justify-between text-sm text-gray-500">
-          <span>登録日: {formatDate(expansion.timestamp)}</span>
+          <span>登録日: {formatDate(expansion.createdAt)}</span>
           <span>ID: {String(expansion.id).slice(0, 8)}...</span>
         </div>
       </div>
