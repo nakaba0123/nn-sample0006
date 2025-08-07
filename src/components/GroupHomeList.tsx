@@ -276,7 +276,7 @@ useEffect(() => {
                 {filteredExpansions.map((expansion) => (
                   <ExpansionCard
                     key={expansion.id}
-                    expansion={expansion}
+                    expansion={mapExpansion(expansion)}
                     onEdit={onEditExpansion}
                     onDelete={onDeleteExpansion}
                   />
