@@ -1,13 +1,13 @@
 // utils/mapExpansion.ts
 export const mapExpansion = (expansion: any) => ({
   id: expansion.id,
-  propertyName: expansion.propertyName,
-  unitName: expansion.unitName,
-  startDate: expansion.startDate,
-  expansionType: expansion.expansionType,
-  newRooms: expansion.newRooms,
-  commonRoom: expansion.commonRoom,
-  createdAt: expansion.createdAt,
+  propertyName: expansion.property_name,
+  unitName: expansion.unit_name,
+  startDate: expansion.start_date,
+  expansionType: expansion.expansion_type,
+  newRooms: expansion.new_rooms,
+  commonRoom: expansion.common_room,
+  createdAt: expansion.created_at,
 });
 
 // src/util/mapExpansion.ts
