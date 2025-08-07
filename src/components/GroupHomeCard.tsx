@@ -68,7 +68,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
 }) => {
   console.log('🪵 受け取った groupHome:', groupHome);
   console.log('🪵 受け取った expansions:', expansions);
-  const camelExpansions = expansions?.map(convertExpansionToCamelCase);
+  const camelExpansions = (expansions?? []).map(convertExpansionToCamelCase);
   console.log('🪵 受け取った camelExpansions:', camelExpansions);
 
 
