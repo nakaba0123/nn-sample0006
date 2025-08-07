@@ -5,7 +5,7 @@ export const mapExpansion = (expansion: any) => ({
   unitName: expansion.unit_name,
   startDate: expansion.start_date,
   expansionType: expansion.expansion_type,
-  newRooms: expansion.new_rooms,
+  newRooms: JSON.parse(expansion.new_rooms || "[]")
   commonRoom: expansion.common_room,
   createdAt: expansion.created_at,
 });
