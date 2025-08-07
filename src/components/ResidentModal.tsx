@@ -405,7 +405,7 @@ console.log("formData: ", formData);
             <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-2">
-                  <Shield className="w-5 h-5 text-purple-600" />
+                  <div className="w-5 h-5 text-purple-600"></div>
                   <h3 className="font-medium text-purple-800">障害支援区分</h3>
                   {editResident && (
                     <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
