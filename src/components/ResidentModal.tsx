@@ -66,6 +66,14 @@ const ResidentModal: React.FC<Props> = ({
 
   const isHiragana = (t: string) => /^[\u3041-\u3096\u30FC\s　]+$/.test(t.trim());
 
+  // 現在の障害支援区分を取得
+  const getCurrentDisabilityLevel = () => {
+    const currentHistory = disabilityHistory.find(h => !h.endDate);
+    return currentHistory?.disabilityLevel || '未設定';
+  };
+
+
+
   const allUnits = () => {
     const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
     groupHomes.forEach((g) =>
