@@ -47,6 +47,17 @@ type Props = {
   onDeleteExpansion?: () => void;
 };
 
+const toCamel = (s: string) =>
+  s.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+
+const convertExpansionToCamelCase = (expansion: any) => {
+  const newExpansion: any = {};
+  for (const key in expansion) {
+    newExpansion[toCamel(key)] = expansion[key];
+  }
+  return newExpansion;
+};
+
 const GroupHomeCard: React.FC<GroupHomeCardProps> = ({ 
   groupHome, 
   expansions,
@@ -57,6 +68,9 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
 }) => {
   console.log('🪵 受け取った groupHome:', groupHome);
   console.log('🪵 受け取った expansions:', expansions);
+  const camelExpansions = props.expansions?.map(convertExpansionToCamelCase);
+  console.log('🪵 受け取った camelExpansions:', camelExpansions);
+
 
   const [groupHomes, setGroupHomes] = useState([]);
 
@@ -75,14 +89,14 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   };
 
   // この物件に関連する増床記録を取得
-  const relatedExpansions = expansions.filter(
+  const relatedExpansions = camelExpansions.filter(
     exp => exp.propertyName?.trim() === groupHome.propertyName?.trim()
   );
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   console.log("?　relatedExpansions:", relatedExpansions);
   console.log("?? groupHome.propertyName:", groupHome.propertyName);
-  expansions.forEach((exp, i) => {
-    console.log(`?? expansions[${i}].propertyName:`, exp.propertyName);
+  camelExpansions.forEach((exp, i) => {
+    console.log(`?? camelExpansions[${i}].propertyName:`, exp.propertyName);
   });
 
 
