@@ -401,93 +401,52 @@ console.log("formData: ", formData);
     </div>
   </section>
 
-            {/* 障害支援区分設定 */}
-            <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-2">
-                  <Shield className="w-5 h-5 text-purple-600" />
-                  <h3 className="font-medium text-purple-800">障害支援区分</h3>
-                  {editResident && (
-                    <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
-                      現在: 区分{getCurrentDisabilityLevel()}
-                    </span>
-                  )}
-                </div>
-                {editResident && (
-                  <button
-                    type="button"
-                    onClick={handleAddDisabilityHistory}
-                    className="flex items-center space-x-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>履歴追加</span>
-                  </button>
-                )}
-              </div>
-
-              {!editResident ? (
-                // 新規登録時：初期区分設定
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      初期障害支援区分 *
-                    </label>
-                    <select
-                      value={formData.disabilityLevel}
-                      onChange={(e) => handleInputChange('disabilityLevel', e.target.value as any)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                    >
-                      <option value="1以下">1以下</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Calendar className="w-4 h-4 inline mr-2" />
-                      適用開始日 *
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.disabilityStartDate}
-                      onChange={(e) => handleInputChange('disabilityStartDate', e.target.value)}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all ${
-                        errors.disabilityStartDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                      }`}
-                    />
-                    {errors.disabilityStartDate && <p className="text-red-500 text-sm mt-1">{errors.disabilityStartDate}</p>}
-                  </div>
-                </div>
-              ) : (
-                // 編集時：履歴表示
-                <div>
-                  {disabilityHistory.length === 0 ? (
-                    <div className="text-center py-8">
-                      <History className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                      <p className="text-gray-500 text-sm">障害支援区分履歴がありません</p>
-                      <p className="text-gray-400 text-xs">「履歴追加」ボタンから追加してください</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {disabilityHistory
-                        .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
-                        .map((history) => (
-                          <DisabilityHistoryCard
-                            key={history.id}
-                            history={history}
-                            onEdit={handleEditDisabilityHistory}
-                            onDelete={handleDeleteDisabilityHistory}
-                          />
-                        ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+{/* 障害情報 */}
+<section className="bg-purple-50 rounded-lg p-4 border border-purple-200 space-y-5">
+  <h3 className="font-medium text-purple-800 flex items-center">
+    <User className="w-5 h-5 mr-2" />
+    障害情報
+  </h3>
+  <div className="grid md:grid-cols-2 gap-5">
+    <div>
+      <select
+        value={formData.disabilityLevel}
+        onChange={(e) =>
+          setFormData((p) => ({ ...p, disabilityLevel: e.target.value }))
+        }
+        className="w-full rounded-lg border px-4 py-2 border-gray-300"
+        disabled={isEditMode} // 編集モードのときは選択不可
+      >
+        {["1以下", "2", "3", "4", "5", "6"].map((level) => (
+          <option key={level} value={level}>
+            支援区分 {level}
+          </option>
+        ))}
+      </select>
+    </div>
+    <div>
+      {input("disabilityStartDate", {
+        type: "date",
+        placeholder: "開始日 *",
+        readOnly: isEditMode, // 編集モードのときは変更不可
+      })}
+      {errors.disabilityStartDate && (
+        <p className="text-xs text-red-500 mt-1">{errors.disabilityStartDate}</p>
+      )}
+    </div>
+    <div className="md:col-span-2 text-right">
+      {isEditMode && (
+        <button
+          type="button"
+          onClick={() => setIsDisModalOpen(true)}
+          className="text-sm text-blue-600 hover:underline"
+        >
+          障害歴を編集する
+        </button>
+      )}
+    </div>
+  </div>
+</section>
 
 {/* 入居情報 */}
 <section className="bg-green-50 rounded-lg p-4 border border-green-200 space-y-5">
