@@ -50,12 +50,16 @@ type Props = {
 const toCamel = (s: string) =>
   s.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
 
-const convertExpansionToCamelCase = (expansion: any) => {
-  const newExpansion: any = {};
-  for (const key in expansion) {
-    newExpansion[toCamel(key)] = expansion[key];
-  }
-  return newExpansion;
+const convertExpansionToCamelCase = (expansions: any): any[] => {
+  if (!Array.isArray(expansions)) return [];
+  return expansions.map((expansion) => ({
+    ...expansion,
+    expansionId: expansion.expansion_id,
+    groupHomeId: expansion.group_home_id,
+    addedRooms: expansion.added_rooms,
+    expansionDate: expansion.expansion_date,
+    createdAt: expansion.created_at,
+  }));
 };
 
 const GroupHomeCard: React.FC<GroupHomeCardProps> = ({ 
@@ -67,6 +71,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   onDeleteExpansion
 }) => {
   console.log('🪵 受け取った groupHome:', groupHome);
+  console.log("🐛 expansions の typeof:", typeof expansions);
   console.log('🪵 受け取った expansions:', expansions);
   const camelExpansions = Array.isArray(expansions)
     ? expansions?.map(convertExpansionToCamelCase)
