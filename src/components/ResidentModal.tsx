@@ -432,7 +432,7 @@ console.log("formData: ", formData);
                     onClick={handleAddDisabilityHistory}
                     className="flex items-center space-x-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
                   >
-                    <Plus className="w-4 h-4" />
+                    <div className="w-4 h-4"></div>
                     <span>履歴追加</span>
                   </button>
                 )}
