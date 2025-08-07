@@ -232,7 +232,7 @@ useEffect(() => {
   console.log("グループホームGHのpropertyName", gh.propertyName);
   console.log("ExpansionRecordsのpropertyName",expansionRecords.propertyName);
   const matchedExpansions = expansionRecords.filter(
-    exp => exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
+    exp => exp.property_name?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
   );
   console.log("matchedExpansions", matchedExpansions);
 
