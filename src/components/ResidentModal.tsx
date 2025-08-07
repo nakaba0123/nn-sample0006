@@ -72,6 +72,11 @@ const ResidentModal: React.FC<Props> = ({
     return currentHistory?.disabilityLevel || '未設定';
   };
 
+  const handleAddDisabilityHistory = () => {
+    setEditingDisabilityHistory(null);
+    setIsDisabilityHistoryModalOpen(true);
+  };
+
 
 
   const allUnits = () => {
