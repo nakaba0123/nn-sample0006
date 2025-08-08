@@ -653,6 +653,7 @@ console.log("formData: ", formData);
 <DisabilityHistoryModal
   isOpen={isDisModalOpen}
   onClose={() => setIsDisModalOpen(false)}
+  resident={editResident ?? null} // ← 編集時はeditResident.id、新規時は仮の0
   residentId={editResident?.id ?? 0} // ← 編集時はeditResident.id、新規時は仮の0
   existingHistory={disabilityHistory}
 onSubmit={async (newHistory) => {
