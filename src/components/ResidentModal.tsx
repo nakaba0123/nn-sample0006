@@ -110,7 +110,7 @@ const ResidentModal: React.FC<Props> = ({
     );
   };
 
-  const selectedUnit = () => allUnits().find((u) => u.id === formData.groupHomeId);
+  const selectedUnit = () => allUnits()?.find((u) => u.id === formData.groupHomeId);
 
   const availableRooms = () => {
     const sel = selectedUnit();
