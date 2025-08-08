@@ -507,18 +507,23 @@ console.log("formData: ", formData);
   disabilityHistory
     .filter((history) => {
       console.log("フィルター前:", history); // ←①
-      return history.startDate;
+      return history.start_date; // ←修正：startDate → start_date
     })
     .sort((a, b) => {
-      console.log("ソート対象:", a.startDate, b.startDate); // ←②
-      return Date.parse(b.startDate) - Date.parse(a.startDate);
+      console.log("ソート対象:", a.start_date, b.start_date); // ←修正：startDate → start_date
+      return Date.parse(b.start_date) - Date.parse(a.start_date); // ←修正
     })
     .map((history) => {
       console.log("描画するカード:", history); // ←③
       return (
         <DisabilityHistoryCard
           key={history.id}
-          history={history}
+          history={{
+            ...history,
+            startDate: history.start_date,
+            endDate: history.end_date,
+            disabilityLevel: history.disability_level,
+          }} // ←ここでキャメルに変換して渡すと親切
           onEdit={handleEditDisabilityHistory}
           onDelete={handleDeleteDisabilityHistory}
         />
