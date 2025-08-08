@@ -126,7 +126,9 @@ const ResidentModal: React.FC<Props> = ({
   };
 
 useEffect(() => {
+  console.log("ResidentModal入ったよ");
   if (!isOpen) return;
+  console.log("オープンだよ！");
 
   if (!editResident) {
     // 🟩 新規モードの場合は formData を初期化する
