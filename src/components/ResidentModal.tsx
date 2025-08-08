@@ -494,7 +494,7 @@ console.log("formData: ", formData);
               ) : (
                 // 編集時：履歴表示
                 <div>
-                  {console.log("disabilityHistory", disabilityHistory);}
+                  {console.log("disabilityHistory", disabilityHistory)}
                   {disabilityHistory?.length === 0 ? (
                     <div className="text-center py-8">
                       <History className="w-8 h-8 text-gray-300 mx-auto mb-2" />
