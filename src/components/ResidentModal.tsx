@@ -66,6 +66,10 @@ const ResidentModal: React.FC<Props> = ({
 
   const isHiragana = (t: string) => /^[\u3041-\u3096\u30FC\s　]+$/.test(t.trim());
 
+  console.log("ResidentModal 描画中");
+  console.log("disabilityHistory:", disabilityHistory);
+  console.log("length:", disabilityHistory?.length);
+
   // 現在の障害支援区分を取得
   const getCurrentDisabilityLevel = () => {
     const currentHistory = disabilityHistory.find(h => !h.endDate);
