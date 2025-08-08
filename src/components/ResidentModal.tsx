@@ -494,7 +494,7 @@ console.log("formData: ", formData);
                 )}
               </div>
 
-              {!editResident ? (
+            {!editResident ? (
                 // 新規登録時：初期区分設定
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
@@ -687,6 +687,14 @@ onSubmit={async (newHistory) => {
 
 >
   {/* 子要素がある場合ここに書く */}
+{isDisabilityHistoryModalOpen && (
+  <DisabilityHistoryModal
+    residentId={resident?.id}
+    history={editingDisabilityHistory}
+    onClose={() => setIsDisabilityHistoryModalOpen(false)}
+  />
+)}
+
 </DisabilityHistoryModal>
       </div>
     </div>
