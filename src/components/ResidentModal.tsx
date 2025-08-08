@@ -78,12 +78,49 @@ const ResidentModal: React.FC<Props> = ({
     return currentHistory?.disabilityLevel || '未設定';
   };
 
+
+  // 障害支援区分履歴の管理
+  const handleDisabilityHistorySubmit = (data: DisabilityHistoryFormData) => {
+    if (editingDisabilityHistory) {
+      // 編集
+      setDisabilityHistory(prev => prev.map(history => 
+        history.id === editingDisabilityHistory.id 
+          ? { ...history, ...data }
+          : history
+      ));
+      setEditingDisabilityHistory(null);
+    } else {
+      // 新規追加
+      const newHistory: DisabilityHistory = {
+        id: `disability_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        ...data,
+        createdAt: new Date().toISOString()
+      };
+      setDisabilityHistory(prev => [...prev, newHistory]);
+    }
+    setIsDisabilityHistoryModalOpen(false);
+  };
+
+  const handleEditDisabilityHistory = (history: DisabilityHistory) => {
+    setEditingDisabilityHistory(history);
+    setIsDisabilityHistoryModalOpen(true);
+  };
+
+  const handleDeleteDisabilityHistory = (historyId: string) => {
+    if (window.confirm('この障害支援区分履歴を削除してもよろしいですか？')) {
+      setDisabilityHistory(prev => prev.filter(h => h.id !== historyId));
+    }
+  };
+
   const handleAddDisabilityHistory = () => {
     setEditingDisabilityHistory(null);
     setIsDisabilityHistoryModalOpen(true);
   };
 
-
+  const handleCloseDisabilityHistoryModal = () => {
+    setIsDisabilityHistoryModalOpen(false);
+    setEditingDisabilityHistory(null);
+  };
 
   const allUnits = () => {
     const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
