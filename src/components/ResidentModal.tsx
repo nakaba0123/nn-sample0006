@@ -15,6 +15,7 @@ import {
 } from "../types/Resident";
 import { GroupHome, ExpansionRecord } from "../types/GroupHome";
 import DisabilityHistoryModal from "./DisabilityHistoryModal";
+import DisabilityHistoryCard from './DisabilityHistoryCard'; // ←★これを追加
 
 /**
  * ResidentModal – 2025‑07 最終安定版
