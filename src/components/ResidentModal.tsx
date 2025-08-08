@@ -484,6 +484,39 @@ console.log("formData: ", formData);
               ) : (
                 // 編集時：履歴表示
                 <div>
+
+                  {disabilityHistory?.length === 0 ? (
+                    <div className="text-center py-8">
+                      <div className="w-8 h-8 text-gray-300 mx-auto mb-2"></div>
+                      <p className="text-gray-500 text-sm">障害支援区分履歴がありません</p>
+                      <p className="text-gray-400 text-xs">「履歴追加」ボタンから追加してください</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+{disabilityHistory &&
+  disabilityHistory
+    .filter((history) => {
+      console.log("フィルター前:", history); // ←①
+      return history.startDate;
+    })
+    .sort((a, b) => {
+      console.log("ソート対象:", a.startDate, b.startDate); // ←②
+      return Date.parse(b.startDate) - Date.parse(a.startDate);
+    })
+    .map((history) => {
+      console.log("描画するカード:", history); // ←③
+      return (
+        <DisabilityHistoryCard
+          key={history.id}
+          history={history}
+          onEdit={handleEditDisabilityHistory}
+          onDelete={handleDeleteDisabilityHistory}
+        />
+      );
+    })}
+                    </div>
+                  )}
+
                 </div>
               )}
             </div>
