@@ -487,16 +487,25 @@ console.log("formData: ", formData);
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 {disabilityHistory
-  .filter((history) => history.startDate) // startDate が存在するものだけ
-  .sort((a, b) => Date.parse(b.startDate) - Date.parse(a.startDate))
-  .map((history) => (
-    <DisabilityHistoryCard
-      key={history.id}
-      history={history}
-      onEdit={handleEditDisabilityHistory}
-      onDelete={handleDeleteDisabilityHistory}
-    />
-))}
+  .filter((history) => {
+    console.log("フィルター前:", history); // ←① ここ
+    return history.startDate;
+  })
+  .sort((a, b) => {
+    console.log("ソート対象:", a.startDate, b.startDate); // ←② ここ
+    return Date.parse(b.startDate) - Date.parse(a.startDate);
+  })
+  .map((history) => {
+    console.log("描画するカード:", history); // ←③ ここ
+    return (
+      <DisabilityHistoryCard
+        key={history.id}
+        history={history}
+        onEdit={handleEditDisabilityHistory}
+        onDelete={handleDeleteDisabilityHistory}
+      />
+    );
+  })}
                     </div>
                   )}
                 </div>
