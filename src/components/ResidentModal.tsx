@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { X, User, Users, Home, Calendar, Shield, MapPin, Hash, Plus, History } from 'lucide-react';
 import { mapResident } from '../util/mapResident';
 import {
   X,
@@ -424,7 +425,7 @@ console.log("formData: ", formData);
             <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-2">
-                  <div className="w-5 h-5 text-purple-600"></div>
+                  <Shield className="w-5 h-5 text-purple-600" />
                   <h3 className="font-medium text-purple-800">障害支援区分</h3>
                   {editResident && (
                     <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
@@ -438,7 +439,7 @@ console.log("formData: ", formData);
                     onClick={handleAddDisabilityHistory}
                     className="flex items-center space-x-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
                   >
-                    <div className="w-4 h-4"></div>
+                    <Plus className="w-4 h-4" />
                     <span>履歴追加</span>
                   </button>
                 )}
@@ -487,7 +488,7 @@ console.log("formData: ", formData);
 
                   {disabilityHistory?.length === 0 ? (
                     <div className="text-center py-8">
-                      <div className="w-8 h-8 text-gray-300 mx-auto mb-2"></div>
+                      <History className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                       <p className="text-gray-500 text-sm">障害支援区分履歴がありません</p>
                       <p className="text-gray-400 text-xs">「履歴追加」ボタンから追加してください</p>
                     </div>
