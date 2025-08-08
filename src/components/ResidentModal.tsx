@@ -506,7 +506,6 @@ console.log("formData: ", formData);
 //      />
 //    );
 //  })}
-{disabilityHistory}
                     </div>
                   )}
                 </div>
