@@ -368,6 +368,14 @@ const selected = selectedUnit(); // ✅ isOpen が true になってから呼ぶ
 console.log("🧪 selectedUnit:", selected);
 console.log("formData: ", formData);
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -471,10 +479,10 @@ console.log("formData: ", formData);
                       <Calendar className="w-4 h-4 inline mr-2" />
                       適用開始日 *
                     </label>
-<input
-  type="date"
-  value={formData.disabilityStartDate || ''}
-  onChange={(e) => handleInputChange('disabilityStartDate', e.target.value)}
+      <input
+        type="date"
+        value={formData.disabilityStartDate}
+        onChange={(e) => handleInputChange('disabilityStartDate', e.target.value)}
   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all ${
     errors.disabilityStartDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
   }`}
