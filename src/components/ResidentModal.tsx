@@ -106,7 +106,7 @@ const ResidentModal: React.FC<Props> = ({
 
   const handleEditDisabilityHistory = (history: DisabilityHistory) => {
     setEditingDisabilityHistory(history);
-    setIsDisabilityHistoryModalOpen(true);
+    setIsDisModalOpen(true);
   };
 
   const handleDeleteDisabilityHistory = (historyId: string) => {
@@ -117,7 +117,7 @@ const ResidentModal: React.FC<Props> = ({
 
   const handleAddDisabilityHistory = () => {
     setEditingDisabilityHistory(null);
-    setIsDisabilityHistoryModalOpen(true);
+    setIsDisModalOpen(true);
   };
 
   const handleCloseDisabilityHistoryModal = () => {
