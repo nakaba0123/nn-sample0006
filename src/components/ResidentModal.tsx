@@ -690,7 +690,7 @@ console.log("formData: ", formData);
   {/* 子要素がある場合ここに書く */}
 {isDisabilityHistoryModalOpen && (
   <DisabilityHistoryModal
-    residentId={resident?.id}
+    residentId={editResident?.id ?? 0} // ← これに差し替え
     history={editingDisabilityHistory}
     onClose={() => setIsDisabilityHistoryModalOpen(false)}
   />
