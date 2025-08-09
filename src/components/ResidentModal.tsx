@@ -69,7 +69,6 @@ const ResidentModal: React.FC<Props> = ({
   const isHiragana = (t: string) => /^[\u3041-\u3096\u30FC\s　]+$/.test(t.trim());
 
   const [isDisabilityHistoryModalOpen, setIsDisabilityHistoryModalOpen] = useState(false);
-  const [editingDisabilityHistory, setEditingDisabilityHistory] = useState<DisabilityHistory | null>(null);
 
   console.log("ResidentModal 描画中");
   console.log("disabilityHistory:", disabilityHistory);
