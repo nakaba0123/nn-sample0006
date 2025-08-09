@@ -65,6 +65,7 @@ const ResidentModal: React.FC<Props> = ({
   const [disabilityHistory, setDisabilityHistory] = useState<DisabilityHistory[]>([]);
   const [isDisModalOpen, setIsDisModalOpen] = useState(false);
   const [errors, setErrors] = useState<Partial<ResidentFormData>>({});
+  const [editingDisabilityHistory, setEditingDisabilityHistory] = useState<DisabilityHistory | null>(null);
 
   const isHiragana = (t: string) => /^[\u3041-\u3096\u30FC\s　]+$/.test(t.trim());
 
