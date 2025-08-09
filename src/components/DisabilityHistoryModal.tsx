@@ -3,7 +3,6 @@ import { X, Shield, Calendar } from 'lucide-react';
 import { DisabilityHistory, DisabilityHistoryFormData } from '../types/Resident';
 
 interface DisabilityHistoryModalProps {
-  resident: Resident | null;
   residentId: number;
   isOpen: boolean;
   onClose: () => void;
@@ -13,7 +12,6 @@ interface DisabilityHistoryModalProps {
 }
 
 const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
-  resident,
   residentId,
   isOpen,
   onClose,
