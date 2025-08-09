@@ -39,11 +39,20 @@ const DisabilityHistoryCard: React.FC<DisabilityHistoryCardProps> = ({
   };
 
   // イベントハンドラーでイベント伝播を防ぐ
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onEdit(history);
+// 編集クリック時の処理
+const handleEditClick = (e: React.MouseEvent) => {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  // 日付を編集用にフォーマット（終了日は空なら空欄）
+  const formattedHistory = {
+    ...history,
+    startDate: history.startDate ? new Date(history.startDate).toISOString().split('T')[0] : '',
+    endDate: history.endDate ? new Date(history.endDate).toISOString().split('T')[0] : '',
   };
+
+  onEdit(formattedHistory);
+};
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault();
