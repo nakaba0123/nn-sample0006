@@ -154,6 +154,7 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
     e.stopPropagation();
   };
 
+  console.log("isOpen:", isOpen);
   if (!isOpen) return null;
 
   return (
