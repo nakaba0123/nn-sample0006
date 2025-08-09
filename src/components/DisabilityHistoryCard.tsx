@@ -60,6 +60,27 @@ const handleEditClick = (e: React.MouseEvent) => {
     onDelete(history.id);
   };
 
+const handleAddDisabilityHistory = () => {
+  // 最新履歴の終了日を取得
+  const latestEndDate = latestHistory?.endDate 
+    ? new Date(latestHistory.endDate) 
+    : null;
+
+  // 開始日は終了日の翌日、終了日は空
+  const startDate = latestEndDate 
+    ? new Date(latestEndDate.setDate(latestEndDate.getDate() + 1))
+    : new Date(); // 終了日がない場合は今日から
+
+  const newHistory = {
+    id: '',
+    disabilityLevel: '',
+    startDate: startDate.toISOString().split('T')[0],
+    endDate: '',
+  };
+
+  onEdit(newHistory); // 追加用フォームに渡す
+};
+
   return (
     <div className={`bg-white rounded-lg border p-4 hover:shadow-sm transition-all duration-200 ${
       isCurrentLevel ? 'border-green-200 bg-green-50' : 'border-gray-200'
