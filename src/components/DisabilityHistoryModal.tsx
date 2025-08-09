@@ -28,6 +28,8 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
   });
 
   const [errors, setErrors] = useState<Partial<DisabilityHistoryFormData>>({});
+  const [editingDisabilityHistory, setEditingDisabilityHistory] = useState<DisabilityHistory | null>(null);
+
 
   useEffect(() => {
     if (editHistory) {
