@@ -154,8 +154,37 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
     e.stopPropagation();
   };
 
+const handleAddDisabilityHistory = () => {
+  // 最新の履歴を取得（disabilityHistory が配列で最新が最後にあると仮定）
+  const latestHistory = disabilityHistory[disabilityHistory.length - 1];
+
+  setEditingDisabilityHistory(null);
+
+  setFormData({
+    startDate: latestHistory ? latestHistory.endDate : '', // 最新の終了日を開始日にセット
+    endDate: '', // 終了日は空欄（現在適用中）
+    // 他の項目も初期化
+  });
+
+  setIsDisabilityHistoryModalOpen(true);
+};
+
+
   console.log("isOpen:", isOpen);
   if (!isOpen) return null;
+
+// 編集時にフォーム初期値をセットするときの例（useEffect内など）
+useEffect(() => {
+  if (editingDisabilityHistory) {
+    setFormData({
+      startDate: editingDisabilityHistory.startDate,
+      endDate: (editingDisabilityHistory.endDate === '0000-00-00' || editingDisabilityHistory.endDate === '1899-11-30')
+        ? ''
+        : editingDisabilityHistory.endDate,
+      // 他のフォームデータもここに
+    });
+  }
+}, [editingDisabilityHistory]);
 
   return (
     <div 
