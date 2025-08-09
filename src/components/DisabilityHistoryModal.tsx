@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Shield, Calendar } from 'lucide-react';
 import { DisabilityHistory, DisabilityHistoryFormData } from '../types/Resident';
 import DisabilityHistoryModal from './DisabilityHistoryModal';
+import DisabilityHistoryCard from './DisabilityHistoryCard';
 
 interface DisabilityHistoryModalProps {
   residentId: number;
@@ -29,6 +30,7 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
   });
 
   const [errors, setErrors] = useState<Partial<DisabilityHistoryFormData>>({});
+  const [editingDisabilityHistory, setEditingDisabilityHistory] = useState<DisabilityHistory | null>(null);
 
 
   useEffect(() => {
