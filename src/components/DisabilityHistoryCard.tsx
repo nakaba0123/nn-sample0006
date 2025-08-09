@@ -17,6 +17,13 @@ const DisabilityHistoryCard: React.FC<DisabilityHistoryCardProps> = ({
     return new Date(dateString).toLocaleDateString('ja-JP');
   };
 
+  const formatEndDate = (dateString?: string) => {
+    if (!dateString || dateString.startsWith('1899-11-30')) {
+      return '現在';
+    }
+    return formatDate(dateString);
+  };
+
   const isCurrentLevel = !history.endDate;
 
   const getDisabilityLevelColor = (level: string) => {
@@ -105,7 +112,9 @@ const DisabilityHistoryCard: React.FC<DisabilityHistoryCardProps> = ({
           <div>
             <p className="text-gray-500">終了日</p>
             <p className="font-medium text-gray-800">
-              {history.endDate ? formatDate(history.endDate) : '—'}
+              {history.endDate 
+                ? formatEndDate(history.endDate)
+                 : '現在'}
             </p>
           </div>
         </div>
