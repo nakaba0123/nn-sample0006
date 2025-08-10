@@ -233,7 +233,11 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
             </label>
             <input
               type="date"
-              value={formData.endDate && formData.endDate !== '0000-00-00' ? formData.endDate : ''}
+                value={
+                (formData.endDate === '0000-00-00' || formData.endDate === '1899-11-30')
+                  ? ''
+                  : formData.endDate
+              }
               onChange={(e) => handleInputChange('endDate', e.target.value)}
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${
                 errors.endDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
