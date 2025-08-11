@@ -658,33 +658,48 @@ console.log("formData: ", formData);
   existingHistory={disabilityHistory}
   onSubmit={async (newHistory) => {
   console.log("? newHistory:", newHistory);
-  try {
-    const response = await fetch('/api/disability_histories', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newHistory)
-    });
+    try {
+      const isEdit = !!editingDisabilityHistory?.id;
+      const method = isEdit ? 'PUT' : 'POST';
+      const url = isEdit
+        ? `/api/disability_histories/${editingDisabilityHistory.id}`
+        : `/api/disability_histories`;
 
-    if (!response.ok) {
-      throw new Error('サーバーに障害履歴を送信できませんでした');
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(historyData)
+      });
+
+      if (!response.ok) {
+        throw new Error('サーバー通信に失敗しました');
+      }
+
+      const result = await response.json();
+
+      // state 更新
+      if (isEdit) {
+        // 更新モード → 該当履歴を置き換える
+        setDisabilityHistory(prev =>
+          prev.map(h => h.id === editingDisabilityHistory.id ? { ...historyData, id: editingDisabilityHistory.id } : h)
+        );
+      } else {
+        // 追加モード → 配列の末尾に追加
+        setDisabilityHistory(prev => [...prev, { ...historyData, id: result.id }]);
+      }
+
+      console.log(`? ${isEdit ? '更新' : '追加'}成功:`, result);
+
+      // モーダル閉じる
+      setIsDisModalOpen(false);
+
+    } catch (error) {
+      console.error("? 登録失敗:", error);
+      alert(`障害履歴の${isEdit ? '更新' : '登録'}に失敗しました`);
     }
-
-    const result = await response.json();
-
-    // 登録成功時に state 更新
-    setDisabilityHistory((prev) => [...prev, { ...newHistory, id: result.id }]);
-    console.log("? 登録成功:", result);
-
-    // ? モーダルを閉じる
-    setIsDisModalOpen(false); // ←これを追加！
-
-  } catch (error) {
-    console.error("? 登録失敗:", error);
-    alert("障害履歴の登録に失敗しました");
-  }
-}}
+  }}
 
 >
   {/* 子要素がある場合ここに書く */}
