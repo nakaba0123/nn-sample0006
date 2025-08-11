@@ -656,50 +656,49 @@ console.log("formData: ", formData);
   residentId={editResident?.id ?? 0} // ← 編集時はeditResident.id、新規時は仮の0
   editHistory={editingDisabilityHistory}
   existingHistory={disabilityHistory}
-  onSubmit={async (newHistory) => {
-  console.log("? newHistory:", newHistory);
-    try {
-      const isEdit = !!editingDisabilityHistory?.id;
-      const method = isEdit ? 'PUT' : 'POST';
-      const url = isEdit
-        ? `/api/disability_histories/${editingDisabilityHistory.id}`
-        : `/api/disability_histories`;
+onSubmit={async (historyData) => {
+  const isEdit = !!editingDisabilityHistory?.id; // try の外で定義
+  try {
+    const method = isEdit ? 'PUT' : 'POST';
+    const url = isEdit
+      ? `/api/disability_histories/${editingDisabilityHistory.id}`
+      : `/api/disability_histories`;
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(historyData)
-      });
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(historyData)
+    });
 
-      if (!response.ok) {
-        throw new Error('サーバー通信に失敗しました');
-      }
-
-      const result = await response.json();
-
-      // state 更新
-      if (isEdit) {
-        // 更新モード → 該当履歴を置き換える
-        setDisabilityHistory(prev =>
-          prev.map(h => h.id === editingDisabilityHistory.id ? { ...historyData, id: editingDisabilityHistory.id } : h)
-        );
-      } else {
-        // 追加モード → 配列の末尾に追加
-        setDisabilityHistory(prev => [...prev, { ...historyData, id: result.id }]);
-      }
-
-      console.log(`? ${isEdit ? '更新' : '追加'}成功:`, result);
-
-      // モーダル閉じる
-      setIsDisModalOpen(false);
-
-    } catch (error) {
-      console.error("? 登録失敗:", error);
-      alert(`障害履歴の${isEdit ? '更新' : '登録'}に失敗しました`);
+    if (!response.ok) {
+      throw new Error('サーバー通信に失敗しました');
     }
-  }}
+
+    const result = await response.json();
+
+    if (isEdit) {
+      // 更新モード
+      setDisabilityHistory(prev =>
+        prev.map(h => h.id === editingDisabilityHistory.id
+          ? { ...historyData, id: editingDisabilityHistory.id }
+          : h
+        )
+      );
+    } else {
+      // 追加モード
+      setDisabilityHistory(prev => [...prev, { ...historyData, id: result.id }]);
+    }
+
+    console.log(`? ${isEdit ? '更新' : '追加'}成功:`, result);
+    setIsDisModalOpen(false);
+
+  } catch (error) {
+    console.error(`? ${isEdit ? '更新' : '追加'}失敗:`, error);
+    alert(`障害履歴の${isEdit ? '更新' : '登録'}に失敗しました`);
+  }
+}}
 
 >
   {/* 子要素がある場合ここに書く */}
