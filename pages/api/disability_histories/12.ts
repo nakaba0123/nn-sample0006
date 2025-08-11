@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../../lib/prisma'; // Prisma を使ってる想定
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
@@ -8,21 +7,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { residentId, disabilityLevel, startDate, endDate } = req.body;
 
-      // 入力チェック
+      // 入力チェック（本番用）
       if (!residentId || !disabilityLevel || !startDate) {
         return res.status(400).json({ error: '必須項目が不足しています' });
       }
 
-      // データ更新
-      const updatedHistory = await prisma.disabilityHistory.update({
-        where: { id: Number(id) },
-        data: {
-          residentId: Number(residentId),
-          disabilityLevel,
-          startDate: new Date(startDate),
-          endDate: endDate ? new Date(endDate) : null
-        }
-      });
+      // ---- ここからモック処理 ----
+      // 本来はDB更新するけど、今回は固定データを返す
+      const updatedHistory = {
+        id: Number(id),
+        residentId: Number(residentId),
+        disabilityLevel,
+        startDate,
+        endDate: endDate || null,
+        updatedAt: new Date().toISOString()
+      };
+      // ---- ここまでモック処理 ----
 
       res.status(200).json(updatedHistory);
     } catch (error) {
