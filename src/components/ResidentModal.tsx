@@ -83,12 +83,20 @@ const ResidentModal: React.FC<Props> = ({
 
 const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) => {
   try {
+    // camelCase → snake_case に変換
+    const payload = {
+      resident_id: data.residentId,
+      disability_level: data.disabilityLevel,
+      start_date: data.startDate,
+      end_date: data.endDate,
+    };
+
     if (editingDisabilityHistory) {
       // 更新
       const res = await fetch(`/api/disability_histories/${editingDisabilityHistory.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error('更新に失敗しました');
     } else {
@@ -96,7 +104,7 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
       const res = await fetch('/api/disability_histories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error('追加に失敗しました');
     }
