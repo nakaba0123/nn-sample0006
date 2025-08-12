@@ -371,7 +371,7 @@ app.put('/api/disability_histories/:id', async (req, res) => {
   }
 
   try {
-    const [result] = await pool.query(
+    await pool.query(
       `UPDATE disability_histories
        SET resident_id = ?, disability_level = ?, start_date = ?, end_date = ?
        WHERE id = ?`,
@@ -384,14 +384,18 @@ app.put('/api/disability_histories/:id', async (req, res) => {
       ]
     );
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: '該当レコードがありません' });
-    }
+    const [rows] = await pool.query(
+      'SELECT * FROM disability_histories WHERE id = ?',
+      [id]
+    );
 
-    res.json({ message: '更新成功' });
+    if (rows.length === 0) {
+      return res.status(404).json({ error: '更新後データが見つかりません' });
+    }
+    res.json(rows[0]);
   } catch (err) {
-    console.error('更新失敗:', err);
-    res.status(500).json({ error: '更新失敗' });
+    console.error('PUT エラー:', err);
+    res.status(500).json({ error: '障害履歴の更新に失敗しました' });
   }
 });
 
