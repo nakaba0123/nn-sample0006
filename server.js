@@ -362,6 +362,40 @@ app.get('/api/disability_histories', async (req, res) => {
   }
 });
 
+app.put('/api/disability_histories/:id', async (req, res) => {
+  const id = req.params.id;
+  const { residentId, disabilityLevel, startDate, endDate } = req.body;
+
+  if (!residentId || !disabilityLevel || !startDate) {
+    return res.status(400).json({ error: '必須項目が不足しています' });
+  }
+
+  try {
+    const [result] = await pool.query(
+      `UPDATE disability_histories
+       SET resident_id = ?, disability_level = ?, start_date = ?, end_date = ?
+       WHERE id = ?`,
+      [
+        residentId,
+        disabilityLevel,
+        startDate,
+        endDate || null,
+        id
+      ]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: '該当レコードがありません' });
+    }
+
+    res.json({ message: '更新成功' });
+  } catch (err) {
+    console.error('更新失敗:', err);
+    res.status(500).json({ error: '更新失敗' });
+  }
+});
+
+
 app.delete('/api/expansions/:id', async (req, res) => {
   const expansionId = req.params.id;
 
