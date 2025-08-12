@@ -81,28 +81,41 @@ const ResidentModal: React.FC<Props> = ({
     return currentHistory?.disabilityLevel || '未設定';
   };
 
-
-  // 障害支援区分履歴の管理
-  const handleDisabilityHistorySubmit = (data: DisabilityHistoryFormData) => {
+const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) => {
+  try {
     if (editingDisabilityHistory) {
-      // 編集
-      setDisabilityHistory(prev => prev.map(history => 
-        history.id === editingDisabilityHistory.id 
-          ? { ...history, ...data }
-          : history
-      ));
-      setEditingDisabilityHistory(null);
+      // 更新
+      const res = await fetch(`/api/disability_histories/${editingDisabilityHistory.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('更新に失敗しました');
     } else {
-      // 新規追加
-      const newHistory: DisabilityHistory = {
-        id: `disability_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        ...data,
-        createdAt: new Date().toISOString()
-      };
-      setDisabilityHistory(prev => [...prev, newHistory]);
+      // 追加
+      const res = await fetch('/api/disability_histories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('追加に失敗しました');
     }
+
+    // 成功したら最新履歴を再取得
+    const historyRes = await fetch(`/api/disability_histories?resident_id=${editResident?.id}`, {
+      headers: { 'Cache-Control': 'no-cache' },
+    });
+    if (!historyRes.ok) throw new Error('履歴の再取得に失敗しました');
+    const updatedHistory = await historyRes.json();
+
+    setDisabilityHistory(updatedHistory);
     setIsDisabilityHistoryModalOpen(false);
-  };
+    setEditingDisabilityHistory(null);
+  } catch (error: any) {
+    alert(error.message);
+  }
+};
+
 
   const handleEditDisabilityHistory = (history: DisabilityHistory) => {
     setEditingDisabilityHistory(history);
