@@ -245,7 +245,7 @@ app.patch('/api/residents/:id', async (req, res) => {
   const {
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disabilityHistory, disability_start_date, room_number,
+    disability_level, disability_start_date, room_number,
     move_in_date, move_out_date, status
   } = req.body;
 
