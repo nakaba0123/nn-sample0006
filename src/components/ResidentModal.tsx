@@ -364,7 +364,7 @@ const residentPayload = {
 try {
   console.log("🔥 登録直前データ（residentPayload）:", residentPayload);
 
-  let residentId = resident.id || null; // 既存ID（編集時用）
+  let residentId = resident?.id || null; // 既存ID（編集時用）
   let res;
 
   if (residentId) {
