@@ -253,7 +253,7 @@ app.patch('/api/residents/:id', async (req, res) => {
 
   const history = Array.isArray(disabilityHistory) ? disabilityHistory : [];
   const current = history.find((h) => !h.endDate);
-  const disability_level_2 = current?.disabilityLevel || null;
+  const disability_level = current?.disabilityLevel || null;
 //  const disability_start_date_2 = current?.startDate || null;
 
   const sql = `
