@@ -253,8 +253,8 @@ app.patch('/api/residents/:id', async (req, res) => {
 
   const history = Array.isArray(disabilityHistory) ? disabilityHistory : [];
   const current = history.find((h) => !h.endDate);
-  const disability_level_2 = current?.disabilityLevel || null;
-  const disability_start_date_2 = current?.startDate || null;
+//  const disability_level_2 = current?.disabilityLevel || null;
+//  const disability_start_date_2 = current?.startDate || null;
 
   const sql = `
     UPDATE residents SET
@@ -268,7 +268,7 @@ app.patch('/api/residents/:id', async (req, res) => {
   const values = [
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disability_level_2, disability_start_date_2,
+    disability_level, disability_start_date,
     room_number, move_in_date || null, move_out_date || null, status, now,
     residentId
   ];
