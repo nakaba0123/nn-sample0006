@@ -407,6 +407,7 @@ app.patch('/api/disability_histories/:id', async (req, res) => {
       [id]
     );
     const beforeData = beforeRows[0];
+    console.log("before: ", beforeRows[0]);
 
     // ② 更新処理
     await conn.query(
@@ -422,6 +423,7 @@ app.patch('/api/disability_histories/:id', async (req, res) => {
       [id]
     );
     const afterData = afterRows[0];
+    console.log("after: ", afterRows[0]);
 
     conn.release();
 
