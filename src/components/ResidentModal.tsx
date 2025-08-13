@@ -397,6 +397,8 @@ try {
       end_date: (h.endDate ?? h.end_date) || null,
     };
 
+    console.log("historyPayload:", historyPayload);
+
     // 既存は PATCH /:id、新規は POST /
     const historyUrl = hasId
       ? `/api/disability_histories/${h.id}`
