@@ -395,47 +395,53 @@ app.put('/api/disability_histories/:id', async (req, res) => {
 
 // PATCH /api/disability_histories/:id
 app.patch('/api/disability_histories/:id', async (req, res) => {
-  const { id } = req.params;
+  console.log("PATCH /api/disability_histories が呼ばれました！");
+  const id = req.params.id;
   const { disability_level, start_date, end_date } = req.body;
 
+  const connection = await pool.getConnection();
   try {
-    const conn = await pool.getConnection();
-
-    // ① 更新前データを取得
-    const [beforeRows] = await conn.query(
+    // 1. 旧データ取得
+    const [beforeRows] = await connection.query(
       'SELECT * FROM disability_histories WHERE id = ?',
       [id]
     );
-    const beforeData = beforeRows[0];
-    console.log("before: ", beforeRows[0]);
+    const before = beforeRows[0] || null;
 
-    // ② 更新処理
-    await conn.query(
+    // 2. 更新実行
+    await connection.query(
       `UPDATE disability_histories
-       SET disability_level = ?, start_date = ?, end_date = ?, updated_at = NOW()
+       SET disability_level = ?,
+           start_date = ?,
+           end_date = ?,
+           updated_at = NOW()
        WHERE id = ?`,
-      [disability_level, start_date || null, end_date || null, id]
+      [
+        disability_level,
+        start_date || null,
+        end_date || null,
+        id
+      ]
     );
 
-    // ③ 更新後データを取得
-    const [afterRows] = await conn.query(
+    // 3. 新データ取得
+    const [afterRows] = await connection.query(
       'SELECT * FROM disability_histories WHERE id = ?',
       [id]
     );
-    const afterData = afterRows[0];
-    console.log("after: ", afterRows[0]);
+    const after = afterRows[0] || null;
 
-    conn.release();
-
-    // ④ 両方返す
+    // 4. 両方返す
     res.json({
-      before: beforeData,
-      after: afterData
+      before,
+      after
     });
 
-  } catch (error) {
-    console.error('更新エラー:', error);
-    res.status(500).send('更新に失敗しました');
+  } catch (err) {
+    console.error('更新エラー:', err);
+    res.status(500).json({ error: '更新に失敗しました' });
+  } finally {
+    connection.release();
   }
 });
 
