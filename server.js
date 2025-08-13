@@ -249,6 +249,7 @@ app.patch('/api/residents/:id', async (req, res) => {
     move_in_date, move_out_date, status
   } = req.body;
 
+  console.log("req.body:", req.body);
   const now = new Date();
 
   const history = Array.isArray(disabilityHistory) ? disabilityHistory : [];
