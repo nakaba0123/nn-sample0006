@@ -361,54 +361,71 @@ const residentPayload = {
   updated_at: resident.updatedAt,
 };
 
+try {
+  console.log("🔥 登録直前データ（residentPayload）:", residentPayload);
 
-  try {
-console.log("🔥 登録直前データ（residentPayload）:", residentPayload);
+  let residentId = resident.id || null; // 既存ID（編集時用）
+  let res;
 
-const res = await fetch('/api/residents', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(residentPayload),
-});
+  if (residentId) {
+    // 編集モード → PUTで更新
+    res = await fetch(`/api/residents/${residentId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(residentPayload),
+    });
+  } else {
+    // 新規モード → POSTで追加
+    res = await fetch('/api/residents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(residentPayload),
+    });
+  }
 
-    if (!res.ok) throw new Error("利用者登録に失敗しました");
+  if (!res.ok) throw new Error("利用者登録に失敗しました");
 
-    const result = await res.json();
-    const newResidentId = result.id;
+  const result = await res.json();
+  // 新規登録時はサーバーから返されたIDを使用
+  if (!residentId) {
+    residentId = result.id;
+  }
 
-    console.log("? 利用者登録成功:", newResidentId);
+  console.log("? 利用者登録成功:", residentId);
 
-    for (const h of finalDisabilityHistory) {
-      const historyRes = await fetch('/api/disability_histories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          residentId: newResidentId,
-          disabilityLevel: h.disabilityLevel,
-          startDate: h.startDate,
-          endDate: h.endDate || null,
-        }),
-      });
-
-      if (!historyRes.ok) {
-        console.warn("?? 障害履歴登録に失敗しました", h);
-      } else {
-        console.log("? 障害履歴登録成功:", h);
-      }
-    }
-
-    onClose();
-
-    // 成功した利用者データを onSubmit に渡す（一覧更新を親がやる）
-    onSubmit({
-      ...resident,
-      id: newResidentId,
+  // 障害履歴の登録・更新
+  for (const h of finalDisabilityHistory) {
+    const historyRes = await fetch('/api/disability_histories', {
+      method: 'POST', // ★ここも更新ならPUTにする必要があるかも（別途調整）
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        residentId: residentId,
+        disabilityLevel: h.disabilityLevel,
+        startDate: h.startDate,
+        endDate: h.endDate || null,
+      }),
     });
 
-  } catch (err) {
-    console.error("? 登録失敗:", err);
-    alert("登録に失敗しました");
+    if (!historyRes.ok) {
+      console.warn("?? 障害履歴登録に失敗しました", h);
+    } else {
+      console.log("? 障害履歴登録成功:", h);
+    }
   }
+
+  onClose();
+
+  // 成功した利用者データを onSubmit に渡す（一覧更新を親がやる）
+  onSubmit({
+    ...resident,
+    id: residentId,
+  });
+
+} catch (err) {
+  console.error("? 登録失敗:", err);
+  alert("登録に失敗しました");
+}
+
 };
 
   const input = (key: keyof ResidentFormData, props = {}) => (
