@@ -393,6 +393,51 @@ app.put('/api/disability_histories/:id', async (req, res) => {
   }
 });
 
+// PATCH /api/disability_histories/:id
+app.patch('/api/disability_histories/:id', async (req, res) => {
+  const { id } = req.params;
+  const { disability_level, start_date, end_date } = req.body;
+
+  try {
+    const conn = await pool.getConnection();
+
+    // ① 更新前データを取得
+    const [beforeRows] = await conn.query(
+      'SELECT * FROM disability_histories WHERE id = ?',
+      [id]
+    );
+    const beforeData = beforeRows[0];
+
+    // ② 更新処理
+    await conn.query(
+      `UPDATE disability_histories
+       SET disability_level = ?, start_date = ?, end_date = ?, updated_at = NOW()
+       WHERE id = ?`,
+      [disability_level, start_date || null, end_date || null, id]
+    );
+
+    // ③ 更新後データを取得
+    const [afterRows] = await conn.query(
+      'SELECT * FROM disability_histories WHERE id = ?',
+      [id]
+    );
+    const afterData = afterRows[0];
+
+    conn.release();
+
+    // ④ 両方返す
+    res.json({
+      before: beforeData,
+      after: afterData
+    });
+
+  } catch (error) {
+    console.error('更新エラー:', error);
+    res.status(500).send('更新に失敗しました');
+  }
+});
+
+
 app.delete('/api/expansions/:id', async (req, res) => {
   const expansionId = req.params.id;
 
