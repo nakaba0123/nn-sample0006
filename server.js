@@ -252,10 +252,10 @@ app.patch('/api/residents/:id', async (req, res) => {
   console.log("req.body:", req.body);
   const now = new Date();
 
-  const history = Array.isArray(disability_) ? disabilityHistory : [];
-  const current = history.find((h) => !h.endDate);
-  const disabilityLevelFromHistory = current?.disabilityLevel || null;
-  const disability_level = req.body.disability_level? || null;
+//  const history = Array.isArray(disability_) ? disabilityHistory : [];
+//  const current = history.find((h) => !h.endDate);
+//  const disabilityLevelFromHistory = current?.disabilityLevel || null;
+//  const disability_level = req.body.disability_level? || null;
 //  const disability_start_date = current?.startDate || null;
 
   console.log("disability_level:", disability_level);
