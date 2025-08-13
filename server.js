@@ -254,8 +254,9 @@ app.patch('/api/residents/:id', async (req, res) => {
 
   const history = Array.isArray(disabilityHistory) ? disabilityHistory : [];
   const current = history.find((h) => !h.endDate);
-  const disability_level = current?.disabilityLevel || null;
-  const disability_start_date = current?.startDate || null;
+  const disabilityLevelFromHistory = current?.disabilityLevel || null;
+  const finalDisabilityLevel = disability_level || disabilityLevelFromHistory;
+//  const disability_start_date = current?.startDate || null;
 
   console.log("disability_level:", disability_level);
 
@@ -271,7 +272,7 @@ app.patch('/api/residents/:id', async (req, res) => {
   const values = [
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disability_level, disability_start_date,
+    finalDisabilityLevel, disability_start_date,
     room_number, move_in_date || null, move_out_date || null, status, now,
     residentId
   ];
