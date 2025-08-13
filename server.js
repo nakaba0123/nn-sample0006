@@ -132,7 +132,7 @@ app.post('/api/residents', async (req, res) => {
   const { 
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disabilityHistoryl, disability_start_date, room_number,
+    disability_level, disability_start_date, room_number,
     move_in_date, move_out_date,
     status
   } = req.body;
@@ -253,7 +253,7 @@ app.patch('/api/residents/:id', async (req, res) => {
 
   const history = Array.isArray(disabilityHistory) ? disabilityHistory : [];
   const current = history.find((h) => !h.endDate);
-  const disabilityLevel = current?.disabilityLevel || null;
+//  const disabilityLevel = current?.disabilityLevel || null;
 //  const disability_start_date = current?.startDate || null;
 
   const sql = `
