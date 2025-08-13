@@ -363,6 +363,7 @@ app.get('/api/disability_histories', async (req, res) => {
 });
 
 app.put('/api/disability_histories/:id', async (req, res) => {
+  console.log("req.body:", req.body);
   const historyId = req.params.id;
   const { disability_level, start_date, end_date } = req.body;
 
