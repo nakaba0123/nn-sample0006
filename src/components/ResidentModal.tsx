@@ -364,58 +364,71 @@ const residentPayload = {
 try {
   console.log("🔥 登録直前データ（residentPayload）:", residentPayload);
 
-  let residentId = editResident?.id || null; // 既存ID（編集時用）
-  let res;
+  // ★編集時のIDは editResident?.id を使う（resident は Omit なので id を持っていない）
+  let residentId: number | null = editResident?.id ?? null;
+  const isEdit = !!residentId;
 
-  if (residentId) {
-    // 編集モード → PUTで更新
-    res = await fetch(`/api/residents/${residentId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(residentPayload),
-    });
-  } else {
-    // 新規モード → POSTで追加
-    res = await fetch('/api/residents', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(residentPayload),
-    });
+  // ★編集は PATCH / 新規は POST
+  const res = await fetch(isEdit ? `/api/residents/${residentId}` : '/api/residents', {
+    method: isEdit ? 'PATCH' : 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(residentPayload),
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`利用者${isEdit ? '更新' : '登録'}に失敗しました: ${res.status} ${text}`);
   }
 
-  if (!res.ok) throw new Error("利用者登録に失敗しました");
+  // 新規時のみサーバーから返されたIDを採用
+  const result = await res.json().catch(() => ({}));
+  if (!residentId) residentId = result.id;
+  if (!residentId) throw new Error('residentId を取得できませんでした');
 
-  const result = await res.json();
-  // 新規登録時はサーバーから返されたIDを使用
-  if (!residentId) {
-    residentId = result.id;
-  }
+  console.log("✅ 利用者保存成功:", residentId);
 
-  console.log("? 利用者登録成功:", residentId);
-
-  // 障害履歴の登録・更新
+  // --- 障害履歴の保存（既存はPATCH / 新規はPOST, サーバーはスネークケース想定）---
   for (const h of finalDisabilityHistory) {
-    const historyRes = await fetch('/api/disability_histories', {
-      method: 'POST', // ★ここも更新ならPUTにする必要があるかも（別途調整）
+    const hasId = !!h.id;
+    const historyPayload = {
+      resident_id: residentId,
+      disability_level: h.disabilityLevel ?? h.disability_level,
+      start_date: h.startDate ?? h.start_date,
+      end_date: (h.endDate ?? h.end_date) || null,
+    };
+
+    // 既存は PATCH /:id、新規は POST /
+    const historyUrl = hasId
+      ? `/api/disability_histories/${h.id}`
+      : `/api/disability_histories`;
+    const historyMethod = hasId ? 'PATCH' : 'POST';
+
+    let historyRes = await fetch(historyUrl, {
+      method: historyMethod,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        residentId: residentId,
-        disabilityLevel: h.disabilityLevel,
-        startDate: h.startDate,
-        endDate: h.endDate || null,
-      }),
+      body: JSON.stringify(historyPayload),
     });
+
+    // サーバー側でPATCHが未実装（404）の場合は新規作成にフォールバック
+    if (!historyRes.ok && hasId && historyRes.status === 404) {
+      historyRes = await fetch('/api/disability_histories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(historyPayload),
+      });
+    }
 
     if (!historyRes.ok) {
-      console.warn("?? 障害履歴登録に失敗しました", h);
+      const t = await historyRes.text().catch(() => "");
+      console.warn("⚠️ 障害履歴登録/更新に失敗:", h, t);
     } else {
-      console.log("? 障害履歴登録成功:", h);
+      console.log("🆗 障害履歴 保存OK:", hasId ? `id=${h.id}` : '(new)');
     }
   }
 
   onClose();
 
-  // 成功した利用者データを onSubmit に渡す（一覧更新を親がやる）
+  // 成功データを親へ（一覧更新用）
   onSubmit({
     ...resident,
     id: residentId,
