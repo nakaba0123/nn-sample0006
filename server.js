@@ -400,6 +400,7 @@ app.put('/api/disability_histories/:id', async (req, res) => {
 // PATCH /api/disability_histories/:id
 app.patch('/api/disability_histories/:id', async (req, res) => {
   console.log("PATCH /api/disability_histories が呼ばれました！");
+  console.log("req.body::", req.body);
   const id = req.params.id;
   const { disability_level, start_date, end_date } = req.body;
 
