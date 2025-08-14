@@ -74,10 +74,15 @@ const ResidentModal: React.FC<Props> = ({
   console.log("ResidentModal 描画中");
   console.log("disabilityHistory:", disabilityHistory);
   console.log("length:", disabilityHistory?.length);
+  console.log("formData:", formData);
 
   // 現在の障害支援区分を取得
   const getCurrentDisabilityLevel = () => {
-    return resident?.disabilityLevel || '未設定';
+    console.log("disabilityHistory::::", disabilityHistory);
+    const currentHistory = disabilityHistory.find(h => !h.endDate);
+    console.log("currentHistory::::", currentHistory);
+    return currentHistory?.disability_level || '未設定';
+//    return resident?.disabilityLevel || '未設定';
   };
 
 const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) => {
