@@ -735,18 +735,43 @@ onSubmit={async (historyData) => {
 
     const result = await response.json();
 
-    if (isEdit) {
-      // 更新モード
-      setDisabilityHistory(prev =>
-        prev.map(h => h.id === editingDisabilityHistory.id
-          ? { ...historyData, id: editingDisabilityHistory.id }
-          : h
-        )
-      );
-    } else {
-      // 追加モード
-      setDisabilityHistory(prev => [...prev, { ...historyData, id: result.id }]);
+//    if (isEdit) {
+//      // 更新モード
+//      setDisabilityHistory(prev =>
+//        prev.map(h => h.id === editingDisabilityHistory.id
+//          ? { ...historyData, id: editingDisabilityHistory.id }
+//          : h
+//        )
+//      );
+//    } else {
+//      // 追加モード
+//      setDisabilityHistory(prev => [...prev, { ...historyData, id: result.id }]);
+//    }
+
+if (isEdit) {
+  setDisabilityHistory(prev =>
+    prev.map(h =>
+      h.id === editingDisabilityHistory.id
+        ? {
+            ...h,
+            start_date: historyData.startDate,
+            end_date: historyData.endDate,
+            disability_level: historyData.disabilityLevel
+          }
+        : h
+    )
+  );
+} else {
+  setDisabilityHistory(prev => [
+    ...prev,
+    {
+      id: result.id,
+      start_date: historyData.startDate,
+      end_date: historyData.endDate,
+      disability_level: historyData.disabilityLevel
     }
+  ]);
+}
 
     console.log(`? ${isEdit ? '更新' : '追加'}成功:`, result);
     setIsDisModalOpen(false);
