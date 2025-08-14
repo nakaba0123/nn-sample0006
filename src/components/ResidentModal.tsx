@@ -77,6 +77,7 @@ const ResidentModal: React.FC<Props> = ({
 
   // 現在の障害支援区分を取得
   const getCurrentDisabilityLevel = () => {
+    console.log("disabilityHistory", disabilityHistory);
     const currentHistory = disabilityHistory.find(h => !h.endDate);
     return currentHistory?.disabilityLevel || '未設定';
   };
