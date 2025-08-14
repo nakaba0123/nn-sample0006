@@ -371,7 +371,10 @@ app.put('/api/disability_histories/:id', async (req, res) => {
   console.log("req.body:", req.body);
 
   const historyId = req.params.id;
-  const { disability_level, start_date, end_date } = req.body;
+//  const { disability_level, start_date, end_date } = req.body;
+  const disability_level = req.body.disabilityLevel ?? null;
+  const start_date = req.body.startDate || null;
+  const end_date = req.body.endDate || null;
 
   try {
     const [result] = await pool.query(
