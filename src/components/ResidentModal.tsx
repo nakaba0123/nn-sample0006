@@ -80,6 +80,7 @@ const ResidentModal: React.FC<Props> = ({
     console.log("disabilityHistory", disabilityHistory);
 //    const currentHistory = disabilityHistory.find(h => !h.endDate);
     const currentHistory = disabilityHistory.find(h => !h.end_date);
+    console.log("currentHistory:", currentHistory);
 //    return currentHistory?.disabilityLevel || '未設定';
     return currentHistory?.disability_level || '未設定';
   };
