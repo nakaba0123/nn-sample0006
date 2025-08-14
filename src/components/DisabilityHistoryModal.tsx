@@ -122,6 +122,8 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
     e.preventDefault();
     
     if (validateForm()) {
+      console.log("DisabilityHistoryModalのformData", formData);
+
       onSubmit({
         residentId, // ?? これを追加！
         disabilityLevel: formData.disabilityLevel,
