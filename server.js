@@ -402,7 +402,10 @@ app.patch('/api/disability_histories/:id', async (req, res) => {
   console.log("PATCH /api/disability_histories が呼ばれました！");
   console.log("req.body::", req.body);
   const id = req.params.id;
-  const { disabilityLevel, startDate, endDate } = req.body;
+//  const { disabilityLevel, startDate, endDate } = req.body;
+  const disability_level = req.body.disabilityLevel ?? null;
+  const start_date = req.body.startDate || null;
+  const end_date = req.body.endDate || null;
 
   const connection = await pool.getConnection();
   try {
