@@ -404,13 +404,14 @@ app.put('/api/disability_histories/:id', async (req, res) => {
 
 // 障害履歴の更新
 app.put('/api/disability_histories/:id', async (req, res) => {
-  const { id } = req.params;
-  const {
-    resident_id,
-    disability_level,
-    start_date,
-    end_date
-  } = req.body;
+  console.log("PUT /api/disability_histories が呼ばれました！");
+  console.log("req.body:", req.body);
+
+  const historyId = req.params.id;
+//  const { disability_level, start_date, end_date } = req.body;
+  const disability_level = req.body.disabilityLevel ?? null;
+  const start_date = req.body.startDate || null;
+  const end_date = req.body.endDate || null;
 
   const connection = await pool.getConnection();
   try {
