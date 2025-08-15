@@ -366,7 +366,6 @@ app.get('/api/disability_histories', async (req, res) => {
   }
 });
 
-/*
 app.put('/api/disability_histories/:id', async (req, res) => {
   console.log("PUT /api/disability_histories が呼ばれました！");
   console.log("req.body:", req.body);
@@ -400,71 +399,6 @@ app.put('/api/disability_histories/:id', async (req, res) => {
     res.status(500).json({ error: '更新に失敗しました' });
   }
 });
-*/
-
-// 障害履歴の更新
-app.put('/api/disability_histories/:id', async (req, res) => {
-  console.log("PUT /api/disability_histories が呼ばれました！");
-  console.log("req.body:", req.body);
-
-  const historyId = req.params.id;
-//  const { disability_level, start_date, end_date } = req.body;
-  const disability_level = req.body.disabilityLevel ?? null;
-  const start_date = req.body.startDate || null;
-  const end_date = req.body.endDate || null;
-
-  const connection = await pool.getConnection();
-  try {
-    await connection.beginTransaction();
-
-    // 1. disability_histories の更新
-    await connection.execute(
-      `UPDATE disability_histories
-       SET disability_level = ?, start_date = ?, end_date = ?
-       WHERE id = ?`,
-      [
-        disability_level || null,
-        start_date || null,
-        end_date || null,
-        id
-      ]
-    );
-
-    // 2. residents テーブルも最新情報に同期
-    //    更新対象は、今回更新された履歴が最新の履歴である場合のみ
-    const [latestHistory] = await connection.execute(
-      `SELECT id
-       FROM disability_histories
-       WHERE resident_id = ?
-       ORDER BY start_date DESC
-       LIMIT 1`,
-      [resident_id]
-    );
-
-    if (latestHistory.length > 0 && latestHistory[0].id === Number(id)) {
-      await connection.execute(
-        `UPDATE residents
-         SET disability_level = ?, disability_start_date = ?
-         WHERE id = ?`,
-        [
-          disability_level || null,
-          start_date || null,
-          resident_id
-        ]
-      );
-    }
-
-    await connection.commit();
-    res.status(200).json({ message: 'Disability history and resident info updated successfully' });
-  } catch (error) {
-    await connection.rollback();
-    console.error('Error updating disability history and resident info:', error);
-    res.status(500).json({ error: 'Failed to update disability history and resident info' });
-  } finally {
-    connection.release();
-  }
-});
-
 
 // PATCH /api/disability_histories/:id
 app.patch('/api/disability_histories/:id', async (req, res) => {
