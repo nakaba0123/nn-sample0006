@@ -309,31 +309,78 @@ app.get('/api/usage-records', async (req, res) => {
   }
 });
 
+//app.post('/api/disability_histories', async (req, res) => {
+//  console.log("POST /api/disability_histories が呼ばれました！");
+//  console.log("req.body:", req.body);
+//
+//  const { residentId, disabilityLevel, startDate, endDate } = req.body;
+//
+//  const sql = `
+//    INSERT INTO disability_histories
+//      (resident_id, disability_level, start_date, end_date)
+//   VALUES (?, ?, ?, ?)
+//  `;
+//
+//  const values = [
+//    residentId || null,
+//    disabilityLevel || null,
+//    startDate || null,
+//    endDate || null
+//  ];
+//
+//  try {
+//    const [result] = await pool.query(sql, values);
+//    res.status(201).json({ message: '障害履歴を登録しました', id: result.insertId });
+//  } catch (err) {
+//    console.error('障害履歴登録エラー:', err);
+//    res.status(500).json({ message: '障害履歴の登録に失敗しました' });
+//  }
+//});
+
 app.post('/api/disability_histories', async (req, res) => {
   console.log("POST /api/disability_histories が呼ばれました！");
   console.log("req.body:", req.body);
 
   const { residentId, disabilityLevel, startDate, endDate } = req.body;
 
-  const sql = `
+  const insertSql = `
     INSERT INTO disability_histories
       (resident_id, disability_level, start_date, end_date)
-   VALUES (?, ?, ?, ?)
+    VALUES (?, ?, ?, ?)
   `;
-
-  const values = [
+  const insertValues = [
     residentId || null,
     disabilityLevel || null,
     startDate || null,
     endDate || null
   ];
 
+  const updateSql = `
+    UPDATE residents
+    SET disability_level = ?,
+        disability_start_date = ?
+    WHERE id = ?
+  `;
+  const updateValues = [
+    disabilityLevel || null,
+    startDate || null,
+    residentId
+  ];
+
   try {
-    const [result] = await pool.query(sql, values);
-    res.status(201).json({ message: '障害履歴を登録しました', id: result.insertId });
+    // 1. 履歴INSERT
+    const [insertResult] = await pool.query(insertSql, insertValues);
+
+    // 2. residents UPDATE（常に最新として反映）
+    await pool.query(updateSql, updateValues);
+
+    res.status(201).json({
+      message: '障害履歴を登録し、利用者情報を更新しました',
+      id: insertResult.insertId
+    });
   } catch (err) {
-    console.error('障害履歴登録エラー:', err);
-    res.status(500).json({ message: '障害履歴の登録に失敗しました' });
+    console.error('障害履歴登録または利用者情報更新エラー:', err);
+    res.status(500).json({ message: '登録または更新に失敗しました' });
   }
 });
 
