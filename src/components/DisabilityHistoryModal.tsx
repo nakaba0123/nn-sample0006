@@ -93,6 +93,10 @@ const validateForm = (): boolean => {
 
     // 3. 期間重複チェック
     console.log("3だよ");
+    console.log("editHistory::", editHistory);
+    console.log("history.id::", history.id);
+    console.log("editHistory.id::", editHistory.id);
+
     const conflictingHistory = safeHistory.find(history => {
       console.log("3-1だよ");
       console.log("editHistory::", editHistory);
