@@ -60,6 +60,9 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
   };
 
   const validateForm = (): boolean => {
+    console.log("validateのformData::", formData);
+    console.log("formDataのstartDate::", formData.startDate);
+
     const newErrors: Partial<DisabilityHistoryFormData> = {};
     
     if (!formData.startDate) {
