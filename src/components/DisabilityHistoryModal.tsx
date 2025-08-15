@@ -94,6 +94,7 @@ const validateForm = (): boolean => {
     // 3. 期間重複チェック
     console.log("3だよ");
     const conflictingHistory = safeHistory.find(history => {
+      console.log("3-1だよ");
       console.log("editHistory::", editHistory);
       console.log("history.id::", history.id);
       console.log("editHistory.id::", editHistory.id);
@@ -128,6 +129,7 @@ const validateForm = (): boolean => {
     }
 
     // 4. 現在適用中の区分が複数ないかチェック
+    console.log("4だよ");
     if (!formData.endDate) {
       const currentLevels = safeHistory.filter(history =>
         !history.endDateObj && (!editHistory || history.id !== editHistory.id)
@@ -139,6 +141,7 @@ const validateForm = (): boolean => {
     }
 
     // 5. 最新履歴から開始日制限のチェック（追加予定の場合）
+    console.log("5だよ");
     if (latestHistory && !editHistory) {
       const latestEnd = latestHistory.endDateObj;
       if (latestEnd && new Date(formData.startDate) < latestEnd) {
