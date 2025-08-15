@@ -70,6 +70,7 @@ const validateForm = (): boolean => {
     newErrors.endDate = '終了日は開始日より後にしてください';
   }
 
+  console.log("FisabilityHistoryModalのformData", formData);
   if (formData.startDate) {
     // 1. existingHistory の日付を安全に Date に変換
     const safeHistory = existingHistory
