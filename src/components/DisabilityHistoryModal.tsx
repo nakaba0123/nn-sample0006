@@ -88,6 +88,9 @@ const validateForm = (): boolean => {
 
     // 3. 期間重複チェック
     const conflictingHistory = safeHistory.find(history => {
+      console.log("editHistory::", editHistory);
+      console.log("history.id::", history.id);
+      console.log("editHistory.id::", editHistory.id);
       if (editHistory && history.id === editHistory.id) return false;
 
       const newStart = new Date(formData.startDate);
