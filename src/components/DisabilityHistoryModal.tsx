@@ -73,6 +73,7 @@ const validateForm = (): boolean => {
   console.log("DisabilityHistoryModalのformData:::", formData);
   console.log("formData.startDate:", formData.startDate);
   if (formData.startDate) {
+    console.log("1だよ");
     // 1. existingHistory の日付を安全に Date に変換
     const safeHistory = existingHistory
       .filter(h => h.startDate) // startDate が存在するもののみ
@@ -83,12 +84,14 @@ const validateForm = (): boolean => {
       }));
 
     // 2. 最新履歴を取得
+    console.log("2だよ");
     const sortedHistory = safeHistory.sort(
       (a, b) => b.startDateObj.getTime() - a.startDateObj.getTime()
     );
     const latestHistory = sortedHistory[0] || null;
 
     // 3. 期間重複チェック
+    console.log("3だよ");
     const conflictingHistory = safeHistory.find(history => {
       console.log("editHistory::", editHistory);
       console.log("history.id::", history.id);
