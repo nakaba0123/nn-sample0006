@@ -62,6 +62,7 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
   const validateForm = (): boolean => {
     console.log("validateのformData::", formData);
     console.log("formDataのstartDate::", formData.startDate);
+    console.log("formDataのendDate::", formData.endDate);
 
     const newErrors: Partial<DisabilityHistoryFormData> = {};
     
@@ -82,19 +83,28 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
         const newEnd = formData.endDate ? new Date(formData.endDate) : null;
         const existingStart = new Date(history.startDate);
         const existingEnd = history.endDate ? new Date(history.endDate) : null;
+
+        console.log("newStart::", newStart);
+        console.log("newEnd::", newEnd);
+        console.log("existingStart::", existingStart);
+        console.log("existingEnd::", existingEnd);
         
         // 期間の重複判定
         if (newEnd && existingEnd) {
           // 両方に終了日がある場合
+          console.log("1だよ");
           return (newStart <= existingEnd && newEnd >= existingStart);
         } else if (!newEnd && !existingEnd) {
           // 両方とも現在進行中（終了日なし）
+          console.log("2だよ");
           return true;
         } else if (!newEnd) {
           // 新しい履歴が現在進行中
+          console.log("3だよ");
           return newStart <= (existingEnd || new Date());
         } else if (!existingEnd) {
           // 既存の履歴が現在進行中
+          console.log("4だよ");
           return (newEnd >= existingStart);
         }
         
