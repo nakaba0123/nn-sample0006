@@ -62,6 +62,14 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
 const validateForm = (): boolean => {
   const newErrors: Partial<DisabilityHistoryFormData> = {};
 
+  // existingHistoryを最新状態に補正
+  let adjustedHistory = [...existingHistory];
+  if (editHistory && formData.endDate) {
+    adjustedHistory = adjustedHistory.map(h =>
+      h.id === editHistory.id ? { ...h, endDate: formData.endDate } : h
+    );
+  }
+
   if (!formData.startDate) {
     newErrors.startDate = '開始日を入力してください';
   }
@@ -75,7 +83,7 @@ const validateForm = (): boolean => {
 
   // 前の区分が未記載なら即エラー（追加モードのみ）
   if (!formData.endDate && !editHistory) {
-    const hasOngoing = existingHistory.some(h => !h.endDate);
+    const hasOngoing = adjustedHistory.some(h => !h.endDate);
     if (hasOngoing) {
       newErrors.endDate = '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
     }
@@ -83,7 +91,7 @@ const validateForm = (): boolean => {
 
   if (formData.startDate) {
     console.log("1だよ");
-    const safeHistory = existingHistory
+    const safeHistory = adjustedHistory
       .filter(h => h.startDate)
       .map(h => ({
         ...h,
