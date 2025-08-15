@@ -73,11 +73,18 @@ const validateForm = (): boolean => {
   console.log("DisabilityHistoryModalのformData:::", formData);
   console.log("formData.startDate:", formData.startDate);
 
+  // 前の区分が未記載なら即エラー（追加モードのみ）
+  if (!formData.endDate && !editHistory) {
+    const hasOngoing = existingHistory.some(h => !h.endDate);
+    if (hasOngoing) {
+      newErrors.endDate = '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
+    }
+  }
+
   if (formData.startDate) {
     console.log("1だよ");
-    // 1. existingHistory の日付を安全に Date に変換
     const safeHistory = existingHistory
-      .filter(h => h.startDate) // startDate が存在するもののみ
+      .filter(h => h.startDate)
       .map(h => ({
         ...h,
         startDateObj: new Date(h.startDate),
@@ -86,16 +93,13 @@ const validateForm = (): boolean => {
 
     console.log("safeHistory::", safeHistory);
 
-    // 2. 最新履歴を取得
     console.log("2だよ");
     const sortedHistory = safeHistory.sort(
       (a, b) => b.startDateObj.getTime() - a.startDateObj.getTime()
     );
     const latestHistory = sortedHistory[0] || null;
 
-    // 3. 期間重複チェック
     console.log("3だよ");
-
     const conflictingHistory = safeHistory.find(history => {
       console.log("3-1だよ");
       console.log("history.id::", history.id);
@@ -108,11 +112,6 @@ const validateForm = (): boolean => {
       const newEnd = formData.endDate ? new Date(formData.endDate) : null;
       const existingStart = history.startDateObj;
       const existingEnd = history.endDateObj;
-
-      console.log("newStart::", newStart);
-      console.log("newEnd::", newEnd);
-      console.log("existingStart::", existingStart);
-      console.log("existingEnd::", existingEnd);
 
       if (newEnd && existingEnd) {
         return newStart <= existingEnd && newEnd >= existingStart;
@@ -130,18 +129,6 @@ const validateForm = (): boolean => {
       newErrors.startDate = '他の障害支援区分履歴と期間が重複しています';
     }
 
-    // 4. 現在適用中の区分が複数ないかチェック
-    console.log("4だよ");
-    if (!formData.endDate) {
-      const currentLevels = safeHistory.filter(history =>
-        !history.endDateObj && (!editHistory || history.id !== editHistory.id)
-      );
-      if (currentLevels.length > 0) {
-        newErrors.endDate = '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
-      }
-    }
-
-    // 5. 最新履歴から開始日制限のチェック（追加予定の場合）
     console.log("5だよ");
     if (latestHistory && !editHistory) {
       const latestEnd = latestHistory.endDateObj;
