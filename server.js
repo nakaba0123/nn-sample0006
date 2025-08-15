@@ -366,100 +366,39 @@ app.get('/api/disability_histories', async (req, res) => {
   }
 });
 
-//app.put('/api/disability_histories/:id', async (req, res) => {
-//  console.log("PUT /api/disability_histories が呼ばれました！");
-//  console.log("req.body:", req.body);
-//
-//  const historyId = req.params.id;
-////  const { disability_level, start_date, end_date } = req.body;
-//  const disability_level = req.body.disabilityLevel ?? null;
-//  const start_date = req.body.startDate || null;
-//  const end_date = req.body.endDate || null;
-//
-//  try {
-//    const [result] = await pool.query(
-//      `UPDATE disability_histories
-//       SET disability_level = ?, start_date = ?, end_date = ?
-//       WHERE id = ?`,
-//      [disability_level, start_date, end_date, historyId]
-//    );
-//
-//    if (result.affectedRows === 0) {
-//      return res.status(404).json({ error: '更新対象が見つかりません' });
-//    }
-//
-//    const [rows] = await pool.query(
-//      `SELECT * FROM disability_histories WHERE id = ?`,
-//      [historyId]
-//    );
-//
-//    res.json(rows[0]); // 更新後の値を返す
-//  } catch (err) {
-//    console.error('更新失敗:', err);
-//    res.status(500).json({ error: '更新に失敗しました' });
-//  }
-//});
-
 app.put('/api/disability_histories/:id', async (req, res) => {
   console.log("PUT /api/disability_histories が呼ばれました！");
   console.log("req.body:", req.body);
 
   const historyId = req.params.id;
+//  const { disability_level, start_date, end_date } = req.body;
   const disability_level = req.body.disabilityLevel ?? null;
   const start_date = req.body.startDate || null;
   const end_date = req.body.endDate || null;
 
   try {
-    // 1. 対象の履歴を更新
-    const [updateResult] = await pool.query(
+    const [result] = await pool.query(
       `UPDATE disability_histories
        SET disability_level = ?, start_date = ?, end_date = ?
        WHERE id = ?`,
       [disability_level, start_date, end_date, historyId]
     );
 
-    if (updateResult.affectedRows === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({ error: '更新対象が見つかりません' });
     }
 
-    // 2. 更新した履歴を取得
-    const [updatedRows] = await pool.query(
+    const [rows] = await pool.query(
       `SELECT * FROM disability_histories WHERE id = ?`,
       [historyId]
     );
-    const updatedHistory = updatedRows[0];
 
-    // 3. 最新履歴かどうか判定
-    const [latestRows] = await pool.query(
-      `SELECT * FROM disability_histories
-       WHERE resident_id = ?
-       ORDER BY start_date DESC, id DESC
-       LIMIT 1`,
-      [updatedHistory.resident_id]
-    );
-
-    const latestHistory = latestRows[0];
-
-    if (latestHistory.id === updatedHistory.id) {
-      // 4. 最新履歴なら residents も更新
-      await pool.query(
-        `UPDATE residents
-         SET disability_level = ?, disability_start_date = ?
-         WHERE id = ?`,
-        [disability_level, start_date, updatedHistory.resident_id]
-      );
-      console.log(`resident_id=${updatedHistory.resident_id} の最新履歴なので residents も更新しました`);
-    }
-
-    // 5. 更新後の履歴を返す
-    res.json(updatedHistory);
-
+    res.json(rows[0]); // 更新後の値を返す
   } catch (err) {
     console.error('更新失敗:', err);
     res.status(500).json({ error: '更新に失敗しました' });
   }
 });
-
 
 // PATCH /api/disability_histories/:id
 app.patch('/api/disability_histories/:id', async (req, res) => {
