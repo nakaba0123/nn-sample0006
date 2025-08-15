@@ -83,6 +83,7 @@ const validateForm = (): boolean => {
         endDateObj: h.endDate ? new Date(h.endDate) : null
       }));
 
+    console.log("safeHistory::", safeHistory);
     // 2. 最新履歴を取得
     console.log("2だよ");
     const sortedHistory = safeHistory.sort(
