@@ -72,6 +72,7 @@ const validateForm = (): boolean => {
 
   console.log("DisabilityHistoryModalのformData:::", formData);
   console.log("formData.startDate:", formData.startDate);
+
   if (formData.startDate) {
     console.log("1だよ");
     // 1. existingHistory の日付を安全に Date に変換
@@ -84,6 +85,7 @@ const validateForm = (): boolean => {
       }));
 
     console.log("safeHistory::", safeHistory);
+
     // 2. 最新履歴を取得
     console.log("2だよ");
     const sortedHistory = safeHistory.sort(
@@ -93,15 +95,13 @@ const validateForm = (): boolean => {
 
     // 3. 期間重複チェック
     console.log("3だよ");
-    console.log("editHistory::", editHistory);
-    console.log("history.id::", history.id);
-    console.log("editHistory.id::", editHistory.id);
 
     const conflictingHistory = safeHistory.find(history => {
       console.log("3-1だよ");
-      console.log("editHistory::", editHistory);
       console.log("history.id::", history.id);
-      console.log("editHistory.id::", editHistory.id);
+      console.log("editHistory::", editHistory);
+      console.log("editHistory?.id::", editHistory?.id);
+
       if (editHistory && history.id === editHistory.id) return false;
 
       const newStart = new Date(formData.startDate);
@@ -114,7 +114,6 @@ const validateForm = (): boolean => {
       console.log("existingStart::", existingStart);
       console.log("existingEnd::", existingEnd);
 
-
       if (newEnd && existingEnd) {
         return newStart <= existingEnd && newEnd >= existingStart;
       } else if (!newEnd && !existingEnd) {
@@ -124,7 +123,6 @@ const validateForm = (): boolean => {
       } else if (!existingEnd) {
         return newEnd >= existingStart;
       }
-
       return false;
     });
 
@@ -138,7 +136,6 @@ const validateForm = (): boolean => {
       const currentLevels = safeHistory.filter(history =>
         !history.endDateObj && (!editHistory || history.id !== editHistory.id)
       );
-
       if (currentLevels.length > 0) {
         newErrors.endDate = '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
       }
