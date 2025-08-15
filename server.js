@@ -309,28 +309,94 @@ app.get('/api/usage-records', async (req, res) => {
   }
 });
 
+//app.post('/api/disability_histories', async (req, res) => {
+//  console.log("POST /api/disability_histories が呼ばれました！");
+//  console.log("req.body:", req.body);
+//
+//  const { residentId, disabilityLevel, startDate, endDate } = req.body;
+//
+//  const sql = `
+//    INSERT INTO disability_histories
+//      (resident_id, disability_level, start_date, end_date)
+//    VALUES (?, ?, ?, ?)
+//  `;
+//
+//  const values = [
+//    residentId || null,
+//    disabilityLevel || null,
+//    startDate || null,
+//    endDate || null
+//  ];
+//
+//  try {
+//    const [result] = await pool.query(sql, values);
+//    res.status(201).json({ message: '障害履歴を登録しました', id: result.insertId });
+//  } catch (err) {
+//    console.error('障害履歴登録エラー:', err);
+//    res.status(500).json({ message: '障害履歴の登録に失敗しました' });
+//  }
+//});
+
 app.post('/api/disability_histories', async (req, res) => {
   console.log("POST /api/disability_histories が呼ばれました！");
   console.log("req.body:", req.body);
 
   const { residentId, disabilityLevel, startDate, endDate } = req.body;
 
-  const sql = `
-    INSERT INTO disability_histories
-      (resident_id, disability_level, start_date, end_date)
-    VALUES (?, ?, ?, ?)
-  `;
-
-  const values = [
-    residentId || null,
-    disabilityLevel || null,
-    startDate || null,
-    endDate || null
-  ];
+  if (!residentId || !startDate) {
+    return res.status(400).json({ message: 'residentId と startDate は必須です' });
+  }
 
   try {
+    // 1. 追加前に最新履歴を取得
+    const [latestRows] = await pool.query(
+      `SELECT * FROM disability_histories
+       WHERE resident_id = ?
+       ORDER BY end_date DESC, id DESC
+       LIMIT 1`,
+      [residentId]
+    );
+
+    if (latestRows.length > 0) {
+      const latest = latestRows[0];
+
+      // まだ前の履歴が終了していない場合は追加不可
+      if (!latest.end_date || latest.end_date === '0000-00-00') {
+        return res.status(400).json({ message: '前の履歴がまだ終了していないため、新しい履歴を追加できません' });
+      }
+
+      // 追加予定の startDate が最新 end_date より前の場合もエラー
+      if (new Date(startDate) < new Date(latest.end_date)) {
+        return res.status(400).json({ message: '開始日が前の履歴の終了日より前です' });
+      }
+    }
+
+    // 2. 履歴を追加
+    const sql = `
+      INSERT INTO disability_histories
+        (resident_id, disability_level, start_date, end_date)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    const values = [
+      residentId,
+      disabilityLevel || null,
+      startDate,
+      endDate || null
+    ];
+
     const [result] = await pool.query(sql, values);
+
+    // 3. 最新履歴になったら residents も更新
+    await pool.query(
+      `UPDATE residents
+       SET disability_level = ?, disability_start_date = ?
+       WHERE id = ?`,
+      [disabilityLevel || null, startDate, residentId]
+    );
+
     res.status(201).json({ message: '障害履歴を登録しました', id: result.insertId });
+
   } catch (err) {
     console.error('障害履歴登録エラー:', err);
     res.status(500).json({ message: '障害履歴の登録に失敗しました' });
