@@ -58,79 +58,6 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
     };
     return colorMap[level] || 'bg-gray-100 text-gray-700';
   };
-/*
-  const validateForm = (): boolean => {
-    console.log("validateのformData::", formData);
-    console.log("formDataのstartDate::", formData.startDate);
-    console.log("formDataのendDate::", formData.endDate);
-
-    const newErrors: Partial<DisabilityHistoryFormData> = {};
-    
-    if (!formData.startDate) {
-      newErrors.startDate = '開始日を入力してください';
-    }
-    
-    if (formData.endDate && formData.startDate && formData.endDate <= formData.startDate) {
-      newErrors.endDate = '終了日は開始日より後にしてください';
-    }
-
-    // 期間の重複チェック
-    if (formData.startDate) {
-      const conflictingHistory = existingHistory.find(history => {
-        if (editHistory && history.id === editHistory.id) return false;
-        
-        const newStart = new Date(formData.startDate);
-        const newEnd = formData.endDate ? new Date(formData.endDate) : null;
-        const existingStart = new Date(history.startDate);
-        const existingEnd = history.endDate ? new Date(history.endDate) : null;
-
-        console.log("newStart::", newStart);
-        console.log("newEnd::", newEnd);
-        console.log("existingStart::", existingStart);
-        console.log("existingEnd::", existingEnd);
-        
-        // 期間の重複判定
-        if (newEnd && existingEnd) {
-          // 両方に終了日がある場合
-          console.log("1だよ");
-          return (newStart <= existingEnd && newEnd >= existingStart);
-        } else if (!newEnd && !existingEnd) {
-          // 両方とも現在進行中（終了日なし）
-          console.log("2だよ");
-          return true;
-        } else if (!newEnd) {
-          // 新しい履歴が現在進行中
-          console.log("3だよ");
-          return newStart <= (existingEnd || new Date());
-        } else if (!existingEnd) {
-          // 既存の履歴が現在進行中
-          console.log("4だよ");
-          return (newEnd >= existingStart);
-        }
-        
-        return false;
-      });
-
-      if (conflictingHistory) {
-        newErrors.startDate = '他の障害支援区分履歴と期間が重複しています';
-      }
-    }
-
-    // 現在適用中の区分が複数ないかチェック
-    if (!formData.endDate) {
-      const currentLevels = existingHistory.filter(history => 
-        !history.endDate && (!editHistory || history.id !== editHistory.id)
-      );
-      
-      if (currentLevels.length > 0) {
-        newErrors.endDate = '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-*/
 
 const validateForm = (): boolean => {
   const newErrors: Partial<DisabilityHistoryFormData> = {};
@@ -167,6 +94,12 @@ const validateForm = (): boolean => {
       const newEnd = formData.endDate ? new Date(formData.endDate) : null;
       const existingStart = history.startDateObj;
       const existingEnd = history.endDateObj;
+
+      console.log("newStart::", newStart);
+      console.log("newEnd::", newEnd);
+      console.log("existingStart::", existingStart);
+      console.log("existingEnd::", existingEnd);
+
 
       if (newEnd && existingEnd) {
         return newStart <= existingEnd && newEnd >= existingStart;
