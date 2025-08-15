@@ -70,7 +70,8 @@ const validateForm = (): boolean => {
     newErrors.endDate = '終了日は開始日より後にしてください';
   }
 
-  console.log("FisabilityHistoryModalのformData", formData);
+  console.log("DisabilityHistoryModalのformData:::", formData);
+  console.log("formData.startDate:", formData.startDate);
   if (formData.startDate) {
     // 1. existingHistory の日付を安全に Date に変換
     const safeHistory = existingHistory
@@ -140,6 +141,8 @@ const validateForm = (): boolean => {
         newErrors.startDate = `開始日は最新履歴の終了日 ${latestHistory.endDate} 以降にしてください`;
       }
     }
+  } else {
+    console.log("いけないもーん");
   }
 
   setErrors(newErrors);
