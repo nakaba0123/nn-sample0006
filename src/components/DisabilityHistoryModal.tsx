@@ -60,6 +60,7 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
   };
 
 const validateForm = (): boolean => {
+  console.log("最初のexistingHistory::", existingHistory);
   const newErrors: Partial<DisabilityHistoryFormData> = {};
 
   // 共通：日付未入力判定
