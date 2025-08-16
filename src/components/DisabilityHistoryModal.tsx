@@ -88,6 +88,8 @@ const latestHistory = existingHistory
   }))
   .sort((a,b) => b.startDateObj.getTime() - a.startDateObj.getTime())[0];
 
+console.log("latestHistory::", latestHistory);
+
 if (!editHistory && latestHistory) {
   // 前履歴の終了日が未記載なら、追加はNG
   if (!latestHistory.endDateObj) {
