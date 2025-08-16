@@ -85,14 +85,14 @@ const isEmptyDate = (d?: string | null) => {
   console.log("editHistory::", editHistory);
 
 // 最新履歴を取得
-const historiesWithDates = existingHistory
-  .filter(h => h.startDate)
+const latestHistory = existingHistory
+  .filter(h => h.start_date) // ← DBのカラム名に合わせる
   .map(h => ({
     ...h,
-    startDateObj: new Date(h.startDate),
-    endDateObj: isEmptyDate(h.endDate) ? null : new Date(h.endDate!)
+    startDateObj: new Date(h.start_date),
+    endDateObj: isEmptyDate(h.end_date) ? null : new Date(h.end_date!)
   }))
-  .sort((a,b) => b.startDateObj.getTime() - a.startDateObj.getTime());
+  .sort((a, b) => b.startDateObj.getTime() - a.startDateObj.getTime())[0];
 
 const latestHistory = historiesWithDates[0];
 
