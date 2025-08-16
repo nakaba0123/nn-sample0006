@@ -64,7 +64,12 @@ const validateForm = (): boolean => {
   const newErrors: Partial<DisabilityHistoryFormData> = {};
 
   // 共通：日付未入力判定
-  const isEmptyDate = (d?: string | null) => !d || d.trim() === '';
+const isEmptyDate = (d?: string | null) => {
+  if (!d || d.trim() === '') return true;
+  // DB由来のダミー日付 "1899-11-30" を未記載扱いにする
+  const invalidDate = new Date("1899-11-30T00:00:00.000Z");
+  return new Date(d).getTime() === invalidDate.getTime();
+};
 
   if (isEmptyDate(formData.startDate)) {
     newErrors.startDate = '開始日を入力してください';
