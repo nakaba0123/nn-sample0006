@@ -76,13 +76,17 @@ const validateForm = (): boolean => {
   console.log("DisabilityHistoryModalのformData:::", formData);
   console.log("formData.startDate:", formData.startDate);
 
-  // 前の区分が未記載なら即エラー（追加モードのみ）
-  if (isEmptyDate(formData.endDate) && !editHistory) {
-    const hasOngoing = existingHistory.some(h => isEmptyDate(h.endDate));
-    if (hasOngoing) {
-      newErrors.endDate = '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
-    }
+// 「終了日未記載レコードが複数存在しないか」チェック
+if (isEmptyDate(formData.endDate) && !editHistory) {
+  const hasOngoing = existingHistory.some(h => {
+    if (editHistory && h.id === editHistory.id) return false; // 編集中は除外
+    return isEmptyDate(h.endDate); // 終了日が空のものだけ見る
+  });
+  if (hasOngoing) {
+    newErrors.endDate =
+      '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
   }
+}
 
   if (!isEmptyDate(formData.startDate)) {
     console.log("1だよ");
