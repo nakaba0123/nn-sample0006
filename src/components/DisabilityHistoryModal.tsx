@@ -125,11 +125,11 @@ if (isEmptyDate(formData.endDate) && !editHistory) {
       } else if (!newEnd && !existingEnd) {
         return true;
       } else if (!newEnd) {
-        return newStart <= (existingEnd || new Date());
-      } else if (!existingEnd) {
-        return newEnd >= existingStart;
+        if (!existingEnd) {
+          return true; // 終了日なし同士はNG
+        }
+        return false;  // 終了日ありとは重複扱いしない
       }
-      return false;
     });
 
     if (conflictingHistory) {
