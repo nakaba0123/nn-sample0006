@@ -78,19 +78,21 @@ const validateForm = (): boolean => {
   console.log("formData.endDate:", formData.endDate);
   console.log("editHistory::", editHistory);
 
-if (isEmptyDate(formData.endDate) && !editHistory) {
-  const latestHistory = existingHistory
-    .filter(h => h.startDate)
-    .map(h => ({
-      ...h,
-      startDateObj: new Date(h.startDate),
-      endDateObj: isEmptyDate(h.endDate) ? null : new Date(h.endDate!)
-    }))
-    .sort((a,b) => b.startDateObj.getTime() - a.startDateObj.getTime())[0];
+// 最新履歴を取得
+const latestHistory = existingHistory
+  .filter(h => h.startDate)
+  .map(h => ({
+    ...h,
+    startDateObj: new Date(h.startDate),
+    endDateObj: isEmptyDate(h.endDate) ? null : new Date(h.endDate!)
+  }))
+  .sort((a,b) => b.startDateObj.getTime() - a.startDateObj.getTime())[0];
 
-  if (latestHistory && !latestHistory.endDateObj) {
+if (!editHistory && latestHistory) {
+  // 前履歴の終了日が未記載なら、追加はNG
+  if (!latestHistory.endDateObj) {
     newErrors.endDate =
-      '前の履歴が終了日未記載のため、追加する履歴も終了日を入力してください';
+      '前の履歴が終了日未記載のため、追加できません。';
   }
 }
 
