@@ -78,15 +78,19 @@ const validateForm = (): boolean => {
   console.log("formData.endDate:", formData.endDate);
   console.log("editHistory::", editHistory);
 
-// 「終了日未記載レコードが複数存在しないか」チェック
 if (isEmptyDate(formData.endDate) && !editHistory) {
-  const hasOngoing = existingHistory.some(h => {
-    if (editHistory && h.id === editHistory.id) return false; // 編集中は除外
-    return isEmptyDate(h.endDate); // 終了日が空のものだけ見る
-  });
-  if (hasOngoing) {
+  const latestHistory = existingHistory
+    .filter(h => h.startDate)
+    .map(h => ({
+      ...h,
+      startDateObj: new Date(h.startDate),
+      endDateObj: isEmptyDate(h.endDate) ? null : new Date(h.endDate!)
+    }))
+    .sort((a,b) => b.startDateObj.getTime() - a.startDateObj.getTime())[0];
+
+  if (latestHistory && !latestHistory.endDateObj) {
     newErrors.endDate =
-      '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
+      '前の履歴が終了日未記載のため、追加する履歴も終了日を入力してください';
   }
 }
 
