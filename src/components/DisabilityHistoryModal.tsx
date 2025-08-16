@@ -79,22 +79,24 @@ const validateForm = (): boolean => {
   console.log("editHistory::", editHistory);
 
 // 最新履歴を取得
-const latestHistory = existingHistory
+const historiesWithDates = existingHistory
   .filter(h => h.startDate)
   .map(h => ({
     ...h,
     startDateObj: new Date(h.startDate),
     endDateObj: isEmptyDate(h.endDate) ? null : new Date(h.endDate!)
   }))
-  .sort((a,b) => b.startDateObj.getTime() - a.startDateObj.getTime())[0];
+  .sort((a,b) => b.startDateObj.getTime() - a.startDateObj.getTime());
+
+const latestHistory = historiesWithDates[0];
 
 console.log("latestHistory::", latestHistory);
 
 if (!editHistory && latestHistory) {
-  // 前履歴の終了日が未記載なら、追加はNG
+  // 追加履歴時のみ実行
   if (!latestHistory.endDateObj) {
     newErrors.endDate =
-      '前の履歴が終了日未記載のため、追加できません。';
+      '前の履歴が終了日未記載のため、追加できません。終了日を設定してから追加してください。';
   }
 }
 
