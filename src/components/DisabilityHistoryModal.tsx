@@ -75,6 +75,8 @@ const validateForm = (): boolean => {
 
   console.log("DisabilityHistoryModalのformData:::", formData);
   console.log("formData.startDate:", formData.startDate);
+  console.log("formData.endDate:", formData.endDate);
+  console.log("editHistory::", editHistory);
 
 // 「終了日未記載レコードが複数存在しないか」チェック
 if (isEmptyDate(formData.endDate) && !editHistory) {
