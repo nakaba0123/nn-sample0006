@@ -62,47 +62,57 @@ const DisabilityHistoryModal: React.FC<DisabilityHistoryModalProps> = ({
 const validateForm = (): boolean => {
   const newErrors: Partial<DisabilityHistoryFormData> = {};
 
-  // 1. 必須項目チェック
-  if (!formData.startDate) {
+  // 共通：日付未入力判定
+  const isEmptyDate = (d?: string | null) => !d || d.trim() === '';
+
+  if (isEmptyDate(formData.startDate)) {
     newErrors.startDate = '開始日を入力してください';
   }
-  if (formData.endDate && formData.startDate && formData.endDate <= formData.startDate) {
+
+  if (!isEmptyDate(formData.endDate) && !isEmptyDate(formData.startDate) && formData.endDate! <= formData.startDate!) {
     newErrors.endDate = '終了日は開始日より後にしてください';
   }
 
   console.log("DisabilityHistoryModalのformData:::", formData);
+  console.log("formData.startDate:", formData.startDate);
 
-  // 2. 履歴をソート＆日付オブジェクト化（終了日編集直後も反映されるように）
-  const safeHistory = [...existingHistory]
-    .filter(h => h.startDate)
-    .map(h => ({
-      ...h,
-      startDateObj: new Date(h.startDate),
-      endDateObj: h.endDate ? new Date(h.endDate) : null
-    }))
-    .sort((a, b) => b.startDateObj.getTime() - a.startDateObj.getTime());
-
-  console.log("safeHistory::", safeHistory);
-
-  const latestHistory = safeHistory[0] || null;
-  console.log("formData.endData::", formData.endData);
-  console.log("editHistory::", editHistory);
-
-  // 3. 前の終了日未記載チェック（新規追加時のみ）
-  if (!formData.endDate && !editHistory) {
-    const hasOngoing = safeHistory.some(h => !h.endDateObj);
+  // 前の区分が未記載なら即エラー（追加モードのみ）
+  if (isEmptyDate(formData.endDate) && !editHistory) {
+    const hasOngoing = existingHistory.some(h => isEmptyDate(h.endDate));
     if (hasOngoing) {
       newErrors.endDate = '現在適用中の障害支援区分は1つまでです。他の履歴に終了日を設定してください。';
     }
   }
 
-  // 4. 重複期間チェック
-  if (formData.startDate) {
+  if (!isEmptyDate(formData.startDate)) {
+    console.log("1だよ");
+    const safeHistory = existingHistory
+      .filter(h => h.startDate)
+      .map(h => ({
+        ...h,
+        startDateObj: new Date(h.startDate),
+        endDateObj: isEmptyDate(h.endDate) ? null : new Date(h.endDate!)
+      }));
+
+    console.log("safeHistory::", safeHistory);
+
+    console.log("2だよ");
+    const sortedHistory = safeHistory.sort(
+      (a, b) => b.startDateObj.getTime() - a.startDateObj.getTime()
+    );
+    const latestHistory = sortedHistory[0] || null;
+
+    console.log("3だよ");
     const conflictingHistory = safeHistory.find(history => {
+      console.log("3-1だよ");
+      console.log("history.id::", history.id);
+      console.log("editHistory::", editHistory);
+      console.log("editHistory?.id::", editHistory?.id);
+
       if (editHistory && history.id === editHistory.id) return false;
 
-      const newStart = new Date(formData.startDate);
-      const newEnd = formData.endDate ? new Date(formData.endDate) : null;
+      const newStart = new Date(formData.startDate!);
+      const newEnd = isEmptyDate(formData.endDate) ? null : new Date(formData.endDate!);
       const existingStart = history.startDateObj;
       const existingEnd = history.endDateObj;
 
@@ -121,14 +131,16 @@ const validateForm = (): boolean => {
     if (conflictingHistory) {
       newErrors.startDate = '他の障害支援区分履歴と期間が重複しています';
     }
-  }
 
-  // 5. 最新履歴以降チェック（新規追加時のみ）
-  if (formData.startDate && latestHistory && !editHistory) {
-    const latestEnd = latestHistory.endDateObj;
-    if (latestEnd && new Date(formData.startDate) < latestEnd) {
-      newErrors.startDate = `開始日は最新履歴の終了日 ${latestHistory.endDate} 以降にしてください`;
+    console.log("5だよ");
+    if (latestHistory && !editHistory) {
+      const latestEnd = latestHistory.endDateObj;
+      if (latestEnd && new Date(formData.startDate!) < latestEnd) {
+        newErrors.startDate = `開始日は最新履歴の終了日 ${latestHistory.endDate} 以降にしてください`;
+      }
     }
+  } else {
+    console.log("いけないもーん");
   }
 
   setErrors(newErrors);
