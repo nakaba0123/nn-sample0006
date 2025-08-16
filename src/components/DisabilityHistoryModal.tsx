@@ -85,6 +85,8 @@ const validateForm = (): boolean => {
   console.log("safeHistory::", safeHistory);
 
   const latestHistory = safeHistory[0] || null;
+  console.log("formData.endData::", formData.endData);
+  console.log("editHistory::", editHistory);
 
   // 3. 前の終了日未記載チェック（新規追加時のみ）
   if (!formData.endDate && !editHistory) {
