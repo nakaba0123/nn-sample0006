@@ -94,7 +94,7 @@ const latestHistory = existingHistory
   }))
   .sort((a, b) => b.startDateObj.getTime() - a.startDateObj.getTime())[0];
 
-const latestHistory = historiesWithDates[0];
+//const latestHistory = historiesWithDates[0];
 
 console.log("latestHistory::", latestHistory);
 
