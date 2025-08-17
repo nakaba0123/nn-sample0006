@@ -363,11 +363,6 @@ const residentPayload = {
   updated_at: resident.updatedAt,
 };
 
-if (!isEdit) {
-  residentPayload.disability_level = resident.disabilityLevel;
-  residentPayload.disability_start_date = formData.disabilityStartDate || null;
-}
-
 try {
   console.log("🔥 登録直前データ（residentPayload）:", residentPayload);
   // ★編集時のIDは editResident?.id を使う（resident は Omit なので id を持っていない）
