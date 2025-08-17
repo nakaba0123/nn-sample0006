@@ -369,6 +369,7 @@ try {
   let residentId: number | null = editResident?.id ?? null;
   const isEdit = !!residentId;
   console.log("isEdit::", isEdit);
+  console.log("residentId::", residentId);
 
 if (!isEdit) {
   residentPayload.disability_level = resident.disabilityLevel;
@@ -389,6 +390,8 @@ if (!isEdit) {
 
   // 新規時のみサーバーから返されたIDを採用
   const result = await res.json().catch(() => ({}));
+  console.log("result::", result);
+  console.log("result.id::". result.id);
   if (!residentId) residentId = result.id;
   if (!residentId) throw new Error('residentId を取得できませんでした');
 
