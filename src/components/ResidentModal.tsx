@@ -373,6 +373,7 @@ try {
   // ★編集時のIDは editResident?.id を使う（resident は Omit なので id を持っていない）
   let residentId: number | null = editResident?.id ?? null;
   const isEdit = !!residentId;
+  console.log("isEdit::", isEdit);
 
 if (!isEdit) {
   residentPayload.disability_level = resident.disabilityLevel;
