@@ -352,8 +352,6 @@ const residentPayload = {
   name_kana: resident.nameKana,
   gender: resident.gender,
   birthdate: resident.birthdate,
-  disability_level: resident.disabilityLevel,
-  disability_start_date: formData.disabilityStartDate || null, // ←これを追加
   group_home_id: resident.groupHomeId,
   group_home_name: resident.groupHomeName,
   unit_name: resident.unitName,
@@ -364,6 +362,11 @@ const residentPayload = {
   created_at: resident.createdAt,
   updated_at: resident.updatedAt,
 };
+
+if (!isEdit) {
+  residentPayload.disability_level = resident.disabilityLevel;
+  residentPayload.disability_start_date = formData.disabilityStartDate || null;
+}
 
 try {
   console.log("🔥 登録直前データ（residentPayload）:", residentPayload);
