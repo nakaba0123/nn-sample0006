@@ -434,15 +434,10 @@ try {
 
   onClose();
 
-  const latestHistory = [...finalDisabilityHistory].sort(
-    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-  )[0];
-
+  // 成功データを親へ（一覧更新用）
   onSubmit({
     ...resident,
     id: residentId,
-    disabilityLevel: latestHistory?.disabilityLevel ?? resident.disabilityLevel,
-    disabilityHistory: finalDisabilityHistory,
   });
 
 } catch (err) {
