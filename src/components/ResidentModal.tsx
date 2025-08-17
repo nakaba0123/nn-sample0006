@@ -391,8 +391,8 @@ if (!isEdit) {
   // 新規時のみサーバーから返されたIDを採用
   const result = await res.json().catch(() => ({}));
   console.log("result::", result);
-  console.log("result.id::". result.id);
-  if (!residentId) residentId = result.id;
+  console.log("result.id::", result.id);
+  if (!residentId) residentId = result.id ?? residentId;
   if (!residentId) throw new Error('residentId を取得できませんでした');
 
   console.log("✅ 利用者保存成功:", residentId);
