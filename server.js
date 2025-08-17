@@ -177,7 +177,10 @@ app.post('/api/residents', async (req, res) => {
 
     await connection.commit(); // 🔸 コミット
 
-    res.json({ message: '利用者と障害歴を登録しました' });
+    res.json({
+      message: '利用者と障害歴を登録しました',
+      id: residentId
+    });
   } catch (err) {
     await connection.rollback(); // 🔸 エラー時はロールバック
     console.error('登録エラー:', err);
