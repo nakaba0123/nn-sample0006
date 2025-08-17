@@ -264,7 +264,7 @@ app.patch('/api/residents/:id', async (req, res) => {
     UPDATE residents SET
       group_home_id = ?, group_home_name = ?, unit_name = ?,
       name = ?, name_kana = ?, gender = ?, birthdate = ?,
-      disability_level = ?, disability_start_date = ?,
+//      disability_level = ?, disability_start_date = ?,
       room_number = ?, move_in_date = ?, move_out_date = ?, status = ?, updated_at = ?
     WHERE id = ?
   `;
@@ -272,7 +272,7 @@ app.patch('/api/residents/:id', async (req, res) => {
   const values = [
     group_home_id, group_home_name, unit_name,
     name, name_kana, gender, birthdate,
-    disability_level, disability_start_date,
+//    disability_level, disability_start_date,
     room_number, move_in_date || null, move_out_date || null, status, now,
     residentId
   ];
