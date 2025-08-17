@@ -347,6 +347,10 @@ const resident: Omit<Resident, "id"> = {
   updatedAt: now,
 };
 
+  let residentId: number | null = editResident?.id ?? null;
+  const isEdit = !!residentId;
+
+
 const residentPayload = {
   name: resident.name,
   name_kana: resident.nameKana,
@@ -372,8 +376,6 @@ try {
   console.log("🔥 登録直前データ（residentPayload）:", residentPayload);
 
   // ★編集時のIDは editResident?.id を使う（resident は Omit なので id を持っていない）
-  let residentId: number | null = editResident?.id ?? null;
-  const isEdit = !!residentId;
 
   // ★編集は PATCH / 新規は POST
   const res = await fetch(isEdit ? `/api/residents/${residentId}` : '/api/residents', {
