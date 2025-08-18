@@ -35,6 +35,18 @@ setInterval(async () => {
   }
 }, 1000 * 30); // ← 30秒ごとにPing！
 
+async function queryWithRetry(connection, sql, values, retries = 3, delay = 1000) {
+  try {
+    return await connection.query(sql, values);
+  } catch (err) {
+    if (err.code === 'ECONNRESET' && retries > 0) {
+      console.warn(`ECONNRESET発生。${delay}ms後にリトライします... 残り${retries}回`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return queryWithRetry(connection, sql, values, retries - 1, delay);
+    }
+    throw err; // リトライ尽きたらそのまま投げる
+  }
+}
 
 // =======================
 // 🏠 グループホーム API
@@ -310,82 +322,6 @@ app.get('/api/usage-records', async (req, res) => {
   }
 });
 
-//app.post('/api/disability_histories', async (req, res) => {
-//  console.log("POST /api/disability_histories が呼ばれました！");
-//  console.log("req.body:", req.body);
-//
-//  const { residentId, disabilityLevel, startDate, endDate } = req.body;
-//
-//  const sql = `
-//    INSERT INTO disability_histories
-//      (resident_id, disability_level, start_date, end_date)
-//   VALUES (?, ?, ?, ?)
-//  `;
-//
-//  const values = [
-//    residentId || null,
-//    disabilityLevel || null,
-//    startDate || null,
-//    endDate || null
-//  ];
-//
-//  try {
-//    const [result] = await pool.query(sql, values);
-//    res.status(201).json({ message: '障害履歴を登録しました', id: result.insertId });
-//  } catch (err) {
-//    console.error('障害履歴登録エラー:', err);
-//    res.status(500).json({ message: '障害履歴の登録に失敗しました' });
-//  }
-//});
-
-//app.post('/api/disability_histories', async (req, res) => {
-//  console.log("POST /api/disability_histories が呼ばれました！");
-//  console.log("req.body:", req.body);
-//
-//  const { residentId, disabilityLevel, startDate, endDate } = req.body;
-//
-//  const insertSql = `
-//    INSERT INTO disability_histories
-//      (resident_id, disability_level, start_date, end_date)
-//    VALUES (?, ?, ?, ?)
-//  `;
-//  const insertValues = [
-//    residentId || null,
-//    disabilityLevel || null,
-//    startDate || null,
-//    endDate || null
-//  ];
-//
-//  const updateSql = `
-//    UPDATE residents
-//    SET disability_level = ?,
-//        disability_start_date = ?
-//    WHERE id = ?
-//  `;
-//  const updateValues = [
-//    disabilityLevel || null,
-//    startDate || null,
-//    residentId
-//  ];
-//
-//  try {
-//    // 1. 履歴INSERT
-//    const [insertResult] = await pool.query(insertSql, insertValues);
-//
-//    // 2. residents UPDATE（常に最新として反映）
-//    await pool.query(updateSql, updateValues);
-//
-//    res.status(201).json({
-//      message: '障害履歴を登録し、利用者情報を更新しました',
-//      id: insertResult.insertId
-//    });
-//  } catch (err) {
-//    console.error('障害履歴登録または利用者情報更新エラー:', err);
-//    res.status(500).json({ message: '登録または更新に失敗しました' });
-//  }
-//});
-
-
 app.post('/api/disability_histories', async (req, res) => {
   console.log("POST /api/disability_histories が呼ばれました！");
   console.log("req.body:", req.body);
@@ -473,40 +409,6 @@ app.get('/api/disability_histories', async (req, res) => {
     res.status(500).json({ error: "データ取得に失敗しました" });
   }
 });
-
-//app.put('/api/disability_histories/:id', async (req, res) => {
-//  console.log("PUT /api/disability_histories が呼ばれました！");
-//  console.log("req.body:", req.body);
-//
-//  const historyId = req.params.id;
-////  const { disability_level, start_date, end_date } = req.body;
-//  const disability_level = req.body.disabilityLevel ?? null;
-//  const start_date = req.body.startDate || null;
-//  const end_date = req.body.endDate || null;
-//
-//  try {
-//    const [result] = await pool.query(
-//      `UPDATE disability_histories
-//       SET disability_level = ?, start_date = ?, end_date = ?
-//       WHERE id = ?`,
-//      [disability_level, start_date, end_date, historyId]
-//    );
-//
-//    if (result.affectedRows === 0) {
-//      return res.status(404).json({ error: '更新対象が見つかりません' });
-//    }
-//
-//    const [rows] = await pool.query(
-//      `SELECT * FROM disability_histories WHERE id = ?`,
-//      [historyId]
-//    );
-//
-//    res.json(rows[0]); // 更新後の値を返す
-//  } catch (err) {
-//    console.error('更新失敗:', err);
-//    res.status(500).json({ error: '更新に失敗しました' });
-//  }
-//});
 
 app.put('/api/disability_histories/:id', async (req, res) => {
   console.log("PUT /api/disability_histories が呼ばれました！");
@@ -686,26 +588,41 @@ app.post('/api/expansions', async (req, res) => {
   }
 });
 
+//app.get('/api/expansions', async (req, res) => {
+//  console.log("GET /api/expansions");
+//
+//  const { group_home_id } = req.query;
+//
+//  const sql = group_home_id
+//    ? 'SELECT * FROM expansions WHERE group_home_id = ? ORDER BY id DESC'
+//    : 'SELECT * FROM expansions ORDER BY id DESC';
+//
+//  try {
+//    const [rows] = group_home_id
+//      ? await pool.query(sql, [group_home_id])
+//      : await pool.query(sql);
+//
+//    res.status(200).json(rows);
+//  } catch (err) {
+//    console.error('増床一覧取得エラー:', err);
+//    res.status(500).json({ message: '取得に失敗しました' });
+//  }
+//});
+
 app.get('/api/expansions', async (req, res) => {
-  console.log("GET /api/expansions");
-
-  const { group_home_id } = req.query;
-
-  const sql = group_home_id
-    ? 'SELECT * FROM expansions WHERE group_home_id = ? ORDER BY id DESC'
-    : 'SELECT * FROM expansions ORDER BY id DESC';
-
+  const connection = await pool.getConnection();
   try {
-    const [rows] = group_home_id
-      ? await pool.query(sql, [group_home_id])
-      : await pool.query(sql);
-
-    res.status(200).json(rows);
+    const sql = `SELECT * FROM expansions ORDER BY created_at DESC`;
+    const [rows] = await queryWithRetry(connection, sql, []);
+    res.json(rows);
   } catch (err) {
     console.error('増床一覧取得エラー:', err);
-    res.status(500).json({ message: '取得に失敗しました' });
+    res.status(500).json({ message: 'データ取得に失敗しました' });
+  } finally {
+    connection.release();
   }
 });
+
 
 // =======================
 // 🌐 補助 API
