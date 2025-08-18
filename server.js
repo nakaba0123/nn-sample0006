@@ -610,7 +610,7 @@ app.post('/api/expansions', async (req, res) => {
 //  }
 //});
 
-pp.get('/api/expansions', async (req, res) => {
+app.get('/api/expansions', async (req, res) => {
   console.log("GET /api/expansions");
 
   const { group_home_id } = req.query;
