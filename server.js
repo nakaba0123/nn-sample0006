@@ -35,18 +35,19 @@ setInterval(async () => {
   }
 }, 1000 * 30); // ← 30秒ごとにPing！
 
-async function queryWithRetry(connection, sql, values, retries = 3, delay = 1000) {
-  try {
-    return await connection.query(sql, values);
-  } catch (err) {
-    if (err.code === 'ECONNRESET' && retries > 0) {
-      console.warn(`ECONNRESET発生。${delay}ms後にリトライします... 残り${retries}回`);
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return queryWithRetry(connection, sql, values, retries - 1, delay);
+const queryWithRetry = async (queryFn, maxRetries = 3, waitMs = 1000) => {
+  let attempt = 0;
+  while (attempt < maxRetries) {
+    try {
+      return await queryFn();
+    } catch (err) {
+      console.error(`${err.code || ''} エラー発生、${waitMs}ms後にリトライします... 残り${maxRetries - attempt - 1}`);
+      attempt++;
+      if (attempt >= maxRetries) throw err;
+      await new Promise(r => setTimeout(r, waitMs));
     }
-    throw err; // リトライ尽きたらそのまま投げる
   }
-}
+};
 
 // =======================
 // 🏠 グループホーム API
@@ -609,20 +610,30 @@ app.post('/api/expansions', async (req, res) => {
 //  }
 //});
 
-app.get('/api/expansions', async (req, res) => {
-  const connection = await pool.getConnection();
+pp.get('/api/expansions', async (req, res) => {
+  console.log("GET /api/expansions");
+
+  const { group_home_id } = req.query;
+
+  const sql = group_home_id
+    ? 'SELECT * FROM expansions WHERE group_home_id = ? ORDER BY id DESC'
+    : 'SELECT * FROM expansions ORDER BY id DESC';
+
   try {
-    const sql = `SELECT * FROM expansions ORDER BY created_at DESC`;
-    const [rows] = await queryWithRetry(connection, sql, []);
-    res.json(rows);
+    const rows = await queryWithRetry(async () => {
+      if (group_home_id) {
+        return (await pool.query(sql, [group_home_id]))[0];
+      } else {
+        return (await pool.query(sql))[0];
+      }
+    }, 3, 1000); // 3回リトライ、1秒待機
+
+    res.status(200).json(rows);
   } catch (err) {
-    console.error('増床一覧取得エラー:', err);
-    res.status(500).json({ message: 'データ取得に失敗しました' });
-  } finally {
-    connection.release();
+    console.error('増床一覧取得リトライ失敗:', err);
+    res.status(500).json({ message: '取得に失敗しました' });
   }
 });
-
 
 // =======================
 // 🌐 補助 API
