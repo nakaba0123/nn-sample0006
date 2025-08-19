@@ -509,14 +509,17 @@ console.log("formData: ", formData);
     </h3>
     <div className="grid md:grid-cols-2 gap-5">
       <div>
+        氏名
         {input("name", { placeholder: "氏名 *" })}
         {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
       </div>
       <div>
+        よみがな
         {input("nameKana", { placeholder: "よみがな *" })}
         {errors.nameKana && <p className="text-xs text-red-500 mt-1">{errors.nameKana}</p>}
       </div>
       <div>
+        性別
         <select
           value={formData.gender}
           onChange={(e) => setFormData((p) => ({ ...p, gender: e.target.value }))}
@@ -532,6 +535,7 @@ console.log("formData: ", formData);
         {errors.gender && <p className="text-xs text-red-500 mt-1">{errors.gender}</p>}
       </div>
       <div>
+        生年月日（記名不要）
         {input("birthdate", { type: "date", placeholder: "生年月日 *" })}
         {errors.birthdate && <p className="text-xs text-red-500 mt-1">{errors.birthdate}</p>}
       </div>
