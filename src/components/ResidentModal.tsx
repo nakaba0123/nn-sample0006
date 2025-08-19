@@ -278,7 +278,7 @@ console.log("mappedResident", mappedResident);
     if (!formData.nameKana.trim()) next.nameKana = "よみがなを入力してください";
     else if (!isHiragana(formData.nameKana)) next.nameKana = "ひらがなで入力してください";
     if (!formData.gender) next.gender = "性別を選択してください";
-    if (!formData.birthdate) next.birthdate = "生年月日を入力してください";
+//    if (!formData.birthdate) next.birthdate = "生年月日を入力してください";
     if (!formData.moveInDate) next.moveInDate = "入居日を入力してください";
     if (!formData.disabilityStartDate) next.disabilityStartDate = "開始日を入力してください";
     if (!formData.groupHomeId) next.groupHomeId = "グループホームを選択してください";
