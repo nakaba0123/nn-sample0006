@@ -535,7 +535,7 @@ console.log("formData: ", formData);
         {errors.gender && <p className="text-xs text-red-500 mt-1">{errors.gender}</p>}
       </div>
       <div>
-        生年月日（記名不要）
+        生年月日（希望者のみ）
         {input("birthdate", { type: "date", placeholder: "生年月日 *" })}
         {errors.birthdate && <p className="text-xs text-red-500 mt-1">{errors.birthdate}</p>}
       </div>
@@ -657,6 +657,7 @@ console.log("formData: ", formData);
   </h3>
   <div className="grid md:grid-cols-2 gap-5">
     <div>
+    物件・ユニット
 <select
   value={formData.groupHomeId}
   onChange={(e) =>
@@ -681,6 +682,7 @@ console.log("formData: ", formData);
       {errors.groupHomeId && <p className="text-xs text-red-500 mt-1">{errors.groupHomeId}</p>}
     </div>
     <div>
+      部屋番号
       <select
         value={formData.roomNumber}
         onChange={(e) => setFormData((p) => ({ ...p, roomNumber: e.target.value }))}
@@ -696,10 +698,12 @@ console.log("formData: ", formData);
       {errors.roomNumber && <p className="text-xs text-red-500 mt-1">{errors.roomNumber}</p>}
     </div>
     <div>
+      入居日
       {input("moveInDate", { type: "date", placeholder: "入居日 *" })}
       {errors.moveInDate && <p className="text-xs text-red-500 mt-1">{errors.moveInDate}</p>}
     </div>
     <div>
+      退去日（無記載の場合は入居中扱い）
       {input("moveOutDate", { type: "date", placeholder: "退居日（任意）" })}
       {errors.moveOutDate && <p className="text-xs text-red-500 mt-1">{errors.moveOutDate}</p>}
     </div>
