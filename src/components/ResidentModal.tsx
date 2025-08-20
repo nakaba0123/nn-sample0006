@@ -160,7 +160,6 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
         unitName: g.unitName,
       })
     );
-    console.log("expansionRecords::", expansionRecords);
     expansionRecords
       .filter((e) => e.expansionType === "A")
       .forEach((e) => {
@@ -192,6 +191,7 @@ const allUnits = () => {
     })
   );
 
+  console.log("expansionRecords::", expansionRecords);
   // expansions の別ユニット増床（Aタイプ）を必ず追加
   expansionRecords
     .filter((e) => e.expansionType === "A" && e.unitName) // unitName が存在するもののみ
