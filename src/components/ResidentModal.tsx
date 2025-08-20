@@ -214,6 +214,8 @@ const allUnits = () => {
 };
 
   const selectedUnit = () => allUnits()?.find((u) => u.id === formData.groupHomeId);
+  console.log("selectedUnit::", selectedUnit);
+
 /*
   const availableRooms = () => {
     const sel = selectedUnit();

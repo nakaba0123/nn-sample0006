@@ -40,7 +40,7 @@ type Props = {
     openingDate: string;
     createdAt: string;
   };
-//  expansions?: Expansion[];
+  expansions?: Expansion[];
   onEdit?: () => void;
   onDelete?: () => void;
   onEditExpansion?: () => void;
