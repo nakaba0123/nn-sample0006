@@ -160,6 +160,7 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
         unitName: g.unitName,
       })
     );
+    console.log("expansionRecords::", expansionRecords);
     expansionRecords
       .filter((e) => e.expansionType === "A")
       .forEach((e) => {
