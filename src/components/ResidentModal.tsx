@@ -150,6 +150,7 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
     setEditingDisabilityHistory(null);
   };
 
+/*
   const allUnits = () => {
     const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
     groupHomes.forEach((g) =>
@@ -176,9 +177,44 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
         : a.propertyName.localeCompare(b.propertyName)
     );
   };
+*/
+const allUnits = () => {
+  const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
+
+  // groupHomes の基本ユニット
+  groupHomes.forEach((g) =>
+    map.set(`${g.propertyName}-${g.unitName}`, {
+      id: String(g.id),
+      propertyName: g.propertyName,
+      unitName: g.unitName,
+    })
+  );
+
+  // expansions の別ユニット増床（Aタイプ）を追加
+  expansionRecords
+    .filter((e) => e.expansionType === "A")
+    .forEach((e) => {
+      const key = `${e.propertyName}-${e.unitName}`;
+      if (!map.has(key)) {
+        map.set(key, {
+          id: `expansion_${e.id}`,
+          propertyName: e.propertyName,
+          unitName: e.unitName,
+        });
+      }
+    });
+
+  // 単純増床（Bタイプ）は同一ユニットとして扱うのでここでは追加しない
+
+  return [...map.values()].sort((a, b) =>
+    a.propertyName === b.propertyName
+      ? a.unitName.localeCompare(b.unitName)
+      : a.propertyName.localeCompare(b.propertyName)
+  );
+};
 
   const selectedUnit = () => allUnits()?.find((u) => u.id === formData.groupHomeId);
-
+/*
   const availableRooms = () => {
     const sel = selectedUnit();
     if (!sel) return [];
@@ -191,6 +227,33 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
       .forEach((e) => e.newRooms.forEach((r) => set.add(r)));
     return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   };
+*/
+// 部屋番号一覧（改修済み）
+const availableRooms = () => {
+  const sel = selectedUnit();
+  if (!sel) return [];
+
+  const set = new Set<string>();
+
+  // groupHomes の基本ユニットの部屋
+  groupHomes
+    .filter((g) => g.propertyName === sel.propertyName && g.unitName === sel.unitName)
+    .forEach((g) => g.residentRooms.forEach((r) => set.add(r)))
+    .forEach(() => {}); // 型補完用
+
+  // expansions の単純増床（Bタイプ）を追加
+  expansionRecords
+    .filter(
+      (e) =>
+        e.propertyName === sel.propertyName &&
+        e.unitName === sel.unitName &&
+        e.expansionType === "B"
+    )
+    .forEach((e) => e.newRooms.forEach((r) => set.add(r)));
+
+  // ソート（数字を考慮）
+  return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+};
 
 useEffect(() => {
   console.log("ResidentModal入ったよ");
