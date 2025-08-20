@@ -178,6 +178,7 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
     );
   };
 */
+// 物件・ユニット一覧（修正版）
 const allUnits = () => {
   const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
 
@@ -190,21 +191,18 @@ const allUnits = () => {
     })
   );
 
-  // expansions の別ユニット増床（Aタイプ）を追加
+  // expansions の別ユニット増床（Aタイプ）を必ず追加
   expansionRecords
-    .filter((e) => e.expansionType === "A")
+    .filter((e) => e.expansionType === "A" && e.unitName) // unitName が存在するもののみ
     .forEach((e) => {
       const key = `${e.propertyName}-${e.unitName}`;
-      if (!map.has(key)) {
-        map.set(key, {
-          id: `expansion_${e.id}`,
-          propertyName: e.propertyName,
-          unitName: e.unitName,
-        });
-      }
+      // 既存キーと重複しても上書きして追加
+      map.set(key, {
+        id: `expansion_${e.id}`,
+        propertyName: e.propertyName,
+        unitName: e.unitName,
+      });
     });
-
-  // 単純増床（Bタイプ）は同一ユニットとして扱うのでここでは追加しない
 
   return [...map.values()].sort((a, b) =>
     a.propertyName === b.propertyName
