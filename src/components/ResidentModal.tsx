@@ -237,7 +237,7 @@ const availableRooms = () => {
   if (!sel) return [];
 
   const set = new Set<string>();
-  consile.log("set::", set);
+  console.log("set::", set);
 
   // groupHomes の基本ユニットの部屋
   groupHomes
