@@ -195,14 +195,14 @@ const allUnits = () => {
   console.log("expansionRecords::", expansionRecords);
   // expansions の別ユニット増床（Aタイプ）を必ず追加
   expansionRecords
-    .filter((e) => e.expansionType === "A" && e.unitName) // unitName が存在するもののみ
+    .filter((e) => e.expansion_type === "A" && e.unit_name) // unitName が存在するもののみ
     .forEach((e) => {
-      const key = `${e.propertyName}-${e.unitName}`;
+      const key = `${e.property_name}-${e.unit_name}`;
       // 既存キーと重複しても上書きして追加
       map.set(key, {
         id: `expansion_${e.id}`,
-        propertyName: e.propertyName,
-        unitName: e.unitName,
+        propertyName: e.property_name,
+        unitName: e.unit_name,
       });
     });
 
@@ -245,8 +245,8 @@ const availableRooms = () => {
   expansionRecords
     .filter(
       (e) =>
-        e.propertyName === sel.propertyName &&
-        e.unitName === sel.unitName &&
+        e.propertyName === sel.property_name &&
+        e.unitName === sel.unit_name &&
         e.expansionType === "B"
     )
     .forEach((e) => e.newRooms.forEach((r) => set.add(r)));
