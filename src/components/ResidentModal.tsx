@@ -182,6 +182,7 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
 const allUnits = () => {
   const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
 
+  console.log("groupHomes::", groupHomes);
   // groupHomes の基本ユニット
   groupHomes.forEach((g) =>
     map.set(`${g.propertyName}-${g.unitName}`, {
