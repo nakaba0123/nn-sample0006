@@ -230,6 +230,7 @@ const allUnits = () => {
     return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   };
 */
+
 // 部屋番号一覧（改修済み）
 const availableRooms = () => {
   const sel = selectedUnit();
@@ -242,18 +243,28 @@ const availableRooms = () => {
   // groupHomes の基本ユニットの部屋
   groupHomes
     .filter((g) => g.propertyName === sel.propertyName && g.unitName === sel.unitName)
-    .forEach((g) => g.residentRooms.forEach((r) => set.add(r)))
-    .forEach(() => {}); // 型補完用
+    .forEach((g) => (g.residentRooms ?? []).forEach((r) => set.add(r)));
 
   // expansions の単純増床（Bタイプ）を追加
   expansionRecords
     .filter(
       (e) =>
-        e.propertyName === sel.property_name &&
-        e.unitName === sel.unit_name &&
-        e.expansionType === "B"
+        e.property_name === sel.propertyName &&
+        e.unit_name === sel.unitName &&
+        e.expansion_type === "B"
     )
-    .forEach((e) => e.newRooms.forEach((r) => set.add(r)));
+    .forEach((e) => {
+      let rooms: string[] = [];
+      try {
+        // DBから来てるのが文字列の場合 → パース
+        rooms = Array.isArray(e.new_rooms)
+          ? e.new_rooms
+          : JSON.parse(e.new_rooms ?? "[]");
+      } catch {
+        rooms = [];
+      }
+      rooms.forEach((r) => set.add(r));
+    });
 
   // ソート（数字を考慮）
   return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
