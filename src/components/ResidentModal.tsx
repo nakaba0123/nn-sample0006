@@ -233,9 +233,11 @@ const allUnits = () => {
 // 部屋番号一覧（改修済み）
 const availableRooms = () => {
   const sel = selectedUnit();
+  console.log("sel::", sel);
   if (!sel) return [];
 
   const set = new Set<string>();
+  consile.log("set::", set);
 
   // groupHomes の基本ユニットの部屋
   groupHomes
