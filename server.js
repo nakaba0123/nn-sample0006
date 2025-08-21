@@ -547,47 +547,116 @@ app.delete('/api/expansions/:id', async (req, res) => {
   }
 });
 
+//app.post('/api/expansions', async (req, res) => {
+//  console.log("POST /api/expansions が呼ばれました！");
+//  console.log("req.body:", req.body);
+//
+//  const {
+//    propertyName,
+//    unitName,
+//    expansionType,
+//    newRooms,
+//    commonRoom,
+//    startDate
+//  } = req.body;
+//
+//  const sql = `
+//    INSERT INTO expansions (
+//      property_name,
+//      unit_name,
+//      expansion_type,
+//      new_rooms,
+//      common_room,
+//      start_date
+//    ) VALUES (?, ?, ?, ?, ?, ?)
+//  `;
+//
+//  const values = [
+//    propertyName || null,
+//    unitName || null,
+//    expansionType || null,
+//    JSON.stringify(newRooms || []),  // TEXT型として保存
+//    commonRoom || null,
+//    startDate || null
+//  ];
+//
+//  try {
+//    const [result] = await pool.query(sql, values);
+//    res.status(201).json({ message: '増床情報を登録しました', id: result.insertId });
+//  } catch (err) {
+//    console.error('増床登録エラー:', err);
+//    res.status(500).json({ message: '増床登録に失敗しました' });
+//  }
+//});
+
 app.post('/api/expansions', async (req, res) => {
   console.log("POST /api/expansions が呼ばれました！");
   console.log("req.body:", req.body);
 
   const {
     propertyName,
-    unitName,
-    expansionType,
+    unitName,       // ← GHのユニット名
+    expansionType,  // ← A or B で判定する
     newRooms,
     commonRoom,
     startDate
   } = req.body;
 
-  const sql = `
-    INSERT INTO expansions (
-      property_name,
-      unit_name,
-      expansion_type,
-      new_rooms,
-      common_room,
-      start_date
-    ) VALUES (?, ?, ?, ?, ?, ?)
-  `;
-
-  const values = [
-    propertyName || null,
-    unitName || null,
-    expansionType || null,
-    JSON.stringify(newRooms || []),  // TEXT型として保存
-    commonRoom || null,
-    startDate || null
-  ];
+  const conn = await pool.getConnection(); // トランザクション用
 
   try {
-    const [result] = await pool.query(sql, values);
-    res.status(201).json({ message: '増床情報を登録しました', id: result.insertId });
+    await conn.beginTransaction();
+
+    const expansionSql = `
+      INSERT INTO expansions (
+        property_name,
+        unit_name,
+        expansion_type,
+        new_rooms,
+        common_room,
+        start_date
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `;
+    const expansionValues = [
+      propertyName || null,
+      unitName || null,
+      expansionType || null,
+      JSON.stringify(newRooms || []),
+      commonRoom || null,
+      startDate || null
+    ];
+    const [expansionResult] = await conn.query(expansionSql, expansionValues);
+
+    if (expansionType === 'A') {
+      const groupHomeSql = `
+        INSERT INTO group_homes (
+          property_name,
+          unit_name,
+          capacity
+        ) VALUES (?, ?, ?)
+      `;
+      await conn.query(groupHomeSql, [
+        propertyName || null,
+        unitName,
+        (newRooms?.length || 0) + (commonRoom ? 1 : 0)
+      ]);
+    }
+
+    await conn.commit();
+
+    res.status(201).json({ 
+      message: '増床情報を登録しました', 
+      id: expansionResult.insertId 
+    });
   } catch (err) {
+    await conn.rollback();
     console.error('増床登録エラー:', err);
     res.status(500).json({ message: '増床登録に失敗しました' });
+  } finally {
+    conn.release();
   }
 });
+
 
 //app.get('/api/expansions', async (req, res) => {
 //  console.log("GET /api/expansions");
