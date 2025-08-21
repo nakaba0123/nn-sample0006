@@ -299,6 +299,8 @@ const fetchGroupHomes = async () => {
       createdAt: gh.created_at,
     }));
 
+    setGroupHomes(data);   // ←ここを追加！
+
     return data; // ? ここを追加！setGroupHomes は App.tsx の useEffectでやる！
   } catch (err) {
     console.error("一覧取得エラー:", err);
