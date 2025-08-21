@@ -397,7 +397,7 @@ const resident: Omit<Resident, "id"> = {
   name: formData.name.trim(),
   nameKana: formData.nameKana.trim(),
   gender: formData.gender,
-  birthdate: formData.birthdate || undefined,
+  birthdate: formData.birthdate,
   disabilityLevel: currentLevel,
   disabilityHistory: [
     {
