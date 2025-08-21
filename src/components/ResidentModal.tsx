@@ -246,25 +246,51 @@ const availableRooms = () => {
     .forEach((g) => (g.residentRooms ?? []).forEach((r) => set.add(r)));
 
   // expansions の単純増床（Bタイプ）を追加
-  expansionRecords
-    .filter(
-      (e) =>
-        e.property_name === sel.propertyName &&
-        e.unit_name === sel.unitName &&
-        e.expansion_type === "B"
-    )
-    .forEach((e) => {
-      let rooms: string[] = [];
-      try {
-        // DBから来てるのが文字列の場合 → パース
-        rooms = Array.isArray(e.new_rooms)
-          ? e.new_rooms
-          : JSON.parse(e.new_rooms ?? "[]");
-      } catch {
-        rooms = [];
-      }
+//  expansionRecords
+//    .filter(
+//      (e) =>
+//        e.property_name === sel.propertyName &&
+//        e.unit_name === sel.unitName &&
+//        e.expansion_type === "B"
+//    )
+//    .forEach((e) => {
+//      let rooms: string[] = [];
+//      try {
+//        // DBから来てるのが文字列の場合 → パース
+//        rooms = Array.isArray(e.new_rooms)
+//          ? e.new_rooms
+//          : JSON.parse(e.new_rooms ?? "[]");
+//      } catch {
+//        rooms = [];
+//      }
+//      rooms.forEach((r) => set.add(r));
+//    });
+// expansions の増床を追加
+expansionRecords
+  .filter((e) => e.property_name === sel.propertyName)
+  .forEach((e) => {
+    let rooms: string[] = [];
+
+    try {
+      rooms = Array.isArray(e.new_rooms)
+        ? e.new_rooms
+        : JSON.parse(e.new_rooms ?? "[]");
+    } catch {
+      rooms = [];
+    }
+
+    // Bタイプ（同一ユニット拡張）
+    if (e.expansion_type === "B" && e.unit_name === sel.unitName) {
       rooms.forEach((r) => set.add(r));
-    });
+    }
+
+    // Aタイプ（別ユニット扱い）
+    if (e.expansion_type === "A" && e.unit_name === sel.unitName) {
+      rooms.forEach((r) => set.add(r));
+      if (e.common_room) set.add(e.common_room);
+    }
+  });
+
 
   // ソート（数字を考慮）
   return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
