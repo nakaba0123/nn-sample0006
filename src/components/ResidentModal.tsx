@@ -429,7 +429,7 @@ const residentPayload = {
   name: resident.name,
   name_kana: resident.nameKana,
   gender: resident.gender,
-  birthdate: resident.birthdate,
+  birthdate: resident.birthdate || null,
   group_home_id: resident.groupHomeId,
   group_home_name: resident.groupHomeName,
   unit_name: resident.unitName,
