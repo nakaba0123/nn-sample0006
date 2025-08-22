@@ -632,8 +632,9 @@ app.post('/api/expansions', async (req, res) => {
         INSERT INTO group_homes (
           property_name,
           unit_name,
-          capacity
-        ) VALUES (?, ?, ?)
+          capacity,
+          unit_type
+        ) VALUES (?, ?, ?, "SUB")
       `;
       await conn.query(groupHomeSql, [
         propertyName || null,
