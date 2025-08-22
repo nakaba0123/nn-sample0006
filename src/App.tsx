@@ -363,6 +363,13 @@ const fetchExpansionRecords = async () => {
   }
 };
 
+const refetchExpansionRecordsWithDelay = () => {
+  // 0.1秒?0.2秒ぐらい待ってから呼ぶ
+  setTimeout(() => {
+    fetchExpansionRecords();
+  }, 150);
+};
+
 const fetchDisabilityHistories = async () => {
   try {
     const res = await axios.get(`${API_BASE_URL}/disability_histories`);
