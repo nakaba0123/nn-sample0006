@@ -54,7 +54,8 @@ const queryWithRetry = async (queryFn, maxRetries = 3, waitMs = 1000) => {
 // =======================
 app.get('/api/group-homes', async (req, res) => {
   try {
-    const [results] = await pool.query('SELECT * FROM group_homes');
+//    const [results] = await pool.query('SELECT * FROM group_homes');
+    const [results] = await pool.query('SELECT * FROM group_homes WHERE unit_type = "MAIN"');
     const fixed = results.map(row => ({
       ...row,
       resident_rooms: (() => {
