@@ -272,7 +272,6 @@ useEffect(() => {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {console.log("🔥 filteredExpansionsの中身", filteredExpansions)}
-                {console.log("🔥 expansionの中身", expansion)}
 
                 {filteredExpansions.map((expansion) => (
                   <ExpansionCard
