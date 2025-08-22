@@ -36,6 +36,7 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
   });
 
   const [errors, setErrors] = useState<Partial<GroupHomeFormData>>({});
+  console.log("GroupHome描画中");
 
 useEffect(() => {
   if (editGroupHome) {
