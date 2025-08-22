@@ -661,7 +661,7 @@ app.post('/api/expansions', async (req, res) => {
 });
 */
 
-pp.post('/api/expansions', async (req, res) => {
+app.post('/api/expansions', async (req, res) => {
   console.log("POST /api/expansions が呼ばれました！");
   console.log("req.body:", req.body);
 
