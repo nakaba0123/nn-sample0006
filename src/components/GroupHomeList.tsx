@@ -201,6 +201,13 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
           {activeView === 'facilities' ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {groupHomes.map((gh) => {
+                console.log("グループホームGH", gh);
+                console.log("ExpansionRecords",expansionRecords);
+                console.log("グループホームGHのpropertyName", gh.propertyName);
+                console.log("ExpansionRecordsのpropertyName",expansionRecords.propertyName);
+                console.log("ExpansionRecordsのproperty_name",expansionRecords.property_name);
+                console.log("GH propertyName raw:", gh?.propertyName, JSON.stringify(gh?.propertyName));
+                console.log("Expansion propertyName raw:", expansionRecords.propertyName, JSON.stringify(expansionRecords.propertyName));
                 const matchedExpansions = expansionRecords.filter(
                   exp => exp.property_name?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
                 );
