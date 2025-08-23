@@ -367,7 +367,7 @@ const refetchExpansionRecordsWithDelay = () => {
   // 0.1秒?0.2秒ぐらい待ってから呼ぶ
   setTimeout(() => {
     fetchExpansionRecords();
-  }, 150);
+  }, 1000);
 };
 
 const fetchDisabilityHistories = async () => {
