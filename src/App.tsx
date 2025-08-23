@@ -367,7 +367,7 @@ const refetchExpansionRecordsWithDelay = () => {
   // 0.1秒?0.2秒ぐらい待ってから呼ぶ
   setTimeout(() => {
     fetchExpansionRecords();
-  }, 1000);
+  }, 150);
 };
 
 const fetchDisabilityHistories = async () => {
@@ -489,6 +489,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
         timestamp: new Date().toISOString()
       };
       setExpansionRecords(prev => [newExpansion, ...prev]);
+      refetchExpansionRecordsWithDelay();
     } catch (err) {
       console.error('増床登録エラー:', err);
     }
