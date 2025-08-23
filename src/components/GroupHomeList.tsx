@@ -204,8 +204,11 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                 console.log("グループホームGH", gh);
                 console.log("ExpansionRecords",expansionRecords);
                 console.log("グループホームGHのpropertyName", gh.propertyName);
-                console.log("ExpansionRecordsのpropertyName",expansionRecords.propertyName);
-                console.log("ExpansionRecordsのproperty_name",expansionRecords.property_name);
+                console.log("ExpansionRecords全体", expansionRecords);
+                expansionRecords.forEach(exp => {
+                  console.log("ExpansionRecord propertyName:", exp.propertyName);
+                  console.log("ExpansionRecord property_name:", exp.property_name);
+                });
                 console.log("GH propertyName raw:", gh?.propertyName, JSON.stringify(gh?.propertyName));
                 console.log("Expansion propertyName raw:", expansionRecords.propertyName, JSON.stringify(expansionRecords.propertyName));
                 const matchedExpansions = expansionRecords.filter(
