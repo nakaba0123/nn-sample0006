@@ -215,6 +215,8 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                   exp => exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
                 );
                 console.log("matchedExpansions", matchedExpansions);
+                console.log("gh.id::", gh.id);
+                console.log("gh::", gh);
 
                 return (
                   <GroupHomeCard
