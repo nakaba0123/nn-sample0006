@@ -219,7 +219,7 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                 return (
                   {console.log("gh.id", gh.id)}
                   {console.log("gh", gh)}
-1
+
                   <GroupHomeCard
                     key={gh.id}
                     groupHome={gh}
