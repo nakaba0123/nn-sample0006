@@ -214,6 +214,7 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                 const matchedExpansions = expansionRecords.filter(
                   exp => exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
                 );
+                console.log("matchedExpansions", matchedExpansions);
 
                 return (
                   <GroupHomeCard
