@@ -489,7 +489,6 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
         timestamp: new Date().toISOString()
       };
       setExpansionRecords(prev => [newExpansion, ...prev]);
-      refetchExpansionRecordsWithDelay();
     } catch (err) {
       console.error('増床登録エラー:', err);
     }
