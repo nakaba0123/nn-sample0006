@@ -7,7 +7,7 @@ import { mapExpansion } from '../util/mapExpansion'; // パスは適宜調整
 
 interface GroupHomeListProps {
   groupHomes: GroupHome[];
-  residents: Resident[];
+  residents: Resident[]; // ← これを追加！
   expansionRecords: ExpansionRecord[];
   onAddGroupHome: () => void;
   onAddExpansion: () => void;
@@ -21,7 +21,7 @@ const apiBaseUrl = 'https://nn-sample0006-production.up.railway.app';
 
 const GroupHomeList: React.FC<GroupHomeListProps> = ({ 
   groupHomes, 
-  residents,
+  residents, // ← ここも忘れず！
   expansionRecords,
   onAddGroupHome, 
   onAddExpansion,
@@ -31,18 +31,18 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
   onDeleteExpansion
 }) => {
 
-  console.log(" groupHomes:", groupHomes);
-  console.log(" expansionRecords", expansionRecords);
+console.log(" groupHomes:", groupHomes);
+console.log(" expansionRecords", expansionRecords);
 
-  groupHomes.forEach(gh => {
-    expansionRecords.forEach(exp => {
-      if (exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()) {
-        console.log(`✅ MATCH: GH "${gh.propertyName}" == EX "${exp.propertyName}"`);
-      } else {
-        console.log(`❌ NO MATCH: GH "${gh.propertyName}" vs EX "${exp.propertyName}"`);
-      }
-    });
+groupHomes.forEach(gh => {
+  expansionRecords.forEach(exp => {
+    if (exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()) {
+      console.log(`? MATCH: GH "${gh.propertyName}" == EX "${exp.propertyName}"`);
+    } else {
+      console.log(`? NO MATCH: GH "${gh.propertyName}" vs EX "${exp.propertyName}"`);
+    }
   });
+});
 
   const [searchTerm, setSearchTerm] = useState('');
   const [addressFilter, setAddressFilter] = useState('');
@@ -60,24 +60,33 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
     return matchesSearch && matchesAddress;
   });
 
-  const filteredExpansions = expansionRecords.filter(expansion => {
-    const propName = expansion.propertyName || "";
-    const unitName = expansion.unitName || "";
-    const search = searchTerm.toLowerCase();
+const filteredExpansions = expansionRecords.filter(expansion => {
+  const propName = expansion.property_name || "";
+  const unitName = expansion.unit_name || "";
+  const search = searchTerm.toLowerCase();
 
-    return (
-      propName.toLowerCase().includes(search) ||
-      unitName.toLowerCase().includes(search)
-    );
-  });
+  console.log("expansionRecords", expansionRecords);
+  console.log("expansion:", expansion);
+
+  console.log("propName", propName);
+  console.log("unitName", unitName);
+
+  console.log("propName.toLowerCase().includes(search)", propName.toLowerCase().includes(search));
+  console.log("unitName.toLowerCase().includes(search)", unitName.toLowerCase().includes(search));
+
+  return (
+    propName.toLowerCase().includes(search) ||
+    unitName.toLowerCase().includes(search)
+  );
+});
 
   const cities = [...new Set(groupHomes.map(gh => {
     const addressParts = gh.address.split(/[都道府県市区町村]/);
     return addressParts[0] + (addressParts[1] ? addressParts[1].split(/[市区町村]/)[0] : '');
   }))].filter(city => city);
 
-  const totalRooms = groupHomes.reduce((sum, gh) => sum + (gh.residentRooms?.length ?? 0), 0);
-  const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
+const totalRooms = groupHomes.reduce((sum, gh) => sum + (gh.residentRooms?.length ?? 0), 0);
+const totalExpansionRooms = expansionRecords.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
 
   async function fetchExpansions() {
     const response = await fetch("/api/expansions");
@@ -86,7 +95,6 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
     return expansions;
   }
 
-  // APIから来た snake_case を camelCase に変換する関数
   function mapExpansionResponse(raw: any): ExpansionRecord {
     return {
       id: raw.id,
@@ -100,14 +108,14 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
     };
   }
 
-  useEffect(() => {
-    const loadExpansions = async () => {
-      const fetched = await fetchExpansions();
-      console.log("fetched expansions:", fetched);
-      setExpansions(fetched); // キャメルケース版を state に保持
-    };
-    loadExpansions();
-  }, []);
+useEffect(() => {
+  const loadExpansions = async () => {
+    const fetched = await fetchExpansions();
+    console.log("fetched expansions:", fetched); // ← デバッグにも便利！
+    setExpansions(fetched); // ← ここにキャメルケース版をセット
+  };
+  loadExpansions();
+}, []);
 
   return (
     <div className="space-y-6">
@@ -195,40 +203,89 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
           )}
         </div>
       </div>
+
       {/* Content */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
         <div className="p-6">
           {activeView === 'facilities' ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {groupHomes.map((gh) => {
-                const matchedExpansions = expansionRecords.filter(
-                  exp => exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
-                );
+            filteredGroupHomes.length === 0 ? (
+              <div className="text-center py-12">
+                <Home className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 mb-2">
+                  {searchTerm || addressFilter 
+                    ? '検索条件に一致するグループホームが見つかりません' 
+                    : 'まだグループホームが登録されていません'
+                  }
+                </p>
+                <p className="text-sm text-gray-400">
+                  {searchTerm || addressFilter 
+                    ? '検索条件を変更してください' 
+                    : '「グループホーム登録」ボタンから施設を追加してください'
+                  }
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+{groupHomes.map((gh) => {
+  console.log("グループホームGH", gh);
+  console.log("ExpansionRecords",expansionRecords);
+  console.log("グループホームGHのpropertyName", gh.propertyName);
+  console.log("ExpansionRecordsのpropertyName",expansionRecords.propertyName);
+  console.log("GH propertyName raw:", gh?.propertyName, JSON.stringify(gh?.propertyName));
+  console.log("Expansion propertyName raw:", expansionRecords.propertyName, JSON.stringify(expansionRecords.propertyName));
 
-                return (
-                  <GroupHomeCard
-                    key={gh.id}
-                    groupHome={gh}
-                    expansions={matchedExpansions}
-                    onEdit={onEditGroupHome}
-                    onDelete={onDeleteGroupHome}
-                    onEditExpansion={onEditExpansion}
-                    onDeleteExpansion={onDeleteExpansion}
-                  />
-                );
-              })}
-            </div>
+  const matchedExpansions = expansionRecords.filter(
+    exp => exp.property_name?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
+  );
+  console.log("matchedExpansions", matchedExpansions);
+
+  return (
+    <GroupHomeCard
+      key={gh.id}
+      groupHome={gh}
+      expansions={matchedExpansions}
+      onEdit={onEditGroupHome}
+      onDelete={onDeleteGroupHome}
+      onEditExpansion={onEditExpansion}
+      onDeleteExpansion={onDeleteExpansion}
+    />
+  );
+})}
+              </div>
+
+
+            )
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredExpansions.map((expansion) => (
-                <ExpansionCard
-                  key={expansion.id}
-                  expansion={mapExpansion(expansion)}
-                  onEdit={onEditExpansion}
-                  onDelete={onDeleteExpansion}
-                />
-              ))}
-            </div>
+            filteredExpansions.length === 0 ? (
+              <div className="text-center py-12">
+                <ArrowRight className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 mb-2">
+                  {searchTerm 
+                    ? '検索条件に一致する増床記録が見つかりません' 
+                    : 'まだ増床記録がありません'
+                  }
+                </p>
+                <p className="text-sm text-gray-400">
+                  {searchTerm 
+                    ? '検索条件を変更してください' 
+                    : '「既存GHへの増床登録」ボタンから増床を登録してください'
+                  }
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {console.log("🔥 filteredExpansionsの中身", filteredExpansions)}
+
+                {filteredExpansions.map((expansion) => (
+                  <ExpansionCard
+                    key={expansion.id}
+                    expansion={mapExpansion(expansion)}
+                    onEdit={onEditExpansion}
+                    onDelete={onDeleteExpansion}
+                  />
+                ))}
+              </div>
+            )
           )}
         </div>
       </div>
