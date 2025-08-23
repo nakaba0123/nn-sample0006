@@ -27,6 +27,7 @@ import { ShiftPreference } from './types/ShiftPreference';
 import { Resident } from './types/Resident';
 import { UsageRecord } from './types/UsageRecord';
 import { mapGroupHome } from "./util/mapGroupHome"; // パスは適宜！1
+import { mapExpansion } from "./util/mapExpansion"; // パスは適宜！1
 
 interface AttendanceData {
   name: string;
@@ -425,7 +426,7 @@ useEffect(() => {
       setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
 
       setGroupHomes((groupHomesRes?.data || []).map(mapGroupHome));
-      setExpansionRecords(expansionsRes?.data || []); // ← 追加！
+      setExpansionRecords((expansionsRes?.data || []).map(mapExpansion)); // ← 追加！
 
 
     } catch (err) {
