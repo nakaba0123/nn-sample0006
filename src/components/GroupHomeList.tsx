@@ -209,7 +209,7 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                 console.log("GH propertyName raw:", gh?.propertyName, JSON.stringify(gh?.propertyName));
                 console.log("Expansion propertyName raw:", expansionRecords.propertyName, JSON.stringify(expansionRecords.propertyName));
                 const matchedExpansions = expansionRecords.filter(
-                  exp => exp.property_name?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
+                  exp => exp.propertyName?.trim().toLowerCase() === gh.propertyName?.trim().toLowerCase()
                 );
 
                 return (
