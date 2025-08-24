@@ -25,6 +25,8 @@ const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDele
 
   const typeInfo = getExpansionTypeDisplay(expansion.expansionType);
 
+  console.log("typeInfo::", typeInfo);
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">

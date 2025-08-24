@@ -224,16 +224,16 @@ useEffect(() => {
               <ArrowRight className="w-4 h-4 text-purple-600" />
               <span className="text-sm font-medium text-gray-700">増床記録 ({relatedExpansions.length}件)</span>
             </div>
-<div className="space-y-3">
-  {relatedExpansions.map((expansion) => (
-    <ExpansionCard
-      key={expansion.id}
-      expansion={expansion}
-      onEdit={onEditExpansion}
-      onDelete={onDeleteExpansion}
-    />
-  ))}
-</div>
+            <div className="space-y-3">
+              {relatedExpansions.map((expansion) => (
+                <ExpansionCard
+                  key={expansion.id}
+                  expansion={expansion}
+                  onEdit={onEditExpansion}
+                  onDelete={onDeleteExpansion}
+                />
+              ))}
+            </div>
             
           </div>
         </div>
