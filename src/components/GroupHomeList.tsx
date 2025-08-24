@@ -234,14 +234,12 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {console.log("filteredExpansions::", filteredExpansions)}
-              {filteredExpansions.map((expansion) => (
                 <ExpansionCard
                   key={expansion.id}
-                  expansion={mapExpansion(expansion)}
+                  expansion={expansion}
                   onEdit={onEditExpansion}
                   onDelete={onDeleteExpansion}
                 />
-              ))}
             </div>
           )}
         </div>
