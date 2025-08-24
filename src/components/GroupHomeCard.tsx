@@ -65,12 +65,10 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   let camelExpansions: Expansion[] = [];
 
   if (Array.isArray(expansions)) {
-    camelExpansions = expansions.map(mapExpansionResponse);
+    camelExpansions = expansions;
   } else if (expansions && typeof expansions === "object") {
-    camelExpansions = [mapExpansionResponse(expansions)];
+    camelExpansions = [expansions];
   }
-
-  console.log('🪵 🐫 camelExpansions:', camelExpansions);
 
   const [groupHomes, setGroupHomes] = useState([]);
 
@@ -95,9 +93,6 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   console.log("?　relatedExpansions:", relatedExpansions);
   console.log("?? groupHome.propertyName:", groupHome.propertyName);
-//  camelExpansions.forEach((exp, i) => {
-//    console.log(`?? camelExpansions[${i}].propertyName:`, exp.propertyName);
-//  });
 
 
 const fetchExpansions = async () => {
