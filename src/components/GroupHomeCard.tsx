@@ -5,6 +5,7 @@ import { Home, MapPin, Phone, Calendar, Users, Edit, Trash2, Building, ArrowRigh
 import { GroupHome, ExpansionRecord } from '../types/GroupHome';
 import { mapGroupHome } from "../util/mapGroupHome"; // パスは適宜！1
 import { mapExpansionResponse } from "../util/mapExpansion"; // これも忘れず！
+import ExpansionCard from './ExpansionCard';
 
 interface GroupHomeCardProps {
   groupHome: GroupHome;
@@ -87,7 +88,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   };
 
   // この物件に関連する増床記録を取得
-  const relatedExpansions = camelExpansions?.filter(
+  const relatedExpansions = camelExpansions.filter(
     exp => exp.propertyName?.trim() === groupHome.propertyName?.trim()
   );
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
