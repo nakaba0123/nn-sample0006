@@ -107,8 +107,8 @@ function App() {
       ]
     }
   ]);
-  const [groupHomesMain, setGroupHomes] = useState<GroupHome[]>([]);
-  const [groupHomesSub, setGroupHomes] = useState<GroupHome[]>([]);
+  const [groupHomesMain, setGroupHomesMain] = useState<GroupHome[]>([]);
+  const [groupHomesSub, setGroupHomesSub] = useState<GroupHome[]>([]);
   const [expansionRecords, setExpansionRecords] = useState<ExpansionRecord[]>([]);
 
   const [shiftPreferences, setShiftPreferences] = useState<ShiftPreference[]>([]);
