@@ -267,14 +267,14 @@ const availableRooms = () => {
 //    });
 // expansions の増床を追加
 expansionRecords
-  .filter((e) => e.property_name === sel.propertyName)
+  .filter((e) => e.propertyName === sel.propertyName)
   .forEach((e) => {
     let rooms: string[] = [];
 
     try {
-      rooms = Array.isArray(e.new_rooms)
-        ? e.new_rooms
-        : JSON.parse(e.new_rooms ?? "[]");
+      rooms = Array.isArray(e.newRooms)
+        ? e.newRooms
+        : JSON.parse(e.newRooms ?? "[]");
     } catch {
       rooms = [];
     }
@@ -282,14 +282,14 @@ expansionRecords
     console.log("e::", e);
 
     // Bタイプ（同一ユニット拡張）
-    if (e.expansion_type === "B" && e.unit_name === sel.unitName) {
+    if (e.expansionType === "B" && e.unitName === sel.unitName) {
       rooms.forEach((r) => set.add(r));
     }
 
     // Aタイプ（別ユニット扱い）
-    if (e.expansion_type === "A" && e.unit_name === sel.unitName) {
+    if (e.expansionType === "A" && e.unitName === sel.unitName) {
       rooms.forEach((r) => set.add(r));
-      if (e.common_room) set.add(e.common_room);
+      if (e.commonRoom) set.add(e.commonRoom);
     }
   });
 
