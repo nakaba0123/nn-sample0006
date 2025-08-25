@@ -104,7 +104,7 @@ const fetchExpansions = async () => {
 
 
 useEffect(() => {
-  axios.get("/api/group-homes").then((res) => {
+  axios.get("/api/group-homes/main").then((res) => {
     const mapped = res.data.map((gh) => mapGroupHome(gh));
     setGroupHomes(mapped);
   });
