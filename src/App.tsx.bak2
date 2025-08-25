@@ -107,8 +107,7 @@ function App() {
       ]
     }
   ]);
-  const [groupHomesMain, setGroupHomes] = useState<GroupHome[]>([]);
-  const [groupHomesSub, setGroupHomes] = useState<GroupHome[]>([]);
+  const [groupHomes, setGroupHomes] = useState<GroupHome[]>([]);
   const [expansionRecords, setExpansionRecords] = useState<ExpansionRecord[]>([]);
 
   const [shiftPreferences, setShiftPreferences] = useState<ShiftPreference[]>([]);
@@ -408,29 +407,25 @@ useEffect(() => {
     try {
       const [residentsRes,
              historiesRes,
-             groupHomesMainRes,
-             groupHomesSubRes,
+             groupHomesRes,
              expansionsRes,
       ] = await Promise.all([
         axios.get("/api/residents"),
         axios.get("/api/disability_histories"),
-        axios.get("/api/group-homes/main"), // ← 追加！
-        axios.get("/api/group-homes/sub"), // ← 追加！
+        axios.get("/api/group-homes"), // ← 追加！
         axios.get("/api/expansions") // ← 追加！
       ]);
 
       console.log("? residents fetched:", residentsRes.data);
       console.log("? histories fetched:", historiesRes.data);
-      console.log("? groupHomesMain fetched:", groupHomesMainRes.data); // ← これ
-      console.log("? groupHomesSub fetched:", groupHomesSubRes.data); // ← これ
+      console.log("? groupHomes fetched:", groupHomesRes.data); // ← これ
       console.log("? expansions fetched:", expansionsRes.data); // ← これ
 
 
       setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
 
-      setGroupHomes((groupHomesMainRes?.data || []).map(mapGroupHome));
-      setGroupHomes((groupHomesSubRes?.data || []).map(mapGroupHome));
+      setGroupHomes((groupHomesRes?.data || []).map(mapGroupHome));
       setExpansionRecords((expansionsRes?.data || []).map(mapExpansion)); // ← 追加！
 
 
@@ -890,7 +885,7 @@ const handleCloseResidentModal = useCallback(() => {
         onClose={handleCloseResidentModal}  // ← これで毎回同じ関数インスタンスになる
         onSubmit={handleResidentSubmit}
         editResident={editingResident}
-        groupHomes={groupHomesSub}
+        groupHomes={groupHomes}
         expansionRecords={expansionRecords}
       />
 
@@ -929,7 +924,7 @@ const handleCloseResidentModal = useCallback(() => {
             <PermissionGuard permissions={['user.view.all', 'user.create', 'user.edit']}>
               <ResidentPage
                 residents={residents}
-                groupHomes={groupHomesSub}
+                groupHomes={groupHomes}
                 expansionRecords={expansionRecords}
                 onResidentSubmit={handleResidentSubmit}
                 onEditResident={handleEditResident}
@@ -942,7 +937,7 @@ const handleCloseResidentModal = useCallback(() => {
             <PermissionGuard permissions={['user.view.all', 'user.create', 'user.edit']}>
               <UsageRecordPage
                 residents={residents}
-                groupHomes={groupHomesMain}
+                groupHomes={groupHomes}
                 expansionRecords={expansionRecords}
                 usageRecords={usageRecords}
                 onUsageRecordUpdate={handleUsageRecordUpdate}
@@ -953,7 +948,7 @@ const handleCloseResidentModal = useCallback(() => {
           {activeTab === 'grouphomes' && (
             <PermissionGuard permissions={['grouphome.create', 'grouphome.edit', 'grouphome.delete']}>
               <GroupHomeList
-                groupHomes={groupHomesMain}
+                groupHomes={groupHomes}
                 residents={residents}
                 expansionRecords={expansionRecords}
                 onAddGroupHome={handleAddGroupHome}
@@ -995,7 +990,7 @@ const handleCloseResidentModal = useCallback(() => {
           {activeTab === 'shifts' && (
             <ShiftPreferencePage
               users={users}
-              groupHomes={groupHomesMain}
+              groupHomes={groupHomes}
               shiftPreferences={shiftPreferences}
               onShiftPreferenceSubmit={handleShiftPreferenceSubmit}
               onEditShiftPreference={handleEditShiftPreference}
@@ -1028,7 +1023,7 @@ const handleCloseResidentModal = useCallback(() => {
             isOpen={isExpansionModalOpen}
             onClose={handleCloseExpansionModal}
             onSubmit={handleExpansionSubmit}
-            groupHomes={groupHomesMain}
+            groupHomes={groupHomes}
             expansionRecords={expansionRecords}
             editExpansion={editingExpansion}
           />
