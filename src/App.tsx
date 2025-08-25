@@ -301,7 +301,7 @@ const fetchGroupHomes = async () => {
       createdAt: gh.created_at,
     }));
 
-    setGroupHomes(data);   // ←ここを追加！
+    setGroupHomesMain(data);   // ←ここを追加！
 
     return data; // ? ここを追加！setGroupHomes は App.tsx の useEffectでやる！
   } catch (err) {
@@ -429,8 +429,8 @@ useEffect(() => {
       setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
 
-      setGroupHomes((groupHomesMainRes?.data || []).map(mapGroupHome));
-      setGroupHomes((groupHomesSubRes?.data || []).map(mapGroupHome));
+      setGroupHomesMain((groupHomesMainRes?.data || []).map(mapGroupHome));
+      setGroupHomesSub((groupHomesSubRes?.data || []).map(mapGroupHome));
       setExpansionRecords((expansionsRes?.data || []).map(mapExpansion)); // ← 追加！
 
 
@@ -681,7 +681,7 @@ const handleDeleteGroupHome = async (groupHomeId: string) => {
     await axios.delete(`${API_BASE_URL}/group-homes/${groupHomeId}`);
 
     // ✅ 削除成功したらローカル状態も更新
-    setGroupHomes(prev => prev.filter(gh => gh.id !== groupHomeId));
+    setGroupHomesMain(prev => prev.filter(gh => gh.id !== groupHomeId));
     setShiftPreferences(prev => prev.map(pref => ({
       ...pref,
       preferences: pref.preferences.filter(ghPref => ghPref.groupHomeId !== groupHomeId)
@@ -813,7 +813,7 @@ const handleSubmitGroupHome = async (data: GroupHomeFormData) => {
     await axios.post(`${API_BASE_URL}/group-homes`, newGroupHome);
 
     // 3️⃣ 表示用stateを更新 ← これがなかったから「登録しても見えない！」となってた
-    setGroupHomes(prev => [...prev, newGroupHome]);
+    setGroupHomesMain(prev => [...prev, newGroupHome]);
 
     // 4️⃣ モーダル閉じて編集モードリセット
     setIsGroupHomeModalOpen(false);
