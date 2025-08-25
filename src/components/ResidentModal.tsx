@@ -279,6 +279,8 @@ expansionRecords
       rooms = [];
     }
 
+    console.log("e::", e);
+
     // Bタイプ（同一ユニット拡張）
     if (e.expansion_type === "B" && e.unit_name === sel.unitName) {
       rooms.forEach((r) => set.add(r));
