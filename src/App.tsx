@@ -649,22 +649,6 @@ const handleResidentSubmit = async (resident: Resident) => {
     alert("利用者一覧の取得に失敗しました。");
   }
 
-  const mergedResidents = rawResidents.map((resident) => {
-    const history = disabilityHistories
-      .filter((h) => h.residentId === resident.id)
-      .map((h) => ({
-        id: h.id,
-        startDate: h.startDate,
-        endDate: h.endDate,
-        level: h.disabilityLevel,
-      }));
-    return {
-      ...resident,
-      disabilityHistory: history,
-    };
-  });
-  setResidents(mergedResidents);
-
   setIsResidentModalOpen(false); // ? モーダル閉じる
   setEditingResident(null);      // ? 編集状態解除
 };
