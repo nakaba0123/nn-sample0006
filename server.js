@@ -519,9 +519,9 @@ app.put('/api/disability_histories/:id', async (req, res) => {
 app.patch('/api/disability_histories/:id', async (req, res) => {
   console.log("PATCH /api/disability_histories が呼ばれました！");
   console.log("req.body::", req.body);
-  console.log("req.body.disabilityLevel::". req.body.disabilityLevel);
-  console.log("req.body.startdate::". req.body.startDate);
-  console.log("req.body.endDate::". req.body.endDate);
+  console.log("req.body.disabilityLevel::", req.body.disabilityLevel);
+  console.log("req.body.startdate::", req.body.startDate);
+  console.log("req.body.endDate::", req.body.endDate);
   const id = req.params.id;
 //  const { disabilityLevel, startDate, endDate } = req.body;
   const disability_level = req.body.disabilityLevel ?? null;
