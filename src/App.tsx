@@ -638,6 +638,17 @@ const handleResidentSubmit = async (resident: Resident) => {
 const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
+  try {
+    await fetchResidents(); // ? 一覧を更新
+    await fetchDisabilityHistories();
+
+    alert("利用者を登録しました！"); // ? 成功メッセージ
+
+  } catch (err) {
+    console.error("利用者登録後の更新失敗:", err);
+    alert("利用者一覧の取得に失敗しました。");
+  }
+
   const mergedResidents = rawResidents.map((resident) => {
     const history = disabilityHistories
       .filter((h) => h.residentId === resident.id)
