@@ -245,7 +245,7 @@ app.post('/api/residents', async (req, res) => {
     connection.release();
   }
 });
-/*
+
 app.get('/api/residents', async (req, res) => {
   try {
     const [results] = await pool.query(`
@@ -261,53 +261,6 @@ app.get('/api/residents', async (req, res) => {
   } catch (err) {
     console.error('取得失敗:', err);
     res.status(500).json({ error: '取得失敗' });
-  }
-});
-*/
-
-app.get("/api/residents", async (req, res) => {
-  try {
-    const [rows] = await pool.query(`
-      SELECT 
-        r.id,
-        r.name,
-        r.name_kana,
-        r.room_number,
-        r.move_in_date,
-        r.move_out_date,
-        r.group_home_id,
-        g.property_name AS group_home_name,
-        u.unit_name,
-        r.status,
-        r.created_at,
-        -- 履歴をまとめて返す
-        GROUP_CONCAT(
-          JSON_OBJECT(
-            'id', dh.id,
-            'disability_level', dh.disability_level,
-            'start_date', dh.start_date,
-            'end_date', dh.end_date
-          ) ORDER BY dh.start_date ASC
-        ) AS disability_histories
-      FROM residents r
-      LEFT JOIN group_homes g ON r.group_home_id = g.id
-      LEFT JOIN units u ON r.unit_id = u.id
-      LEFT JOIN disability_histories dh ON r.id = dh.resident_id
-      GROUP BY r.id
-      ORDER BY r.created_at DESC
-    `);
-
-    const residents = rows.map(r => ({
-      ...r,
-      disability_histories: r.disability_histories
-        ? JSON.parse(`[${r.disability_histories}]`)
-        : []
-    }));
-
-    res.json(residents);
-  } catch (err) {
-    console.error("GET /api/residents エラー:", err);
-    res.status(500).json({ error: "利用者一覧の取得に失敗しました" });
   }
 });
 
