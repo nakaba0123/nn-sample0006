@@ -21,8 +21,10 @@ interface ResidentPageProps {
 function camelizeKeys(obj: any) {
   console.log("obj before::", obj);
   if (Array.isArray(obj)) {
+    console.log("111!");
     return obj.map(v => camelizeKeys(v));
   } else if (obj !== null && obj.constructor === Object) {
+    console.log("222!");
     return Object.fromEntries(
       Object.entries(obj).map(([key, value]) => [
         key.replace(/_([a-z])/g, (_, char) => char.toUpperCase()),
@@ -294,7 +296,6 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredResidents.map((resident) => (
-                {console.log("camelizeKeys(resident)::", camelizeKeys(resident))}
                 <ResidentCard
                   key={resident.id}
                   resident={camelizeKeys(resident)}
