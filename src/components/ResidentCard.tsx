@@ -53,6 +53,7 @@ const ResidentCard: React.FC<ResidentCardProps> = ({ resident, onEdit, onDelete 
 
   // 障害支援区分履歴の数を取得
   const getDisabilityHistoryCount = () => {
+    console.log("resident.disabilityHistory", resident.disabilityHistory);
     return resident.disabilityHistory?.length || 0;
   };
 
