@@ -19,6 +19,7 @@ interface ResidentPageProps {
 }
 
 function camelizeKeys(obj: any) {
+  console.log("obj::", obj);
   if (Array.isArray(obj)) {
     return obj.map(v => camelizeKeys(v));
   } else if (obj !== null && obj.constructor === Object) {
