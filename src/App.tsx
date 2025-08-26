@@ -323,7 +323,7 @@ const fetchResidents = async () => {
         id: r.id,
         name: r.name,
         nameKana: r.name_kana,
-        disabilityLevel: r.disability_level,
+        disabilityHistories: r.disability_histories, // ← ここ追加！
         roomNumber: r.room_number,
         moveInDate: r.move_in_date,
         moveOutDate: r.move_out_date,
