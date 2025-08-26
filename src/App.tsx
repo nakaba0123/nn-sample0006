@@ -614,7 +614,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
       setShiftPreferences(prev => [data, ...prev]);
     }
   };
-
+/*
 // App.tsx
 const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
@@ -631,6 +631,31 @@ const handleResidentSubmit = async (resident: Resident) => {
 
   setIsResidentModalOpen(false); // ✅ モーダル閉じる
   setEditingResident(null);      // ✅ 編集状態解除
+};
+*/
+
+// App.tsx
+const handleResidentSubmit = async (resident: Resident) => {
+  console.log("送信された利用者:", resident);
+
+  const mergedResidents = rawResidents.map((resident) => {
+    const history = disabilityHistories
+      .filter((h) => h.residentId === resident.id)
+      .map((h) => ({
+        id: h.id,
+        startDate: h.startDate,
+        endDate: h.endDate,
+        level: h.disabilityLevel,
+      }));
+    return {
+      ...resident,
+      disabilityHistory: history,
+    };
+  });
+  setResidents(mergedResidents);
+
+  setIsResidentModalOpen(false); // ? モーダル閉じる
+  setEditingResident(null);      // ? 編集状態解除
 };
 
   /* ---------- 画面 ---------- */
