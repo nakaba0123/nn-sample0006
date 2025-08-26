@@ -550,7 +550,7 @@ if (!isEdit) {
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   )[0];
 
-  cnsole.log("latestHistory::",latestHistory);
+  console.log("latestHistory::",latestHistory);
 
   onSubmit({
     ...resident,
