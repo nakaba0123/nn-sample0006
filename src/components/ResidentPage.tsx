@@ -44,6 +44,7 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
   onEditResident,
   onDeleteResident
 }) => {
+  console.log("ResidentPageのresidents", residents);
   const { currentUser, hasPermission } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingResident, setEditingResident] = useState<Resident | null>(null);
