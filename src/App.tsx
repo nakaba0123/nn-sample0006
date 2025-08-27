@@ -445,29 +445,6 @@ useEffect(() => {
 
 useEffect(() => {
   console.log("rawResidents.length before::", rawResidents.length);
-
-  const fetchData = async () => {
-    try {
-      const [residentsRes,
-             historiesRes,
-      ] = await Promise.all([
-        axios.get("/api/residents"), 
-        axios.get("/api/disability_histories"),
-      ]); 
-    
-      console.log("? residents fetched:", residentsRes.data);
-      console.log("? histories fetched:", historiesRes.data);
-        
-      setRawResidents(residentsRes.data);
-      console.log("rawResidents::::", rawResidents);
-      setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
-        
-    } catch (err) {
-      console.error("データ取得エラー:", err);
-    }
-  };
-
-  fetchData();
   console.log("rawResidents.length after::", rawResidents.length);
 
   if (
