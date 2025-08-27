@@ -640,25 +640,37 @@ const handleResidentSubmit = async (resident: Resident) => {
 };
 */
 
+// App.tsx
 const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
+  // キャメルケース → スネークケース に変換
+  const payload = {
+    group_home_id: resident.groupHomeId,
+    group_home_name: resident.groupHomeName,
+    unit_name: resident.unitName,
+    name: resident.name,
+    name_kana: resident.nameKana,
+    gender: resident.gender,
+    birthdate: resident.birthdate || null,
+    disability_level: resident.disabilityLevel || null,
+    disability_start_date: resident.disabilityStartDate || null,
+    room_number: resident.roomNumber || null,
+    move_in_date: resident.moveInDate || null,
+    move_out_date: resident.moveOutDate || null,
+    status: resident.status,
+  };
+
   try {
-    // POSTして登録（レスポンスで新規利用者を受け取る）
-    const response = await fetch("/api/residents", {
+    const res = await fetch("/api/residents", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(resident),
+      body: JSON.stringify(payload),
     });
 
-    if (!response.ok) throw new Error("登録失敗");
+    if (!res.ok) throw new Error("登録失敗");
 
-    const newResident = await response.json();
-
-    // 一覧に直接追加（再fetchしない）
-    setRawResidents((prev) => [...prev, newResident]);
-
-    // 障害歴だけ最新化したいならfetchしてもOK
+    await fetchResidents();
     await fetchDisabilityHistories();
 
     alert("利用者を登録しました！");
