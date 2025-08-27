@@ -337,6 +337,7 @@ const fetchResidents = async () => {
   } catch (err) {
     console.error('fetchResidents() エラー:', err);
   }
+  console.log("fetchResidents Last", res.data);
 };
 
 const fetchExpansionRecords = async () => {
@@ -391,6 +392,7 @@ const fetchDisabilityHistories = async () => {
   } catch (err) {
     console.error("fetchDisabilityHistories() エラー:", err);
   }
+  console.log("fetchDisabilityHistory Last", res.data);
 };
 
 // チャーママが優しく作ったよ?
@@ -650,7 +652,9 @@ const handleResidentSubmit = async (resident: Resident) => {
   }
 
   setIsResidentModalOpen(false); // ? モーダル閉じる
+  alert("aaa");
   setEditingResident(null);      // ? 編集状態解除
+  alert("bbb");
   console.log("handleResidentSubmit Last::", resident);
 };
 
