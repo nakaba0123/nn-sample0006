@@ -450,39 +450,24 @@ useEffect(() => {
     try {
       const [residentsRes,
              historiesRes,
-             groupHomesMainRes,
-             groupHomesSubRes,
-             expansionsRes,
       ] = await Promise.all([
-        axios.get("/api/residents"),
+        axios.get("/api/residents"), 
         axios.get("/api/disability_histories"),
-        axios.get("/api/group-homes/main"), // ← 追加！
-        axios.get("/api/group-homes/sub"), // ← 追加！
-        axios.get("/api/expansions") // ← 追加！
-      ]);
+      ]); 
     
       console.log("? residents fetched:", residentsRes.data);
       console.log("? histories fetched:", historiesRes.data);
-      console.log("? groupHomesMain fetched:", groupHomesMainRes.data); // ← これ
-      console.log("? groupHomesSub fetched:", groupHomesSubRes.data); // ← これ
-      console.log("? expansions fetched:", expansionsRes.data); // ← これ
-           
+        
       setRawResidents(residentsRes.data);
       console.log("rawResidents::::", rawResidents);
       setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
-      
-      setGroupHomesMain((groupHomesMainRes?.data || []).map(mapGroupHome));
-      setGroupHomesSub((groupHomesSubRes?.data || []).map(mapGroupHome));
-      setExpansionRecords((expansionsRes?.data || []).map(mapExpansion)); // ← 追加！
-          
-          
+        
     } catch (err) {
       console.error("データ取得エラー:", err);
     }
   };
 
   fetchData();
-
   console.log("rawResidents.length after::", rawResidents.length);
 
   if (
