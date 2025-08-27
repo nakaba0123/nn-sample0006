@@ -651,6 +651,7 @@ const handleResidentSubmit = async (resident: Resident) => {
 
   setIsResidentModalOpen(false); // ? モーダル閉じる
   setEditingResident(null);      // ? 編集状態解除
+  console.log("handleResidentSubmit Last::", resident);
 };
 
   /* ---------- 画面 ---------- */
