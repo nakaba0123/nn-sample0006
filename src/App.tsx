@@ -678,10 +678,7 @@ const handleResidentSubmit = async (resident: Resident) => {
   }
 
   setIsResidentModalOpen(false); // ? モーダル閉じる
-  alert("aaa");
   setEditingResident(null);      // ? 編集状態解除
-  alert("bbb");
-  console.log("handleResidentSubmit Last::", resident);
 };
 
   /* ---------- 画面 ---------- */
