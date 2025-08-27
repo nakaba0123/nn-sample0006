@@ -443,6 +443,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  console.log("rawResidents.length::", rawResidents.length);
   if (
     Array.isArray(rawResidents) && rawResidents.length > 0 &&
     Array.isArray(disabilityHistories) && disabilityHistories.length > 0
