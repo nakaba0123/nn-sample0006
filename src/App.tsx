@@ -427,6 +427,7 @@ useEffect(() => {
 
 
       setRawResidents(residentsRes.data);
+      console.log("rawResidents::::", rawResidents);
       setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
 
       setGroupHomesMain((groupHomesMainRes?.data || []).map(mapGroupHome));
