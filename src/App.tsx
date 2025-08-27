@@ -445,7 +445,7 @@ useEffect(() => {
 
 useEffect(() => {
   console.log("rawResidents.length before::", rawResidents.length);
-  setRawResidents(rawResidents);
+  fetchData();
   console.log("rawResidents.length after::", rawResidents.length);
 
   if (
