@@ -619,7 +619,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
       setShiftPreferences(prev => [data, ...prev]);
     }
   };
-/*
+
 // App.tsx
 const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
@@ -638,51 +638,6 @@ const handleResidentSubmit = async (resident: Resident) => {
   setIsResidentModalOpen(false); // ? モーダル閉じる
   setEditingResident(null);      // ? 編集状態解除
 };
-*/
-
-// App.tsx
-const handleResidentSubmit = async (resident: Resident) => {
-  console.log("送信された利用者:", resident);
-
-  // キャメルケース → スネークケース に変換
-  const payload = {
-    group_home_id: resident.groupHomeId,
-    group_home_name: resident.groupHomeName,
-    unit_name: resident.unitName,
-    name: resident.name,
-    name_kana: resident.nameKana,
-    gender: resident.gender,
-    birthdate: resident.birthdate || null,
-    disability_level: resident.disabilityLevel || null,
-    disability_start_date: resident.disabilityStartDate || null,
-    room_number: resident.roomNumber || null,
-    move_in_date: resident.moveInDate || null,
-    move_out_date: resident.moveOutDate || null,
-    status: resident.status,
-  };
-
-  try {
-    const res = await fetch("/api/residents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) throw new Error("登録失敗");
-
-    await fetchResidents();
-    await fetchDisabilityHistories();
-
-    alert("利用者を登録しました！");
-  } catch (err) {
-    console.error("利用者登録後の更新失敗:", err);
-    alert("利用者一覧の取得に失敗しました。");
-  }
-
-  setIsResidentModalOpen(false);
-  setEditingResident(null);
-};
-
 
   /* ---------- 画面 ---------- */
 
