@@ -625,25 +625,6 @@ const handleResidentSubmit = async (resident: Resident) => {
   console.log("送信された利用者:", resident);
 
   try {
-    await fetchResidents(); // ✅ 一覧を更新
-
-    alert("利用者を登録しました！"); // ✅ 成功メッセージ
-
-  } catch (err) {
-    console.error("利用者登録後の更新失敗:", err);
-    alert("利用者一覧の取得に失敗しました。");
-  }
-
-  setIsResidentModalOpen(false); // ✅ モーダル閉じる
-  setEditingResident(null);      // ✅ 編集状態解除
-};
-*/
-
-// App.tsx
-const handleResidentSubmit = async (resident: Resident) => {
-  console.log("送信された利用者:", resident);
-
-  try {
     await fetchResidents(); // ? 一覧を更新
     await fetchDisabilityHistories();
 
@@ -657,6 +638,39 @@ const handleResidentSubmit = async (resident: Resident) => {
   setIsResidentModalOpen(false); // ? モーダル閉じる
   setEditingResident(null);      // ? 編集状態解除
 };
+*/
+
+const handleResidentSubmit = async (resident: Resident) => {
+  console.log("送信された利用者:", resident);
+
+  try {
+    // POSTして登録（レスポンスで新規利用者を受け取る）
+    const response = await fetch("/api/residents", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(resident),
+    });
+
+    if (!response.ok) throw new Error("登録失敗");
+
+    const newResident = await response.json();
+
+    // 一覧に直接追加（再fetchしない）
+    setRawResidents((prev) => [...prev, newResident]);
+
+    // 障害歴だけ最新化したいならfetchしてもOK
+    await fetchDisabilityHistories();
+
+    alert("利用者を登録しました！");
+  } catch (err) {
+    console.error("利用者登録後の更新失敗:", err);
+    alert("利用者一覧の取得に失敗しました。");
+  }
+
+  setIsResidentModalOpen(false);
+  setEditingResident(null);
+};
+
 
   /* ---------- 画面 ---------- */
 
