@@ -462,6 +462,7 @@ useEffect(() => {
     };
   });
   setResidents(mergedResidents);
+  console.log("rawResidents:::", rawResidents);
   }
 }, [rawResidents, disabilityHistories]);
 
