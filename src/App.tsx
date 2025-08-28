@@ -631,6 +631,28 @@ const handleResidentSubmit = async (resident: Resident) => {
     console.log("handleResidentSubmitのrawResidents:::", rawResidents);
     alert("利用者を登録しました！"); // ? 成功メッセージ
 
+    const fetchData = async () => {
+      try {
+        const [residentsRes,
+               historiesRes,
+        ] = await Promise.all([
+          axios.get("/api/residents"),
+          axios.get("/api/disability_histories")
+        ]);
+
+        console.log("? residents fetched:", residentsRes.data);
+        console.log("? histories fetched:", historiesRes.data);
+
+        setRawResidents(residentsRes.data);
+        setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
+  
+      } catch (err) {
+        console.error("データ取得エラー:", err);
+      }
+    };
+
+    fetchData();
+
   } catch (err) {
     console.error("利用者登録後の更新失敗:", err);
     alert("利用者一覧の取得に失敗しました。");
