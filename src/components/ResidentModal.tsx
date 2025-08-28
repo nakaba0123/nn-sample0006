@@ -844,7 +844,7 @@ onSubmit={async (historyData) => {
   console.log("ResidentModalのonSubmitだよ！");
   console.log("historyData::", historyData);
   const isEdit = !!editingDisabilityHistory?.id; // try の外で定義
-  console.log("isEdit::", idEdit);
+  console.log("isEdit::", isEdit);
   try {
     const method = isEdit ? 'PUT' : 'POST';
     const url = isEdit
