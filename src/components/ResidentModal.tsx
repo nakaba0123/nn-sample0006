@@ -875,7 +875,10 @@ onSubmit={async (historyData) => {
 //      setDisabilityHistory(prev => [...prev, { ...historyData, id: result.id }]);
 //    }
 
+
+
 if (isEdit) {
+  console.log("更新モードでのhistoryData", historyData);
   setDisabilityHistory(prev =>
     prev.map(h =>
       h.id === editingDisabilityHistory.id
