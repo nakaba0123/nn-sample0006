@@ -841,7 +841,10 @@ console.log("formData: ", formData);
   editHistory={editingDisabilityHistory}
   existingHistory={disabilityHistory}
 onSubmit={async (historyData) => {
+  console.log("ResidentModalのonSubmitだよ！");
+  console.log("historyData::", historyData);
   const isEdit = !!editingDisabilityHistory?.id; // try の外で定義
+  console.log("isEdit::", idEdit);
   try {
     const method = isEdit ? 'PUT' : 'POST';
     const url = isEdit
@@ -862,46 +865,31 @@ onSubmit={async (historyData) => {
 
     const result = await response.json();
 
-//    if (isEdit) {
-//      // 更新モード
-//      setDisabilityHistory(prev =>
-//        prev.map(h => h.id === editingDisabilityHistory.id
-//          ? { ...historyData, id: editingDisabilityHistory.id }
-//          : h
-//        )
-//      );
-//    } else {
-//      // 追加モード
-//      setDisabilityHistory(prev => [...prev, { ...historyData, id: result.id }]);
-//    }
-
-
-
-if (isEdit) {
-  console.log("更新モードでのhistoryData", historyData);
-  setDisabilityHistory(prev =>
-    prev.map(h =>
-      h.id === editingDisabilityHistory.id
-        ? {
-            ...h,
-            start_date: historyData.startDate,
-            end_date: historyData.endDate,
-            disability_level: historyData.disabilityLevel
-          }
-        : h
-    )
-  );
-} else {
-  setDisabilityHistory(prev => [
-    ...prev,
-    {
-      id: result.id,
-      start_date: historyData.startDate,
-      end_date: historyData.endDate,
-      disability_level: historyData.disabilityLevel
+    if (isEdit) {
+      console.log("更新モードでのhistoryData", historyData);
+      setDisabilityHistory(prev =>
+        prev.map(h =>
+          h.id === editingDisabilityHistory.id
+            ? {
+                ...h,
+                start_date: historyData.startDate,
+                end_date: historyData.endDate,
+                disability_level: historyData.disabilityLevel
+              }
+            : h
+        )
+      );
+    } else {
+      setDisabilityHistory(prev => [
+        ...prev,
+        {
+          id: result.id,
+          start_date: historyData.startDate,
+          end_date: historyData.endDate,
+          disability_level: historyData.disabilityLevel
+        }
+      ]);
     }
-  ]);
-}
 
     console.log(`? ${isEdit ? '更新' : '追加'}成功:`, result);
     setIsDisModalOpen(false);
