@@ -519,14 +519,14 @@ app.put('/api/disability_histories/:id', async (req, res) => {
 app.patch('/api/disability_histories/:id', async (req, res) => {
   console.log("PATCH /api/disability_histories が呼ばれました！");
   console.log("req.body::", req.body);
-  console.log("req.body.disabilityLevel::", req.body.disabilityLevel);
-  console.log("req.body.startdate::", req.body.startDate);
-  console.log("req.body.endDate::", req.body.endDate);
+  console.log("req.body.disability_level::", req.body.disability_level);
+  console.log("req.body.start_date::", req.body.start_date);
+  console.log("req.body.endDate::", req.body.end_date);
   const id = req.params.id;
 //  const { disabilityLevel, startDate, endDate } = req.body;
-  const disability_level = req.body.disabilityLevel ?? null;
-  const start_date = req.body.startDate || null;
-  const end_date = req.body.endDate || null;
+  const disability_level = req.body.disability_level ?? null;
+  const start_date = req.body.start_date || null;
+  const end_date = req.body.end_date || null;
 
   const connection = await pool.getConnection();
   try {
