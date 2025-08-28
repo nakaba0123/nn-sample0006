@@ -629,7 +629,6 @@ const handleResidentSubmit = async (resident: Resident) => {
     await fetchDisabilityHistories();
 
     console.log("handleResidentSubmitのrawResidents:::", rawResidents);
-    alert("利用者を登録しました！"); // ? 成功メッセージ
 
     const fetchData = async () => {
       try {
@@ -652,6 +651,7 @@ const handleResidentSubmit = async (resident: Resident) => {
     };
 
     fetchData();
+    alert("利用者を登録しました！"); // ? 成功メッセージ
 
   } catch (err) {
     console.error("利用者登録後の更新失敗:", err);
