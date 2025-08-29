@@ -100,6 +100,7 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
     const grouped = new Map<string, Resident[]>();
     
     activeResidents.forEach(resident => {
+      console.log("resident:::::", resident);
       const key = `${resident.groupHomeName}-${resident.unitName}`;
       if (!grouped.has(key)) {
         grouped.set(key, []);
