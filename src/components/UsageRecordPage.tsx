@@ -115,11 +115,11 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
         if (!isNaN(aNum) && !isNaN(bNum)) {
           return aNum - bNum;
         }
-        return a.roomNumber.localeCompare(b.roomNumber);
+        return (a.roomNumber ?? "").localeCompare(b.roomNumber ?? "");
       });
     });
     
-    return Array.from(grouped.entries()).sort(([a], [b]) => a.localeCompare(b));
+    return Array.from(grouped.entries()).sort(([a], [b]) => (a ?? "").localeCompare(b ?? ""));
   };
 
   // 利用記録を取得または作成
