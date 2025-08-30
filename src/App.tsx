@@ -971,7 +971,7 @@ const handleCloseResidentModal = useCallback(() => {
             <PermissionGuard permissions={['user.view.all', 'user.create', 'user.edit']}>
               <UsageRecordPage
                 residents={residents}
-                groupHomes={groupHomesMain}
+                groupHomes={groupHomesSub}
                 expansionRecords={expansionRecords}
                 usageRecords={usageRecords}
                 onUsageRecordUpdate={handleUsageRecordUpdate}
