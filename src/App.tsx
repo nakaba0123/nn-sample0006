@@ -28,6 +28,7 @@ import { Resident } from './types/Resident';
 import { UsageRecord } from './types/UsageRecord';
 import { mapGroupHome } from "./util/mapGroupHome"; // パスは適宜！1
 import { mapExpansion } from "./util/mapExpansion"; // パスは適宜！1
+import { mapResident } from "./util/mapResident"; // パスは適宜！1
 
 interface AttendanceData {
   name: string;
@@ -426,8 +427,8 @@ useEffect(() => {
       console.log("? expansions fetched:", expansionsRes.data); // ← これ
 
 
+      setResidents((residentsRes?.data || []).map(mapResident));
       setRawResidents(residentsRes.data);
-      console.log("rawResidents::::", rawResidents);
       setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
 
       setGroupHomesMain((groupHomesMainRes?.data || []).map(mapGroupHome));
@@ -441,8 +442,6 @@ useEffect(() => {
   };
 
   fetchData();
-  console.log("groupHomesMain::", groupHomesMain);
-  console.log("residents:::::::", residents);
 }, []);
 
 useEffect(() => {
