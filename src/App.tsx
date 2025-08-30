@@ -441,6 +441,8 @@ useEffect(() => {
   };
 
   fetchData();
+  console.log("groupHomesMain::", groupHomesMain);
+  console.log("residents:::::::", residents);
 }, []);
 
 useEffect(() => {
@@ -970,6 +972,7 @@ const handleCloseResidentModal = useCallback(() => {
           {activeTab === 'usage' && (
             <PermissionGuard permissions={['user.view.all', 'user.create', 'user.edit']}>
               {console.log("residents*: ", residents)}
+              {console.log("groupHomes*: ", groupHomesSub)}
               <UsageRecordPage
                 residents={residents}
                 groupHomes={groupHomesSub}
