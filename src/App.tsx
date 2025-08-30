@@ -428,29 +428,13 @@ useEffect(() => {
 
 
 //      setResidents((residentsRes?.data || []).map(mapResident));
-      setRawResidents(residentsRes.data);
+      setRawResidents((residentsRes?.data || []).map(mapResident));
+//      setRawResidents(residentsRes.data);
       setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
 
       setGroupHomesMain((groupHomesMainRes?.data || []).map(mapGroupHome));
       setGroupHomesSub((groupHomesSubRes?.data || []).map(mapGroupHome));
       setExpansionRecords((expansionsRes?.data || []).map(mapExpansion)); // ← 追加！
-
-    setResidents(
-      residentsRes.data.map((r: any) => ({
-        id: r.id,
-        name: r.name,
-        nameKana: r.name_kana,
-        disabilityLevel: r.disability_level,
-        roomNumber: r.room_number,
-        moveInDate: r.move_in_date,
-        moveOutDate: r.move_out_date,
-        groupHomeId: r.group_home_id,
-        groupHomeName: r.group_home_name,  // ← 追加！！
-        unitName: r.unit_name,             // ← 追加！！
-        status: r.status,
-        createdAt: r.created_at,
-      }))
-    );
 
     } catch (err) {
       console.error("データ取得エラー:", err);
