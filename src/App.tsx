@@ -969,6 +969,7 @@ const handleCloseResidentModal = useCallback(() => {
 
           {activeTab === 'usage' && (
             <PermissionGuard permissions={['user.view.all', 'user.create', 'user.edit']}>
+              {console.log("residents*: ", residents)}
               <UsageRecordPage
                 residents={residents}
                 groupHomes={groupHomesSub}
