@@ -30,6 +30,7 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
   const [savedCells, setSavedCells] = useState<Set<string>>(new Set());
 
   console.log("residents::::::", residents);
+  console.log("groupHomes::::::", groupHomes);
 
   useEffect(() => {
     setLocalUsageRecords(usageRecords);
