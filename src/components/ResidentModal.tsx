@@ -366,7 +366,7 @@ console.log("mappedResident", mappedResident);
       unitName: mappedResident.unitName || "",             // ← ★追加
       roomNumber: mappedResident.roomNumber || "",
       moveInDate: formatDate(mappedResident.moveInDate),
-      moveOutDate: formatDate(mappedResident.dischargeDate),
+      moveOutDate: formatDate(mappedResident.moveOutDate),
     });
 
     setDisabilityHistory(history);
