@@ -360,51 +360,58 @@ app.get('/api/residents/:id', async (req, res) => {
 app.get('/api/usage-records', async (req, res) => {
   const { residentId, year, month } = req.query;
   const startDate = `${year}-${month}-01`;
-  const endDate = `${year}-${month}-31`; // 月末計算は後で
+  const endDate = `${year}-${month}-31`; // TODO: 月末計算は後で修正
 
-  const [usageRecords] = await db.query(`
-    SELECT * FROM usage_records
-    WHERE resident_id = ? AND usage_date BETWEEN ? AND ?
-  `, [residentId, startDate, endDate]);
+  try {
+    const [usageRecords] = await db.query(`
+      SELECT * FROM usage_records
+      WHERE resident_id = ? AND usage_date BETWEEN ? AND ?
+    `, [residentId, startDate, endDate]);
 
-  const [histories] = await db.query(`
-    SELECT * FROM disability_histories
-    WHERE resident_id = ?
-  `, [residentId]);
+    const [histories] = await db.query(`
+      SELECT * FROM disability_histories
+      WHERE resident_id = ?
+    `, [residentId]);
 
-  // 月の日付一覧を作成
-  const daysInMonth = new Date(year, month, 0).getDate();
-  const results = [];
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const results = [];
 
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month - 1, day);
-    const dateStr = date.toISOString().split('T')[0];
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month - 1, day);
+      const dateStr = date.toISOString().split('T')[0];
 
-    // 1. 居住期間チェック
-    // moveInDate, moveOutDateはresidentsテーブルから取得して判定
-    const inRange = true; // 仮置き
+      // TODO: 居住期間チェック（今は仮でtrue）
+      const inRange = true;
 
-    if (!inRange) continue;
+      if (!inRange) continue;
 
-    // 2. 区分取得
-    const disability = histories.find(h => {
-      const start = new Date(h.start_date);
-      const end = h.end_date ? new Date(h.end_date) : null;
-      return start <= date && (!end || date <= end);
-    });
-    const level = disability ? disability.level : null;
+      // 区分取得
+      const disability = histories.find(h => {
+        const start = new Date(h.start_date);
+        const end = h.end_date ? new Date(h.end_date) : null;
+        return start <= date && (!end || date <= end);
+      });
+      const level = disability ? disability.level : '';
 
-    // 3. usage_recordsチェック
-    const usage = usageRecords.find(r => r.usage_date.toISOString().startsWith(dateStr));
+      // usage_records取得
+      const usage = usageRecords.find(r => 
+        r.usage_date.toISOString().startsWith(dateStr)
+      );
 
-    results.push({
-      usage_date: dateStr,
-      is_used: usage ? usage.is_used : false,
-      disability_level: level,
-    });
+      // 🔥 camelCaseで返す
+      results.push({
+        residentId: Number(residentId),
+        date: dateStr,
+        isUsed: usage ? !!usage.is_used : false,
+        disabilityLevel: level || '',
+      });
+    }
+
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-
-  res.json(results);
 });
 
 app.post('/api/disability_histories', async (req, res) => {
