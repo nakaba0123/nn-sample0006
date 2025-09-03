@@ -362,7 +362,7 @@ app.get('/api/usage-records', async (req, res) => {
       SELECT 
         ur.id AS id,
         ur.resident_id AS residentId,
-        ur.date,
+        ur.usage_date,
         ur.is_used AS isUsed,
         dh.disability_level AS disabilityLevel,
         ur.created_at AS createdAt,
@@ -371,7 +371,7 @@ app.get('/api/usage-records', async (req, res) => {
       JOIN residents r ON ur.resident_id = r.id
       LEFT JOIN disability_histories dh 
         ON dh.resident_id = r.id
-        AND ur.date BETWEEN dh.start_date 
+        AND ur.usage_date BETWEEN dh.start_date 
                         AND COALESCE(NULLIF(dh.end_date, '0000-00-00'), '9999-12-31')
     `);
     res.json(rows);
