@@ -156,6 +156,10 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 //  };
 
 const getUsageRecord = (residentId: number, date: string) => {
+  console.log("result:", usageRecords.find(
+    record => record.residentId === residentId && record.date === date
+  ) || { isUsed: false, disabilityLevel: '' });
+
   return usageRecords.find(
     record => record.residentId === residentId && record.date === date
   ) || { isUsed: false, disabilityLevel: '' };

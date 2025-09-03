@@ -356,29 +356,55 @@ app.get('/api/residents/:id', async (req, res) => {
   }
 });
 
+// GET /api/usage-records?residentId=98&year=2025&month=8
 app.get('/api/usage-records', async (req, res) => {
-  try {
-    const [rows] = await pool.query(`
-      SELECT 
-        ur.id AS id,
-        ur.resident_id AS residentId,
-        ur.usage_date,
-        ur.is_used AS isUsed,
-        dh.disability_level AS disabilityLevel,
-        ur.created_at AS createdAt,
-        ur.updated_at AS updatedAt
-      FROM usage_records ur
-      JOIN residents r ON ur.resident_id = r.id
-      LEFT JOIN disability_histories dh 
-        ON dh.resident_id = r.id
-        AND ur.usage_date BETWEEN dh.start_date 
-                        AND COALESCE(NULLIF(dh.end_date, '0000-00-00'), '9999-12-31')
-    `);
-    res.json(rows);
-  } catch (err) {
-    console.error('📛 usage_records取得エラー:', err);
-    res.status(500).json({ error: '内部サーバーエラー' });
+  const { residentId, year, month } = req.query;
+  const startDate = `${year}-${month}-01`;
+  const endDate = `${year}-${month}-31`; // 月末計算は後で
+
+  const [usageRecords] = await db.query(`
+    SELECT * FROM usage_records
+    WHERE resident_id = ? AND usage_date BETWEEN ? AND ?
+  `, [residentId, startDate, endDate]);
+
+  const [histories] = await db.query(`
+    SELECT * FROM disability_histories
+    WHERE resident_id = ?
+  `, [residentId]);
+
+  // 月の日付一覧を作成
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const results = [];
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month - 1, day);
+    const dateStr = date.toISOString().split('T')[0];
+
+    // 1. 居住期間チェック
+    // moveInDate, moveOutDateはresidentsテーブルから取得して判定
+    const inRange = true; // 仮置き
+
+    if (!inRange) continue;
+
+    // 2. 区分取得
+    const disability = histories.find(h => {
+      const start = new Date(h.start_date);
+      const end = h.end_date ? new Date(h.end_date) : null;
+      return start <= date && (!end || date <= end);
+    });
+    const level = disability ? disability.level : null;
+
+    // 3. usage_recordsチェック
+    const usage = usageRecords.find(r => r.usage_date.toISOString().startsWith(dateStr));
+
+    results.push({
+      usage_date: dateStr,
+      is_used: usage ? usage.is_used : false,
+      disability_level: level,
+    });
   }
+
+  res.json(results);
 });
 
 app.post('/api/disability_histories', async (req, res) => {
