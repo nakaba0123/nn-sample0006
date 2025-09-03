@@ -253,7 +253,7 @@ const getUsageRecord = (residentId: number, date: string) => {
     
     days.forEach(date => {
       console.log("date:", date);
-      console.log("residentId:!, residentId);
+      console.log("residentId:", residentId);
       const record = getUsageRecord(residentId, date);
       console.log("record:", record);
       if (record.isUsed) {
