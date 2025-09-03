@@ -31,10 +31,10 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 
   console.log("residents::::::", residents);
   console.log("groupHomes::::::", groupHomes);
-  console.log("record::::::", record);
 
   useEffect(() => {
     setLocalUsageRecords(usageRecords);
+    console.log("usageRecords::::", usageRecords);
   }, [usageRecords]);
 
   // 障害支援区分の色を取得
