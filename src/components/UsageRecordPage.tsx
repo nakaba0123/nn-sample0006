@@ -31,6 +31,7 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 
   console.log("residents::::::", residents);
   console.log("groupHomes::::::", groupHomes);
+  console.log("record:::::", record);
 
   useEffect(() => {
     setLocalUsageRecords(usageRecords);
@@ -49,21 +50,21 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
     return colorMap[level] || 'bg-gray-100 border-gray-200';
   };
 
-  // 指定日の障害支援区分を取得
-  const getDisabilityLevelForDate = (resident: Resident, date: string): string => {
-    const targetDate = new Date(date);
-    
-    // 障害支援区分履歴から該当する区分を検索
-    const applicableHistory = resident.disabilityHistory
-      ?.find(history => {
-        const startDate = new Date(history.startDate);
-        const endDate = history.endDate ? new Date(history.endDate) : null;
-        
-        return startDate <= targetDate && (!endDate || targetDate <= endDate);
-      });
-    
-    return applicableHistory?.disabilityLevel || resident.disabilityLevel;
-  };
+//  // 指定日の障害支援区分を取得
+//  const getDisabilityLevelForDate = (resident: Resident, date: string): string => {
+//    const targetDate = new Date(date);
+//    
+//    // 障害支援区分履歴から該当する区分を検索
+//    const applicableHistory = resident.disabilityHistory
+//      ?.find(history => {
+//        const startDate = new Date(history.startDate);
+//        const endDate = history.endDate ? new Date(history.endDate) : null;
+//        
+//        return startDate <= targetDate && (!endDate || targetDate <= endDate);
+//      });
+//    
+//    return applicableHistory?.disabilityLevel || resident.disabilityLevel;
+//  };
 
   // 指定月の日付配列を生成
   const getDaysInMonth = (year: number, month: number): string[] => {
@@ -127,33 +128,39 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
   };
 
   // 利用記録を取得または作成
-  const getUsageRecord = (residentId: string, date: string): UsageRecord => {
-    const existing = localUsageRecords.find(
-      record => record.residentId === residentId && record.date === date
-    );
-    
-    if (existing) {
-      return existing;
-    }
-    
-    // 新規作成（デフォルトは利用あり）
-    const resident = residents.find(r => r.id === residentId);
-    if (!resident) {
-      throw new Error('Resident not found');
-    }
-    
-    const disabilityLevel = getDisabilityLevelForDate(resident, date);
-    
-    return {
-      id: `usage_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      residentId,
-      date,
-      isUsed: true, // デフォルトは利用あり
-      disabilityLevel,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-  };
+//  const getUsageRecord = (residentId: string, date: string): UsageRecord => {
+//    const existing = localUsageRecords.find(
+//      record => record.residentId === residentId && record.date === date
+//    );
+//    
+//    if (existing) {
+//      return existing;
+//    }
+//    
+//    // 新規作成（デフォルトは利用あり）
+//    const resident = residents.find(r => r.id === residentId);
+//    if (!resident) {
+//      throw new Error('Resident not found');
+//    }
+//    
+//    const disabilityLevel = getDisabilityLevelForDate(resident, date);
+//    
+//    return {
+//      id: `usage_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+//      residentId,
+//      date,
+//      isUsed: true, // デフォルトは利用あり
+//      disabilityLevel,
+//      createdAt: new Date().toISOString(),
+//      updatedAt: new Date().toISOString()
+//    };
+//  };
+
+const getUsageRecord = (residentId: number, date: string) => {
+  return usageRecords.find(
+    record => record.residentId === residentId && record.date === date
+  ) || { isUsed: false, disabilityLevel: '' };
+};
 
   // 即時保存処理
   const updateUsageRecordInstantly = async (residentId: string, date: string, isUsed: boolean) => {
@@ -533,6 +540,8 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
   const isOutOfRange =
     (moveInDate && currentDate < moveInDate) ||
     (moveOutDate && currentDate > moveOutDate);
+
+//  const cellColor = getDisabilityLevelColor(record.disabilityLevel);
 
   const cellColor = getDisabilityLevelColor(record.disabilityLevel);
   const cellKey = `${resident.id}-${date}`;

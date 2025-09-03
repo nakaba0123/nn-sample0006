@@ -358,7 +358,22 @@ app.get('/api/residents/:id', async (req, res) => {
 
 app.get('/api/usage-records', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM usage_records');
+    const [rows] = await pool.query(`
+      SELECT 
+        ur.id AS id,
+        ur.resident_id AS residentId,
+        ur.date,
+        ur.is_used AS isUsed,
+        dh.disability_level AS disabilityLevel,
+        ur.created_at AS createdAt,
+        ur.updated_at AS updatedAt
+      FROM usage_records ur
+      JOIN residents r ON ur.resident_id = r.id
+      LEFT JOIN disability_histories dh 
+        ON dh.resident_id = r.id
+        AND ur.date BETWEEN dh.start_date 
+                        AND COALESCE(NULLIF(dh.end_date, '0000-00-00'), '9999-12-31')
+    `);
     res.json(rows);
   } catch (err) {
     console.error('📛 usage_records取得エラー:', err);
