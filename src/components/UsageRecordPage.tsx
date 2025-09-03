@@ -252,7 +252,10 @@ const getUsageRecord = (residentId: number, date: string) => {
     let totalDays = 0;
     
     days.forEach(date => {
+      console.log("date:", date);
+      console.log("residentId:!, residentId);
       const record = getUsageRecord(residentId, date);
+      console.log("record:", record);
       if (record.isUsed) {
         totalDays++;
         const level = record.disabilityLevel;
