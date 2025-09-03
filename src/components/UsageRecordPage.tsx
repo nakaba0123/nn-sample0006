@@ -31,7 +31,6 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 
   console.log("residents::::::", residents);
   console.log("groupHomes::::::", groupHomes);
-  console.log("record:::::", record);
 
   useEffect(() => {
     setLocalUsageRecords(usageRecords);
