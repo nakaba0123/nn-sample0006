@@ -66,6 +66,32 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 //    return applicableHistory?.disabilityLevel || resident.disabilityLevel;
 //  };
 
+// その日（date）に有効な支援区分を返す
+const getDisabilityLevelForDate = (resident: Resident, date: string): string => {
+  const target = new Date(date);
+
+  // histories を開始日昇順に
+  const histories = (resident.disabilityHistory ?? []).slice().sort(
+    (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+  );
+
+  // 1) その日を「区間内」に含む履歴を探す
+  const active = histories.find(h => {
+    const s = new Date(h.startDate);
+    const e = h.endDate && h.endDate !== '0000-00-00' ? new Date(h.endDate) : null; // 開放区間を許容
+    return s <= target && (!e || target <= e);
+  });
+  if (active) return active.disabilityLevel;
+
+  // 2) 区間内に無ければ「直前の履歴」（startDate <= target の最大）を使う
+  const previous = [...histories].reverse().find(h => new Date(h.startDate) <= target);
+  if (previous) return previous.disabilityLevel;
+
+  // 3) それでも無ければ resident 側の最新をフォールバック
+  return resident.disabilityLevel || '';
+};
+
+
   // 指定月の日付配列を生成
   const getDaysInMonth = (year: number, month: number): string[] => {
     const daysInMonth = new Date(year, month, 0).getDate();
