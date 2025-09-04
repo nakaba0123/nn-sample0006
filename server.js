@@ -358,6 +358,7 @@ app.get('/api/residents/:id', async (req, res) => {
 
 // GET /api/usage-records?residentId=98&year=2025&month=8
 app.get('/api/usage-records', async (req, res) => {
+  console.log("GET /api/usage-records が呼ばれました！");
   const { residentId, year, month } = req.query;
   const startDate = `${year}-${month}-01`;
   const endDate = `${year}-${month}-31`; // TODO: 月末計算は後で修正
