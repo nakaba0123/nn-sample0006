@@ -190,6 +190,7 @@ const getUsageRecord = (residentId: number, date: string) => {
 
   // 即時保存処理
   const updateUsageRecordInstantly = async (residentId: string, date: string, isUsed: boolean) => {
+    console.log("updateUsageRecordInstantlyだよ！");
     const cellKey = `${residentId}-${date}`;
     
     // 保存中状態を設定
