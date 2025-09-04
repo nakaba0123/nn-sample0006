@@ -575,6 +575,7 @@ const getUsageRecord = (residentId: number, date: string) => {
     (moveOutDate && currentDate > moveOutDate);
 
   const cellColor = getDisabilityLevelColor(record.disabilityLevel);
+  console.log("cellColor::", cellColor);
   const cellKey = `${resident.id}-${date}`;
   const isSaving = savingCells.has(cellKey);
   const isSaved = savedCells.has(cellKey);
