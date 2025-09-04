@@ -201,9 +201,12 @@ const getUsageRecord = (residentId: number, date: string) => {
       );
       
       const resident = residents.find(r => r.id === residentId);
+      console.log("resident:::::::", resident);
+
       if (!resident) return;
       
       const disabilityLevel = getDisabilityLevelForDate(resident, date);
+      console.log("disabilityLevel::::", disabilityLevel);
       
       let updatedRecords: UsageRecord[];
       
@@ -569,8 +572,6 @@ const getUsageRecord = (residentId: number, date: string) => {
   const isOutOfRange =
     (moveInDate && currentDate < moveInDate) ||
     (moveOutDate && currentDate > moveOutDate);
-
-//  const cellColor = getDisabilityLevelColor(record.disabilityLevel);
 
   const cellColor = getDisabilityLevelColor(record.disabilityLevel);
   const cellKey = `${resident.id}-${date}`;
