@@ -185,7 +185,7 @@ const getLevelForDate = (history: any[], date: string): string | undefined => {
 
 const getUsageRecord = (residentId: string, date: string) => {
   const record = usageRecords.find(
-    (r) => r.residentId === residentId && r.date === date
+    (r) => String(r.residentId) === String(residentId) && r.date === date
   );
 
   console.log("record::::", record);
