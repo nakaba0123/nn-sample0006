@@ -155,39 +155,39 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
   };
 
   // 利用記録を取得または作成
-//  const getUsageRecord = (residentId: string, date: string): UsageRecord => {
-//    const existing = localUsageRecords.find(
-//      record => record.residentId === residentId && record.date === date
-//    );
-//    
-//    if (existing) {
-//      return existing;
-//    }
-//    
-//    // 新規作成（デフォルトは利用あり）
-//    const resident = residents.find(r => r.id === residentId);
-//    if (!resident) {
-//      throw new Error('Resident not found');
-//    }
-//    
-//    const disabilityLevel = getDisabilityLevelForDate(resident, date);
-//    
-//    return {
-//      id: `usage_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-//      residentId,
-//      date,
-//      isUsed: true, // デフォルトは利用あり
-//      disabilityLevel,
-//      createdAt: new Date().toISOString(),
-//      updatedAt: new Date().toISOString()
-//    };
-//  };
+  const getUsageRecord = (residentId: string, date: string): UsageRecord => {
+    const existing = localUsageRecords.find(
+      record => record.residentId === residentId && record.date === date
+    );
+    
+    if (existing) {
+      return existing;
+    }
+    
+    // 新規作成（デフォルトは利用あり）
+    const resident = residents.find(r => r.id === residentId);
+    if (!resident) {
+      throw new Error('Resident not found');
+    }
+    
+    const disabilityLevel = getDisabilityLevelForDate(resident, date);
+    
+    return {
+      id: `usage_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      residentId,
+      date,
+      isUsed: true, // デフォルトは利用あり
+      disabilityLevel,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+  };
 
-const getUsageRecord = (residentId: number, date: string) => {
-  return usageRecords.find(
-    record => record.residentId === residentId && record.date === date
-  ) || { isUsed: false, disabilityLevel: '' };
-};
+//const getUsageRecord = (residentId: number, date: string) => {
+//  return usageRecords.find(
+//    record => record.residentId === residentId && record.date === date
+//  ) || { isUsed: false, disabilityLevel: '' };
+//};
 
   // 即時保存処理
   const updateUsageRecordInstantly = async (residentId: string, date: string, isUsed: boolean) => {
