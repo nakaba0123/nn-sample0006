@@ -193,9 +193,12 @@ const getUsageRecord = (residentId: string, date: string) => {
   console.log("record::::", record);
 
   const resident = residents.find((r) => r.id === residentId);
+  console.log("resident::", resident);
   const level = resident
     ? getLevelForDate(resident.disabilityHistory, date)
     : undefined;
+
+  console.log("level::", level);
 
   if (record) {
     return {
