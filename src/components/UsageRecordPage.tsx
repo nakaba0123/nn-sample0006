@@ -189,7 +189,6 @@ const getUsageRecord = (residentId: string, date: string) => {
   );
 
   console.log("typeof residentId::", typeof residentId);
-  console.log("typeof r.residentId::", typeof r.residentId);
   console.log("record::::", record);
 
   const resident = residents.find((r) => r.id === residentId);
