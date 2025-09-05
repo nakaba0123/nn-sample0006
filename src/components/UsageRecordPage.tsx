@@ -73,8 +73,12 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
   console.log("DEBUG disabilityHistory:", resident.disabilityHistory);
   console.log("DEBUG date:", date);
 
-
   const target = new Date(date);
+  const history = resident.disabilityHistory || [];
+
+  for (const h of history) {
+    console.log("CHECK history item:", h);
+  }
 
   // histories を開始日昇順に
   const histories = (resident.disabilityHistory ?? []).slice().sort(
