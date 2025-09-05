@@ -618,9 +618,7 @@ const getUsageRecord = (residentId: string, date: string) => {
         className={`w-8 h-8 rounded border-2 flex items-center justify-center text-xs font-bold transition-all ${
           isOutOfRange
             ? 'cursor-not-allowed bg-gray-200 border-gray-300 text-gray-400'
-            : record.isUsed
-            ? `${cellColor} text-gray-700`
-            : 'bg-gray-100 border-gray-300 text-gray-400 hover:bg-gray-200'
+            : `${cellColor} text-gray-700`
         } ${isSaving ? 'animate-pulse' : ''} ${
           isSaved ? 'ring-2 ring-green-400 bg-green-200' : ''
         }`}
