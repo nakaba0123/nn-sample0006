@@ -166,10 +166,14 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
 // 日付に応じてレベルを取得
 const getLevelForDate = (history: any[], date: string): string | undefined => {
   const targetDate = new Date(date);
+  console.log("targetDate:", targetDate);
 
   for (const h of history) {
     const start = new Date(h.startDate);
     const end = h.endDate ? new Date(h.endDate) : null;
+
+    console.log("start:", start);
+    console.log("end:", end);
 
     if (targetDate >= start && (!end || targetDate <= end)) {
       return String(h.level); // levelをstringに
@@ -181,9 +185,11 @@ const getLevelForDate = (history: any[], date: string): string | undefined => {
 
 const getUsageRecord = (residentId: string, date: string) => {
   const record = usageRecords.find(r => r.residentId === residentId && r.date === date);
+  console.log("record::::::", record);
 
   if (record) {
     const resident = residents.find(r => r.id === residentId);
+    console.log("resident::::::", resident);
     const level = resident
       ? getLevelForDate(resident.disabilityHistory, date)
       : undefined;
