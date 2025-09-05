@@ -595,9 +595,9 @@ const getUsageRecord = (residentId: string, date: string) => {
   const isSaving = savingCells.has(cellKey);
   const isSaved = savedCells.has(cellKey);
 
-  console.log(cellKey);
-  console.log(isSaving);
-  console.log(isSaved);
+  console.log("cellKey::", cellKey);
+  console.log("isSaving::", isSaving);
+  console.log("isSaved::", isSaved);
 
   return (
     <td
