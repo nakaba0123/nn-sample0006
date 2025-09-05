@@ -34,12 +34,10 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 
   useEffect(() => {
     setLocalUsageRecords(usageRecords);
-    console.log("usageRecords::::", usageRecords);
   }, [usageRecords]);
 
   // 障害支援区分の色を取得
   const getDisabilityLevelColor = (level: string) => {
-    console.log("level::::", level);
     const colorMap: { [key: string]: string } = {
       '1以下': 'bg-blue-100 border-blue-200',
       '2': 'bg-green-100 border-green-200',
@@ -69,16 +67,8 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 
 // その日（date）に有効な支援区分を返す
 const getDisabilityLevelForDate = (resident: Resident, date: string): string => {
-  console.log("DEBUG resident:", resident);
-  console.log("DEBUG disabilityHistory:", resident.disabilityHistory);
-  console.log("DEBUG date:", date);
-
   const target = new Date(date);
   const history = resident.disabilityHistory || [];
-
-  for (const h of history) {
-    console.log("CHECK history item:", h);
-  }
 
   // histories を開始日昇順に
   const histories = (resident.disabilityHistory ?? []).slice().sort(
@@ -140,7 +130,6 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
     const grouped = new Map<string, Resident[]>();
     
     activeResidents.forEach(resident => {
-      console.log("resident:::::", resident);
       const key = `${resident.groupHomeName}-${resident.unitName}`;
       if (!grouped.has(key)) {
         grouped.set(key, []);
@@ -166,7 +155,6 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
 // 日付に応じてレベルを取得
 const getLevelForDate = (history: any[], date: string): string | undefined => {
   const targetDate = new Date(date);
-  console.log("targetDate:", targetDate);
 
   for (const h of history) {
     const start = new Date(h.startDate);
@@ -189,21 +177,14 @@ const getLevelForDate = (history: any[], date: string): string | undefined => {
 };
 
 const getUsageRecord = (residentId: string, date: string) => {
-  console.log("ussgeRecords:::", usageRecords);
   const record = usageRecords.find(
     (r) => String(r.residentId) === String(residentId) && r.date === date
   );
 
-  console.log("typeof residentId::", typeof residentId);
-  console.log("record::::", record);
-
   const resident = residents.find((r) => r.id === residentId);
-  console.log("resident::", resident);
   const level = resident
     ? getLevelForDate(resident.disabilityHistory, date)
     : undefined;
-
-  console.log("level::", level);
 
   if (record) {
     return {
@@ -231,7 +212,6 @@ const getUsageRecord = (residentId: string, date: string) => {
 
   // 即時保存処理
   const updateUsageRecordInstantly = async (residentId: string, date: string, isUsed: boolean) => {
-    console.log("updateUsageRecordInstantlyだよ！");
     const cellKey = `${residentId}-${date}`;
     
     // 保存中状態を設定
@@ -243,12 +223,10 @@ const getUsageRecord = (residentId: string, date: string) => {
       );
       
       const resident = residents.find(r => r.id === residentId);
-      console.log("resident:::::::", resident);
 
       if (!resident) return;
       
       const disabilityLevel = getDisabilityLevelForDate(resident, date);
-      console.log("disabilityLevel::::", disabilityLevel);
       
       let updatedRecords: UsageRecord[];
       
@@ -320,10 +298,7 @@ const getUsageRecord = (residentId: string, date: string) => {
     let totalDays = 0;
     
     days.forEach(date => {
-      console.log("date:", date);
-      console.log("residentId:", residentId);
       const record = getUsageRecord(residentId, date);
-      console.log("record:", record);
       if (record.isUsed) {
         totalDays++;
         const level = record.disabilityLevel;
@@ -615,9 +590,7 @@ const getUsageRecord = (residentId: string, date: string) => {
     (moveInDate && currentDate < moveInDate) ||
     (moveOutDate && currentDate > moveOutDate);
 
-  console.log("record::::::::", record);
   const cellColor = getDisabilityLevelColor(record.disabilityLevel);
-  console.log("cellColor::", cellColor);
   const cellKey = `${resident.id}-${date}`;
   const isSaving = savingCells.has(cellKey);
   const isSaved = savedCells.has(cellKey);
