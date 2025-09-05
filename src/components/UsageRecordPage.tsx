@@ -69,6 +69,11 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 
 // その日（date）に有効な支援区分を返す
 const getDisabilityLevelForDate = (resident: Resident, date: string): string => {
+  console.log("DEBUG resident:", resident);
+  console.log("DEBUG disabilityHistory:", resident.disabilityHistory);
+  console.log("DEBUG date:", date);
+
+
   const target = new Date(date);
 
   // histories を開始日昇順に
