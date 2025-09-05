@@ -595,6 +595,10 @@ const getUsageRecord = (residentId: string, date: string) => {
   const isSaving = savingCells.has(cellKey);
   const isSaved = savedCells.has(cellKey);
 
+  console.log(cellKey);
+  console.log(isSaving);
+  console.log(isSaved);
+
   return (
     <td
       key={date}
@@ -647,7 +651,6 @@ const getUsageRecord = (residentId: string, date: string) => {
                                     <div className="text-xs text-gray-600 mt-1">
                                       {Object.entries(summary.usageByLevel).map(([level, days]) => (
                                         <div key={level} className="flex items-center justify-center space-x-1">
-                                          {console.log("level::", level)}
                                           <span className={`inline-block w-2 h-2 rounded-full ${getDisabilityLevelColor(level).replace('bg-', 'bg-').replace('-100', '-400')}`}></span>
                                           <span>区分{level}: {days}日</span>
                                         </div>
