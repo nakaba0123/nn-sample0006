@@ -163,34 +163,47 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
     return Array.from(grouped.entries()).sort(([a], [b]) => (a ?? "").localeCompare(b ?? ""));
   };
 
-  // 利用記録を取得または作成
-  const getUsageRecord = (residentId: string, date: string): UsageRecord => {
-    const existing = localUsageRecords.find(
-      record => record.residentId === residentId && record.date === date
-    );
-    
-    if (existing) {
-      return existing;
+// 日付に応じてレベルを取得
+const getLevelForDate = (history: any[], date: string): string | undefined => {
+  const targetDate = new Date(date);
+
+  for (const h of history) {
+    const start = new Date(h.startDate);
+    const end = h.endDate ? new Date(h.endDate) : null;
+
+    if (targetDate >= start && (!end || targetDate <= end)) {
+      return String(h.level); // levelをstringに
     }
-    
-    // 新規作成（デフォルトは利用あり）
+  }
+
+  return undefined;
+};
+
+const getUsageRecord = (residentId: string, date: string) => {
+  const record = usageRecords.find(r => r.residentId === residentId && r.date === date);
+
+  if (record) {
     const resident = residents.find(r => r.id === residentId);
-    if (!resident) {
-      throw new Error('Resident not found');
-    }
-    
-    const disabilityLevel = getDisabilityLevelForDate(resident, date);
-    
+    const level = resident
+      ? getLevelForDate(resident.disabilityHistory, date)
+      : undefined;
+
     return {
-      id: `usage_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      residentId,
-      date,
-      isUsed: true, // デフォルトは利用あり
-      disabilityLevel,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      ...record,
+      disabilityLevel: level
     };
+  }
+
+  return {
+    id: `usage_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+    residentId,
+    date,
+    isUsed: false,
+    disabilityLevel: undefined,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
+};
 
 //const getUsageRecord = (residentId: number, date: string) => {
 //  return usageRecords.find(
