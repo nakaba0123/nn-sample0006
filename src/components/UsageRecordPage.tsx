@@ -184,19 +184,19 @@ const getLevelForDate = (history: any[], date: string): string | undefined => {
 };
 
 const getUsageRecord = (residentId: string, date: string) => {
-  const record = usageRecords.find(r => r.residentId === residentId && r.date === date);
-  console.log("record::::::", record);
+  const record = usageRecords.find(
+    (r) => r.residentId === residentId && r.date === date
+  );
+
+  const resident = residents.find((r) => r.id === residentId);
+  const level = resident
+    ? getLevelForDate(resident.disabilityHistory, date)
+    : undefined;
 
   if (record) {
-    const resident = residents.find(r => r.id === residentId);
-    console.log("resident::::::", resident);
-    const level = resident
-      ? getLevelForDate(resident.disabilityHistory, date)
-      : undefined;
-
     return {
       ...record,
-      disabilityLevel: level
+      disabilityLevel: level,
     };
   }
 
@@ -205,7 +205,7 @@ const getUsageRecord = (residentId: string, date: string) => {
     residentId,
     date,
     isUsed: false,
-    disabilityLevel: undefined,
+    disabilityLevel: level, // ←ここで履歴の値を使う！
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
