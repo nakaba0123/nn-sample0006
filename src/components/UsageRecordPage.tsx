@@ -38,6 +38,7 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
 
   // 障害支援区分の色を取得
   const getDisabilityLevelColor = (level: string) => {
+    console.log("level::", level);
     const colorMap: { [key: string]: string } = {
       '1以下': 'bg-blue-100 border-blue-200',
       '2': 'bg-green-100 border-green-200',
