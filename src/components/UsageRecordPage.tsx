@@ -172,6 +172,11 @@ const getLevelForDate = (history: any[], date: string): string | undefined => {
     const start = new Date(h.startDate);
     const end = h.endDate ? new Date(h.endDate) : null;
 
+    // 1899-11-30や0000-00-00は「終了日なし」として扱う
+    if (end && (end.getFullYear() < 1900)) {
+      end = null;
+    }
+
     console.log("start:", start);
     console.log("end:", end);
 
