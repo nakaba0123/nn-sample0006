@@ -627,6 +627,8 @@ const getUsageRecord = (residentId: string, date: string) => {
             : `${resident.name} - ${date} - 区分${record.disabilityLevel}`
         }
       >
+        {console.log("isSaving:", isSaving)}
+        {console.log("isSaved:", isSaved)}
         {isSaving ? (
           <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
         ) : isOutOfRange ? (
