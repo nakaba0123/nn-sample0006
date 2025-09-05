@@ -41,6 +41,7 @@ const UsageRecordPage: React.FC<UsageRecordPageProps> = ({
     console.log("level::", level);
     const colorMap: { [key: string]: string } = {
       '1以下': 'bg-blue-100 border-blue-200',
+      '1': 'bg-blue-100 border-blue-200',
       '2': 'bg-green-100 border-green-200',
       '3': 'bg-yellow-100 border-yellow-200',
       '4': 'bg-orange-100 border-orange-200',
