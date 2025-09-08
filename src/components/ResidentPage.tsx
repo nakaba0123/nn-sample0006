@@ -279,7 +279,7 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
         <div className="p-6 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800">利用者一覧</h3>
           <p className="text-sm text-gray-600 mt-1">
-            表示中: {filteredResidents.length}名
+            表示中: {console.log(console.log("filteredResidents::", filteredResidents)}{filteredResidents.length}名
             {searchTerm && ` (「${searchTerm}」で検索中)`}
           </p>
         </div>
