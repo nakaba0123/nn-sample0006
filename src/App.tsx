@@ -404,6 +404,7 @@ const mapDisabilityHistory = (raw: any): DisabilityHistory => ({
   createdAt: raw.created_at,
 });
 
+/*
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -436,6 +437,32 @@ useEffect(() => {
       setGroupHomesSub((groupHomesSubRes?.data || []).map(mapGroupHome));
       setExpansionRecords((expansionsRes?.data || []).map(mapExpansion)); // ← 追加！
 
+    } catch (err) {
+      console.error("データ取得エラー:", err);
+    }
+  };
+
+  fetchData();
+}, []);
+*/
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const [residentsRes, historiesRes, groupHomesMainRes, groupHomesSubRes, expansionsRes] =
+        await Promise.all([
+          fetchWithRetry("/api/residents"),
+          fetchWithRetry("/api/disability_histories"),
+          fetchWithRetry("/api/group-homes/main"),
+          fetchWithRetry("/api/group-homes/sub"),
+          fetchWithRetry("/api/expansions")
+        ]);
+
+      setRawResidents((residentsRes || []).map(mapResident));
+      setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
+      setGroupHomesMain((groupHomesMainRes || []).map(mapGroupHome));
+      setGroupHomesSub((groupHomesSubRes || []).map(mapGroupHome));
+      setExpansionRecords((expansionsRes || []).map(mapExpansion));
     } catch (err) {
       console.error("データ取得エラー:", err);
     }
