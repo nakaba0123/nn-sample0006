@@ -49,25 +49,6 @@ const queryWithRetry = async (queryFn, maxRetries = 3, waitMs = 1000) => {
   }
 };
 
-// App.tsx で使える共通関数
-async function fetchWithRetry<T>(url: string, retries = 5, delay = 2000): Promise<T> {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const res = await axios.get<T>(url);
-      return res.data;
-    } catch (err) {
-      console.error(`❌ ${url} の取得失敗 (${i + 1}/${retries}):`, err.message);
-      if (i < retries - 1) {
-        await new Promise((res) => setTimeout(res, delay));
-        console.log(`🔁 ${delay / 1000}秒後に再試行...`);
-      } else {
-        throw err;
-      }
-    }
-  }
-  throw new Error("fetchWithRetry: リトライ上限に達した");
-}
-
 /*
 // =======================
 // 🏠 グループホーム API
