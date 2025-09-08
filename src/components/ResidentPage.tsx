@@ -82,7 +82,8 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
     } else if (statusFilter === 'inactive') {
       matchesStatus = getAutoStatus(resident) === 'inactive';
     }
-    
+
+    console.log("matchesResult::", matchesSearch && matchesGroupHome && matchesStatus && matchesDisabilityLevel);    
     return matchesSearch && matchesGroupHome && matchesStatus && matchesDisabilityLevel;
   });
 
