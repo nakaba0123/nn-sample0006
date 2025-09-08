@@ -71,7 +71,7 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
     console.log("!groupHomeFilter::", !groupHomeFilter);
     console.log("resident.groupHomeId::", resident.groupHomeId);
 
-    const matchesGroupHome = !groupHomeFilter || resident.groupHomeId === groupHomeFilter;
+    const matchesGroupHome = !groupHomeFilter || resident.groupHomeId === Number(groupHomeFilter);
     console.log("matchesGroupHome::", matchesGroupHome);
 
     console.log("disabilityLevelFilter::", disabilityLevelFilter);
