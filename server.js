@@ -29,11 +29,11 @@ setInterval(async () => {
     const connection = await pool.getConnection();
     await connection.ping();
     connection.release();
-    console.log("[MySQL] Ping 成功 ✅");
+//    console.log("[MySQL] Ping 成功 ✅");
   } catch (err) {
-    console.warn("[MySQL] Ping失敗 🚨", err);
+//    console.warn("[MySQL] Ping失敗 🚨", err);
   }
-}, 1000 * 30); // ← 30秒ごとにPing！
+}, 1000 * 3); // ← 30秒ごとにPing！
 
 const queryWithRetry = async (queryFn, maxRetries = 3, waitMs = 1000) => {
   let attempt = 0;
