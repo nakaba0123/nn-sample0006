@@ -70,8 +70,12 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
     const matchesGroupHome = !groupHomeFilter || resident.groupHomeId === groupHomeFilter;
     console.log("matchesGroupHome::", matchesGroupHome);
 
+    console.log("disabilityLevelFilter::", disabilityLevelFilter);
+    console.log("!disabilityLevelFilter::", !disabilityLevelFilter);
     const matchesDisabilityLevel = !disabilityLevelFilter || resident.disabilityLevel === disabilityLevelFilter;
-    
+
+    console.log("matchesDisabilityLevel::", matchesDisabilityLevel);   
+ 
     let matchesStatus = true;
     if (statusFilter === 'active') {
       matchesStatus = getAutoStatus(resident) === 'active';
