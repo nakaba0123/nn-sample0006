@@ -64,6 +64,7 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
                          resident.roomNumber.toLowerCase().includes(searchTerm.toLowerCase());
 
     console.log("groupHomeFilter::", groupHomeFilter);
+    console.log("!groupHomeFilter::", !groupHomeFilter);
     console.log("resident.groupHomeId::", resident.groupHomeId);
 
     const matchesGroupHome = !groupHomeFilter || resident.groupHomeId === groupHomeFilter;
