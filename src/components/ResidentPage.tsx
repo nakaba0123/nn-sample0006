@@ -62,7 +62,10 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
     const matchesSearch = resident.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resident.nameKana.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resident.roomNumber.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
+    console.log("groupHomeFilter::", groupHomeFilter);
+    console.log("resident.groupHomeId::", resident.groupHomeId);
+
     const matchesGroupHome = !groupHomeFilter || resident.groupHomeId === groupHomeFilter;
     const matchesDisabilityLevel = !disabilityLevelFilter || resident.disabilityLevel === disabilityLevelFilter;
     
