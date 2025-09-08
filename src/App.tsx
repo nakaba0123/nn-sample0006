@@ -423,48 +423,6 @@ async function fetchWithRetry(url, retries = 5, delay = 2000) {
   throw new Error("fetchWithRetry: リトライ上限に達した");
 }
 
-/*
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const [residentsRes,
-             historiesRes,
-             groupHomesMainRes,
-             groupHomesSubRes,
-             expansionsRes,
-      ] = await Promise.all([
-        axios.get("/api/residents"),
-        axios.get("/api/disability_histories"),
-        axios.get("/api/group-homes/main"), // ← 追加！
-        axios.get("/api/group-homes/sub"), // ← 追加！
-        axios.get("/api/expansions") // ← 追加！
-      ]);
-
-      console.log("? residents fetched:", residentsRes.data);
-      console.log("? histories fetched:", historiesRes.data);
-      console.log("? groupHomesMain fetched:", groupHomesMainRes.data); // ← これ
-      console.log("? groupHomesSub fetched:", groupHomesSubRes.data); // ← これ
-      console.log("? expansions fetched:", expansionsRes.data); // ← これ
-
-
-//      setResidents((residentsRes?.data || []).map(mapResident));
-      setRawResidents((residentsRes?.data || []).map(mapResident));
-//      setRawResidents(residentsRes.data);
-      setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
-
-      setGroupHomesMain((groupHomesMainRes?.data || []).map(mapGroupHome));
-      setGroupHomesSub((groupHomesSubRes?.data || []).map(mapGroupHome));
-      setExpansionRecords((expansionsRes?.data || []).map(mapExpansion)); // ← 追加！
-
-    } catch (err) {
-      console.error("データ取得エラー:", err);
-    }
-  };
-
-  fetchData();
-}, []);
-*/
-
 useEffect(() => {
   const fetchData = async () => {
     try {
