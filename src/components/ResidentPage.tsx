@@ -65,6 +65,8 @@ const ResidentPage: React.FC<ResidentPageProps> = ({
                          resident.groupHomeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resident.unitName.toLowerCase().includes(searchTerm.toLowerCase());
 
+    console.log("matchesSearch::", matchesSearch);
+
     console.log("groupHomeFilter::", groupHomeFilter);
     console.log("!groupHomeFilter::", !groupHomeFilter);
     console.log("resident.groupHomeId::", resident.groupHomeId);
