@@ -416,6 +416,48 @@ app.get('/api/usage-records', async (req, res) => {
   }
 });
 
+app.post('/api/usage-records', async (req, res) => {
+  const { residentId, date, disabilityLevel } = req.body;
+  try {
+    await db.query(`
+      INSERT INTO usage_records
+      (resident_id, record_month, usage_date, is_used, disability_level)
+      VALUES (?, DATE_FORMAT(?, '%Y-%m-01'), ?, 1, ?)
+    `, [residentId, date, date, disabilityLevel]);
+    res.status(201).json({ message: 'Usage record created' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to insert usage record' });
+  }
+});
+
+app.patch('/api/usage-records/:id', async (req, res) => {
+  const { id } = req.params;
+  const { isUsed, disabilityLevel } = req.body;
+  try {
+    await db.query(`
+      UPDATE usage_records
+      SET is_used = ?, disability_level = ?, updated_at = NOW()
+      WHERE id = ?
+    `, [isUsed, disabilityLevel, id]);
+    res.json({ message: 'Usage record updated' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update usage record' });
+  }
+});
+
+app.delete('/api/usage-records/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query(`DELETE FROM usage_records WHERE id = ?`, [id]);
+    res.json({ message: 'Usage record deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete usage record' });
+  }
+});
+
 app.post('/api/disability_histories', async (req, res) => {
   console.log("POST /api/disability_histories が呼ばれました！");
   console.log("req.body:", req.body);
