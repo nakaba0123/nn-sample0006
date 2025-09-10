@@ -214,6 +214,8 @@ const getUsageRecord = (residentId: string, date: string) => {
 
 // 即時保存処理
 const updateUsageRecordInstantly = async (residentId: string, date: string, isUsed: boolean) => {
+  console.log("updateUsageRecordInstantlyに入ったよ！");
+
   const cellKey = `${residentId}-${date}`;
 
   setSavingCells(prev => new Set([...prev, cellKey]));
@@ -224,6 +226,7 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
     );
 
     const resident = residents.find(r => r.id === residentId);
+    console.log("UsageRecordPageのresident::", resident);
     if (!resident) return;
 
     const disabilityLevel = getDisabilityLevelForDate(resident, date);
@@ -271,6 +274,8 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
         disabilityLevel: targetRecord.disabilityLevel
       })
     });
+
+    console.log("POST /api/usage-records 成功!");
 
     // 遅延（UI演出用）
     await new Promise(resolve => setTimeout(resolve, 300));
