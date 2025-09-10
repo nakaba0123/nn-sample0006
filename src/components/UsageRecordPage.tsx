@@ -603,6 +603,11 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
   const moveInDate = resident.moveInDate ? new Date(resident.moveInDate) : null;
   const moveOutDate = resident.moveOutDate ? new Date(resident.moveOutDate) : null;
   const currentDate = new Date(date);
+
+  console.log("moveInDate::", moveInDate);
+  console.log("moveOutData::", moveOutDate);
+  console.log("currentDate::", currentDate);
+
   const isOutOfRange =
     (moveInDate && currentDate < moveInDate) ||
     (moveOutDate && currentDate > moveOutDate);
