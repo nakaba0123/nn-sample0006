@@ -445,8 +445,8 @@ useEffect(() => {
       const year = new Date().getFullYear();
       const month = new Date().getMonth() + 1;
 
-      console.log("residentRes::", residentRes);
-      console.log("residentRes.length::", residentRes.length);
+      console.log("residentsRes::", residentsRes);
+      console.log("residentsRes.length::", residentsRes.length);
 
       console.log("year::", year);
       console.log("month::", month);
