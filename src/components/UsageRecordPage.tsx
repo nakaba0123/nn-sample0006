@@ -212,86 +212,96 @@ const getUsageRecord = (residentId: string, date: string) => {
 //  ) || { isUsed: false, disabilityLevel: '' };
 //};
 
-  // 即時保存処理
-  const updateUsageRecordInstantly = async (residentId: string, date: string, isUsed: boolean) => {
-    const cellKey = `${residentId}-${date}`;
-    
-    // 保存中状態を設定
-    setSavingCells(prev => new Set([...prev, cellKey]));
-    
-    try {
-      const existingIndex = localUsageRecords.findIndex(
-        record => record.residentId === residentId && record.date === date
-      );
-      
-      const resident = residents.find(r => r.id === residentId);
+// 即時保存処理
+const updateUsageRecordInstantly = async (residentId: string, date: string, isUsed: boolean) => {
+  const cellKey = `${residentId}-${date}`;
 
-      if (!resident) return;
-      
-      const disabilityLevel = getDisabilityLevelForDate(resident, date);
-      
-      let updatedRecords: UsageRecord[];
-      
-      if (existingIndex >= 0) {
-        // 既存レコードを更新
-        updatedRecords = [...localUsageRecords];
-        updatedRecords[existingIndex] = {
-          ...updatedRecords[existingIndex],
-          isUsed,
-          disabilityLevel,
-          updatedAt: new Date().toISOString()
-        };
-      } else {
-        // 新規レコードを追加
-        const newRecord: UsageRecord = {
-          id: `usage_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          residentId,
-          date,
-          isUsed,
-          disabilityLevel,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-        updatedRecords = [...localUsageRecords, newRecord];
-      }
-      
-      // ローカル状態を更新
-      setLocalUsageRecords(updatedRecords);
-      
-      // サーバーに保存（模擬的な遅延を追加）
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // 親コンポーネントに通知
-      onUsageRecordUpdate(updatedRecords);
-      
-      // 保存成功のフィードバック
-      setSavingCells(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(cellKey);
-        return newSet;
-      });
-      
-      setSavedCells(prev => new Set([...prev, cellKey]));
-      
-      // 1秒後にハイライトを消去
-      setTimeout(() => {
-        setSavedCells(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(cellKey);
-          return newSet;
-        });
-      }, 1000);
-      
-    } catch (error) {
-      console.error('保存エラー:', error);
-      // エラー処理（必要に応じて）
-      setSavingCells(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(cellKey);
-        return newSet;
-      });
+  setSavingCells(prev => new Set([...prev, cellKey]));
+
+  try {
+    const existingIndex = localUsageRecords.findIndex(
+      record => record.residentId === residentId && record.date === date
+    );
+
+    const resident = residents.find(r => r.id === residentId);
+    if (!resident) return;
+
+    const disabilityLevel = getDisabilityLevelForDate(resident, date);
+
+    let updatedRecords: UsageRecord[];
+    let targetRecord: UsageRecord;
+
+    if (existingIndex >= 0) {
+      // 既存レコードを更新
+      updatedRecords = [...localUsageRecords];
+      updatedRecords[existingIndex] = {
+        ...updatedRecords[existingIndex],
+        isUsed,
+        disabilityLevel,
+        updatedAt: new Date().toISOString()
+      };
+      targetRecord = updatedRecords[existingIndex];
+    } else {
+      // 新規レコードを追加
+      const newRecord: UsageRecord = {
+        id: `usage_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        residentId,
+        date,
+        isUsed,
+        disabilityLevel,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      updatedRecords = [...localUsageRecords, newRecord];
+      targetRecord = newRecord;
     }
-  };
+
+    // ローカル更新
+    setLocalUsageRecords(updatedRecords);
+
+    // 🔥 ここでサーバーに保存
+    await fetch('/api/usage-records', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: targetRecord.id,
+        residentId: targetRecord.residentId,
+        date: targetRecord.date,
+        isUsed: targetRecord.isUsed,
+        disabilityLevel: targetRecord.disabilityLevel
+      })
+    });
+
+    // 遅延（UI演出用）
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    // 親コンポーネントに通知
+    onUsageRecordUpdate(updatedRecords);
+
+    // 保存成功UI
+    setSavingCells(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(cellKey);
+      return newSet;
+    });
+    setSavedCells(prev => new Set([...prev, cellKey]));
+    setTimeout(() => {
+      setSavedCells(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(cellKey);
+        return newSet;
+      });
+    }, 1000);
+
+  } catch (error) {
+    console.error('保存エラー:', error);
+    setSavingCells(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(cellKey);
+      return newSet;
+    });
+  }
+};
 
   // 月間利用実績サマリーを計算
   const getMonthlyUsageSummary = (residentId: string): MonthlyUsageSummary => {

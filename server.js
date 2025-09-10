@@ -416,18 +416,34 @@ app.get('/api/usage-records', async (req, res) => {
   }
 });
 
+// usage_records の保存API
 app.post('/api/usage-records', async (req, res) => {
-  const { residentId, date, disabilityLevel } = req.body;
+  const { id, residentId, date, isUsed, disabilityLevel } = req.body;
+
   try {
-    await pool.query(`
-      INSERT INTO usage_records
-      (resident_id, record_month, usage_date, is_used, disability_level)
-      VALUES (?, DATE_FORMAT(?, '%Y-%m-01'), ?, 1, ?)
-    `, [residentId, date, date, disabilityLevel]);
-    res.status(201).json({ message: 'Usage record created' });
+    const [rows] = await pool.query(
+      'SELECT * FROM usage_records WHERE resident_id = ? AND date = ?',
+      [residentId, date]
+    );
+
+    if (rows.length > 0) {
+      // 既存 → UPDATE
+      await pool.query(
+        'UPDATE usage_records SET is_used = ?, disability_level = ?, updated_at = NOW() WHERE resident_id = ? AND date = ?',
+        [isUsed, disabilityLevel, residentId, date]
+      );
+    } else {
+      // 新規 → INSERT
+      await pool.query(
+        'INSERT INTO usage_records (id, resident_id, date, is_used, disability_level, created_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
+        [id, residentId, date, isUsed, disabilityLevel]
+      );
+    }
+
+    res.json({ success: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to insert usage record' });
+    res.status(500).json({ success: false, error: 'DB error' });
   }
 });
 
