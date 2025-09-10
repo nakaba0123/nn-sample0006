@@ -617,6 +617,9 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
   console.log("isSaving::", isSaving);
   console.log("isSaved::", isSaved);
 
+  console.log("isOutOfRange", isOutOfRange);
+  
+
   return (
     <td
       key={date}
