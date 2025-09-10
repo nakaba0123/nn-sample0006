@@ -440,6 +440,25 @@ useEffect(() => {
       setGroupHomesMain((groupHomesMainRes || []).map(mapGroupHome));
       setGroupHomesSub((groupHomesSubRes || []).map(mapGroupHome));
       setExpansionRecords((expansionsRes || []).map(mapExpansion));
+
+      // 🔥 usageRecordsのfetchをここに追加
+      const year = new Date().getFullYear();
+      const month = new Date().getMonth() + 1;
+
+      // 全residentを取得してからusageRecordsをまとめてfetch
+      if (residentsRes && residentsRes.length > 0) {
+        const allUsageRecords = await Promise.all(
+          residentsRes.map(async (resident: any) => {
+            const res = await fetch(
+              `/api/usage-records?residentId=${resident.id}&year=${year}&month=${month}`
+            );
+            return res.json();
+          })
+        );
+
+        setUsageRecords(allUsageRecords.flat());
+      }
+
     } catch (err) {
       console.error("データ取得エラー:", err);
     }
