@@ -608,9 +608,9 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
   console.log("moveOutData::", moveOutDate);
   console.log("currentDate::", currentDate);
 
-  const isOutOfRange =
+  const isOutOfRange = Boolean(
     (moveInDate && currentDate < moveInDate) ||
-    (moveOutDate && currentDate > moveOutDate);
+    (moveOutDate && currentDate > moveOutDate));
 
   const cellColor = getDisabilityLevelColor(record.disabilityLevel);
   const cellKey = `${resident.id}-${date}`;
