@@ -365,12 +365,12 @@ app.get('/api/usage-records', async (req, res) => {
   const endDate = `${year}-${month}-31`; // TODO: 月末計算は後で修正
 
   try {
-    const [usageRecords] = await db.query(`
+    const [usageRecords] = await pool.query(`
       SELECT * FROM usage_records
       WHERE resident_id = ? AND usage_date BETWEEN ? AND ?
     `, [residentId, startDate, endDate]);
 
-    const [histories] = await db.query(`
+    const [histories] = await pool.query(`
       SELECT * FROM disability_histories
       WHERE resident_id = ?
     `, [residentId]);
@@ -419,7 +419,7 @@ app.get('/api/usage-records', async (req, res) => {
 app.post('/api/usage-records', async (req, res) => {
   const { residentId, date, disabilityLevel } = req.body;
   try {
-    await db.query(`
+    await pool.query(`
       INSERT INTO usage_records
       (resident_id, record_month, usage_date, is_used, disability_level)
       VALUES (?, DATE_FORMAT(?, '%Y-%m-01'), ?, 1, ?)
@@ -435,7 +435,7 @@ app.patch('/api/usage-records/:id', async (req, res) => {
   const { id } = req.params;
   const { isUsed, disabilityLevel } = req.body;
   try {
-    await db.query(`
+    await pool.query(`
       UPDATE usage_records
       SET is_used = ?, disability_level = ?, updated_at = NOW()
       WHERE id = ?
@@ -450,7 +450,7 @@ app.patch('/api/usage-records/:id', async (req, res) => {
 app.delete('/api/usage-records/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    await db.query(`DELETE FROM usage_records WHERE id = ?`, [id]);
+    await pool.query(`DELETE FROM usage_records WHERE id = ?`, [id]);
     res.json({ message: 'Usage record deleted' });
   } catch (err) {
     console.error(err);
