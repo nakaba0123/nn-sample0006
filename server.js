@@ -409,7 +409,7 @@ app.get('/api/usage-records', async (req, res) => {
         const [insertResult] = await connection.query(`
           INSERT INTO usage_records (resident_id, usage_date, is_used)
           VALUES (?, ?, ?)
-        `, [residentId, dateStr, false]);
+        `, [residentId, dateStr, true]);
 
         // 挿入したレコードをusageとして扱う
         usage = {
