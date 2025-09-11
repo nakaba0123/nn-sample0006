@@ -199,7 +199,7 @@ const getUsageRecord = (residentId: string, date: string) => {
     id: `usage_${Date.now()}_${Math.random().toString(36).substring(2)}`,
     residentId,
     date,
-    isUsed: false,
+    isUsed: true,
     disabilityLevel: level, // ←ここで履歴の値を使う！
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -316,6 +316,7 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
     
     days.forEach(date => {
       const record = getUsageRecord(residentId, date);
+      console.log("record::::", record);
       if (record.isUsed) {
         totalDays++;
         const level = record.disabilityLevel;
