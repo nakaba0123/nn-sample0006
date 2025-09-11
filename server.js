@@ -365,12 +365,17 @@ app.get('/api/usage-records', async (req, res) => {
   const endDate = `${year}-${month}-31`; // TODO: 月末計算は後で修正
 
   try {
-    const [usageRecords] = await pool.query(`
+    const connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    // 既存のusage_recordsを取得
+    const [usageRecords] = await connection.query(`
       SELECT * FROM usage_records
       WHERE resident_id = ? AND usage_date BETWEEN ? AND ?
     `, [residentId, startDate, endDate]);
 
-    const [histories] = await pool.query(`
+    // histories取得
+    const [histories] = await connection.query(`
       SELECT * FROM disability_histories
       WHERE resident_id = ?
     `, [residentId]);
@@ -384,7 +389,6 @@ app.get('/api/usage-records', async (req, res) => {
 
       // TODO: 居住期間チェック（今は仮でtrue）
       const inRange = true;
-
       if (!inRange) continue;
 
       // 区分取得
@@ -395,19 +399,40 @@ app.get('/api/usage-records', async (req, res) => {
       });
       const level = disability ? disability.level : '';
 
-      // usage_records取得
-      const usage = usageRecords.find(r => 
+      // usage_recordsから探す
+      let usage = usageRecords.find(r =>
         r.usage_date.toISOString().startsWith(dateStr)
       );
 
-      // 🔥 camelCaseで返す
+      // 🔥 usageがなければINSERT
+      if (!usage) {
+        const [insertResult] = await connection.query(`
+          INSERT INTO usage_records (resident_id, usage_date, is_used)
+          VALUES (?, ?, ?)
+        `, [residentId, dateStr, false]);
+
+        // 挿入したレコードをusageとして扱う
+        usage = {
+          id: insertResult.insertId,
+          resident_id: Number(residentId),
+          usage_date: new Date(dateStr),
+          is_used: 0,
+        };
+
+        usageRecords.push(usage);
+      }
+
+      // camelCaseで返す
       results.push({
         residentId: Number(residentId),
         date: dateStr,
-        isUsed: usage ? !!usage.is_used : false,
+        isUsed: !!usage.is_used,
         disabilityLevel: level || '',
       });
     }
+
+    await connection.commit();
+    connection.release();
 
     res.json(results);
   } catch (err) {
