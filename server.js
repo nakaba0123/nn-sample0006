@@ -250,7 +250,7 @@ app.post('/api/residents', async (req, res) => {
     connection.release();
   }
 });
-/*
+
 app.get('/api/residents', async (req, res) => {
   try {
     const [results] = await pool.query(`
@@ -258,38 +258,6 @@ app.get('/api/residents', async (req, res) => {
       r.*, 
       g.property_name AS group_home_name, -- ←ここを修正
       g.unit_name
-    FROM residents r
-    LEFT JOIN group_homes g ON r.group_home_id = g.id
-    ORDER BY r.move_in_date DESC
-    `);
-    res.json(results);
-  } catch (err) {
-    console.error('取得失敗:', err);
-    res.status(500).json({ error: '取得失敗' });
-  }
-});
-*/
-
-app.get('/api/residents', async (req, res) => {
-  try {
-    const [results] = await pool.query(`
-    SELECT 
-      r.id,
-      r.group_home_id AS groupHomeId,
-      r.name,
-      r.name_kana AS nameKana,
-      r.gender,
-      r.birthdate,
-      r.disability_level AS disabilityLevel,
-      r.disability_start_date AS disabilityStartDate,
-      r.room_number AS roomNumber,
-      r.move_in_date AS moveInDate,
-      r.move_out_date AS moveOutDate,
-      r.status,
-      r.created_at AS createdAt,
-      r.updated_at AS updatedAt,
-      g.property_name AS groupHomeName,
-      g.unit_name AS unitName
     FROM residents r
     LEFT JOIN group_homes g ON r.group_home_id = g.id
     ORDER BY r.move_in_date DESC
