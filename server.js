@@ -182,73 +182,6 @@ app.put('/api/group-homes/:id', async (req, res) => {
 // =======================
 // 👤 利用者 API（residents + disability_histories）
 // =======================
-/*
-app.post('/api/residents', async (req, res) => {
-  const connection = await pool.getConnection();
-  const now = new Date();
-  
-  const { 
-    group_home_id, group_home_name, unit_name,
-    name, name_kana, gender, birthdate,
-    disability_level, disability_start_date, room_number,
-    move_in_date, move_out_date,
-    status
-  } = req.body;
-
-  try {
-    await connection.beginTransaction(); // 🔸 トランザクション開始
-
-    // INSERT INTO residents
-    const residentSql = `
-      INSERT INTO residents ( 
-        group_home_id, group_home_name, unit_name,
-        name, name_kana, gender, birthdate,
-        disability_level, disability_start_date, room_number,
-        move_in_date, move_out_date,
-        status, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-
-    const residentValues = [
-      group_home_id, group_home_name, unit_name,
-      name, name_kana, gender, birthdate,
-      disability_level, disability_start_date, room_number,
-      move_in_date || null, move_out_date || null,
-      status, now, now
-    ];
-
-    const [residentResult] = await connection.query(residentSql, residentValues);
-    const residentId = residentResult.insertId; // 🔸 自動採番されたID
-
-    // INSERT INTO disability_histories
-    const historySql = `
-      INSERT INTO disability_histories (
-        resident_id, disability_level, start_date, end_date, created_at, updated_at
-      ) VALUES (?, ?, ?, '0000-00-00', ?, ?)
-    `;
-
-    const historyValues = [
-      residentId, disability_level, disability_start_date, now, now
-    ];
-
-    await connection.query(historySql, historyValues);
-
-    await connection.commit(); // 🔸 コミット
-
-    res.json({
-      message: '利用者と障害歴を登録しました',
-      id: residentId
-    });
-  } catch (err) {
-    await connection.rollback(); // 🔸 エラー時はロールバック
-    console.error('登録エラー:', err);
-    res.status(500).json({ message: '登録に失敗しました' });
-  } finally {
-    connection.release();
-  }
-});
-*/
-
 app.post('/api/residents', async (req, res) => {
   const connection = await pool.getConnection();
   const now = new Date();
@@ -317,7 +250,7 @@ app.post('/api/residents', async (req, res) => {
     connection.release();
   }
 });
-
+/*
 app.get('/api/residents', async (req, res) => {
   try {
     const [results] = await pool.query(`
@@ -325,6 +258,38 @@ app.get('/api/residents', async (req, res) => {
       r.*, 
       g.property_name AS group_home_name, -- ←ここを修正
       g.unit_name
+    FROM residents r
+    LEFT JOIN group_homes g ON r.group_home_id = g.id
+    ORDER BY r.move_in_date DESC
+    `);
+    res.json(results);
+  } catch (err) {
+    console.error('取得失敗:', err);
+    res.status(500).json({ error: '取得失敗' });
+  }
+});
+*/
+
+app.get('/api/residents', async (req, res) => {
+  try {
+    const [results] = await pool.query(`
+    SELECT 
+      r.id,
+      r.group_home_id AS groupHomeId,
+      r.name,
+      r.name_kana AS nameKana,
+      r.gender,
+      r.birthdate,
+      r.disability_level AS disabilityLevel,
+      r.disability_start_date AS disabilityStartDate,
+      r.room_number AS roomNumber,
+      r.move_in_date AS moveInDate,
+      r.move_out_date AS moveOutDate,
+      r.status,
+      r.created_at AS createdAt,
+      r.updated_at AS updatedAt,
+      g.property_name AS groupHomeName,
+      g.unit_name AS unitName
     FROM residents r
     LEFT JOIN group_homes g ON r.group_home_id = g.id
     ORDER BY r.move_in_date DESC
