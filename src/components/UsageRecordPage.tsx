@@ -633,10 +633,12 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
       } ${isOutOfRange ? 'bg-gray-200' : ''}`}
     >
       <button
-        onClick={() =>
-          !isOutOfRange &&
-          updateUsageRecordInstantly(resident.id, date, !record.isUsed)
-        }
+onClick={() => {
+  console.log("クリックされたよ", resident.id, date);
+  if (!isOutOfRange) {
+    updateUsageRecordInstantly(resident.id, date, !record.isUsed);
+  }
+}}
         disabled={isSaving || isOutOfRange}
         className={`w-8 h-8 rounded border-2 flex items-center justify-center text-xs font-bold transition-all ${
           isOutOfRange
