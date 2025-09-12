@@ -115,19 +115,26 @@ const getDaysInRange = (
   const daysInMonth = new Date(year, month, 0).getDate();
   const days: string[] = [];
 
-  const start = startDate ? new Date(startDate) : null;
-  const end = endDate && endDate !== "0000-00-00" ? new Date(endDate) : null;
+  // 日付を「00:00」に正規化する関数
+  const normalizeDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+  const start = startDate ? normalizeDate(startDate) : null;
+  const end =
+    endDate && endDate !== "0000-00-00" ? normalizeDate(endDate) : null;
 
   for (let day = 1; day <= daysInMonth; day++) {
-    const current = new Date(year, month - 1, day); // JSは月が0始まり
-    const date = `${year}-${month.toString().padStart(2, '0')}-${day
-      .toString()
-      .padStart(2, '0')}`;
+    const current = new Date(year, month - 1, day);
+    current.setHours(0, 0, 0, 0);
 
-    if (start && current < start) {
-      console.log("開始日超えちゃったよ！", current, " ", start);
-      continue; // 日付型で比較
-    }
+    const date = `${year}-${month.toString().padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")}`;
+
+    if (start && current < start) continue;
     if (end && current > end) continue;
 
     days.push(date);
