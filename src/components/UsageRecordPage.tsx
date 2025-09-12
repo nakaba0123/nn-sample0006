@@ -124,7 +124,10 @@ const getDaysInRange = (
       .toString()
       .padStart(2, '0')}`;
 
-    if (start && current < start) continue; // 日付型で比較
+    if (start && current < start) {
+      console.log("開始日超えちゃったよ！", current, " ", start);
+      continue; // 日付型で比較
+    }
     if (end && current > end) continue;
 
     days.push(date);
