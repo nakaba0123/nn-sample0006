@@ -672,9 +672,9 @@ const handleResidentSubmit = async (resident: Resident) => {
         console.log("? residents fetched:", residentsRes.data);
         console.log("? histories fetched:", historiesRes.data);
 
-//        setRawResidents(residentsRes.data);
+        setRawResidents(residentsRes.data);
 //        setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
-        setRawResidents((residentsRes || []).map(mapResident));
+        setRawResidents(residentsRes.map(mapResident));
         setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
   
       } catch (err) {
