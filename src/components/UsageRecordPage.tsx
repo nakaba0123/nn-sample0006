@@ -109,20 +109,23 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
 const getDaysInRange = (
   year: number,
   month: number,
-  startDate?: string, // 入居日
-  endDate?: string    // 退居日
+  startDate?: string,
+  endDate?: string
 ): string[] => {
   const daysInMonth = new Date(year, month, 0).getDate();
   const days: string[] = [];
 
+  const start = startDate ? new Date(startDate) : null;
+  const end = endDate && endDate !== "0000-00-00" ? new Date(endDate) : null;
+
   for (let day = 1; day <= daysInMonth; day++) {
+    const current = new Date(year, month - 1, day); // JSは月が0始まり
     const date = `${year}-${month.toString().padStart(2, '0')}-${day
       .toString()
       .padStart(2, '0')}`;
 
-    // 範囲外ならスキップ
-    if (startDate && date < startDate) continue;
-    if (endDate && endDate !== "0000-00-00" && date > endDate) continue;
+    if (start && current < start) continue; // 日付型で比較
+    if (end && current > end) continue;
 
     days.push(date);
   }
