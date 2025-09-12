@@ -607,7 +607,7 @@ const getMonthlyUsageSummary = (
                         </thead>
                         <tbody>
                           {unitResidents.map(resident => {
-                            const summary = getMonthlyUsageSummary(resident.id, resident.moveInDate, resident.moveOutDate));
+                            const summary = getMonthlyUsageSummary(resident.id, resident.moveInDate, resident.moveOutDate);
                             return (
                               <tr key={resident.id} className="border-t border-gray-100 hover:bg-gray-50">
                                 <td className="sticky left-0 bg-white px-4 py-3 border-r border-gray-200">
