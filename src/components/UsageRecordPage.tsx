@@ -93,7 +93,6 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
   return resident.disabilityLevel || '';
 };
 
-
   // 指定月の日付配列を生成
   const getDaysInMonth = (year: number, month: number): string[] => {
     const daysInMonth = new Date(year, month, 0).getDate();
@@ -106,6 +105,30 @@ const getDisabilityLevelForDate = (resident: Resident, date: string): string => 
     
     return days;
   };
+
+const getDaysInRange = (
+  year: number,
+  month: number,
+  startDate?: string, // 入居日
+  endDate?: string    // 退居日
+): string[] => {
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const days: string[] = [];
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = `${year}-${month.toString().padStart(2, '0')}-${day
+      .toString()
+      .padStart(2, '0')}`;
+
+    // 範囲外ならスキップ
+    if (startDate && date < startDate) continue;
+    if (endDate && endDate !== "0000-00-00" && date > endDate) continue;
+
+    days.push(date);
+  }
+
+  return days;
+};
 
   // 対象月に入居している利用者を取得
   const getActiveResidentsForMonth = (): Resident[] => {
@@ -308,28 +331,26 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
   }
 };
 
-  // 月間利用実績サマリーを計算
-  const getMonthlyUsageSummary = (residentId: string): MonthlyUsageSummary => {
-    const days = getDaysInMonth(selectedYear, selectedMonth);
-    const usageByLevel: { [key: string]: number } = {};
-    let totalDays = 0;
-    
-    days.forEach(date => {
-      const record = getUsageRecord(residentId, date);
-      console.log("record::::", record);
-      if (record.isUsed) {
-        totalDays++;
-        const level = record.disabilityLevel;
-        usageByLevel[level] = (usageByLevel[level] || 0) + 1;
-      }
-    });
-    
-    return {
-      residentId,
-      totalDays,
-      usageByLevel
-    };
-  };
+const getMonthlyUsageSummary = (
+  residentId: string,
+  startDate?: string,
+  endDate?: string
+): MonthlyUsageSummary => {
+  const days = getDaysInRange(selectedYear, selectedMonth, startDate, endDate);
+  const usageByLevel: { [key: string]: number } = {};
+  let totalDays = 0;
+
+  days.forEach(date => {
+    const record = getUsageRecord(residentId, date);
+    if (record.isUsed) {
+      totalDays++;
+      const level = record.disabilityLevel;
+      usageByLevel[level] = (usageByLevel[level] || 0) + 1;
+    }
+  });
+
+  return { residentId, totalDays, usageByLevel };
+};
 
   // ユニットの展開/収納
   const toggleUnitExpansion = (unitKey: string) => {
@@ -586,7 +607,7 @@ const updateUsageRecordInstantly = async (residentId: string, date: string, isUs
                         </thead>
                         <tbody>
                           {unitResidents.map(resident => {
-                            const summary = getMonthlyUsageSummary(resident.id);
+                            const summary = getMonthlyUsageSummary(resident.id, resident.moveInDate, resident.moveOutDate));
                             return (
                               <tr key={resident.id} className="border-t border-gray-100 hover:bg-gray-50">
                                 <td className="sticky left-0 bg-white px-4 py-3 border-r border-gray-200">
