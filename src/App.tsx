@@ -665,19 +665,19 @@ const handleResidentSubmit = async (resident: Resident) => {
         const [residentsRes,
                historiesRes,
         ] = await Promise.all([
-//          axios.get("/api/residents"),
-//          axios.get("/api/disability_histories")
-          fetchWithRetry("/api/residents"),
-          fetchWithRetry("/api/disability_histories"),
+          axios.get("/api/residents"),
+          axios.get("/api/disability_histories")
+//          fetchWithRetry("/api/residents"),
+//          fetchWithRetry("/api/disability_histories"),
         ]);
 
         console.log("? residents fetched:", residentsRes.data);
         console.log("? histories fetched:", historiesRes.data);
 
         setRawResidents(residentsRes.data.map(mapResident));
-        setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
+//        setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
 //        setRawResidents(residentsRes.map(mapResident));
-//        setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
+        setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
   
       } catch (err) {
         console.error("データ取得エラー:", err);
