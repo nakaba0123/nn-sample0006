@@ -405,7 +405,7 @@ const mapDisabilityHistory = (raw: any): DisabilityHistory => ({
 });
 
 // 型注釈削ったバージョン
-async function fetchWithRetry(url, retries = 5, delay = 2000) {
+async function fetchWithRetry(url, retries = 5, delay = 4000) {
   for (let i = 0; i < retries; i++) {
     try {
       const res = await axios.get(url);
