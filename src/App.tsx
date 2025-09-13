@@ -667,16 +667,12 @@ const handleResidentSubmit = async (resident: Resident) => {
         ] = await Promise.all([
           axios.get("/api/residents"),
           axios.get("/api/disability_histories")
-//          fetchWithRetry("/api/residents"),
-//          fetchWithRetry("/api/disability_histories"),
         ]);
 
         console.log("? residents fetched:", residentsRes.data);
         console.log("? histories fetched:", historiesRes.data);
 
         setRawResidents(residentsRes.data.map(mapResident));
-//        setDisabilityHistories(historiesRes.data.map(mapDisabilityHistory));
-//        setRawResidents(residentsRes.map(mapResident));
         setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
   
       } catch (err) {
