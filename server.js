@@ -863,6 +863,117 @@ app.get('/api/expansions', async (req, res) => {
   }
 });
 
+// ---------------------------
+// Users API
+// ---------------------------
+app.get('/api/users', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM users');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching users');
+  }
+});
+
+app.post('/api/users', async (req, res) => {
+  try {
+    const { name, email, position, employeeId, joinDate, retirementDate, status, role, avatar } = req.body;
+    const [result] = await pool.query(
+      `INSERT INTO users (name, email, position, employee_id, join_date, retirement_date, status, role, avatar)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, email, position, employeeId, joinDate, retirementDate || null, status, role, avatar || null]
+    );
+    res.json({ id: result.insertId, ...req.body });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error creating user');
+  }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const { name, email, position, employeeId, joinDate, retirementDate, status, role, avatar } = req.body;
+    await pool.query(
+      `UPDATE users
+       SET name=?, email=?, position=?, employee_id=?, join_date=?, retirement_date=?, status=?, role=?, avatar=?
+       WHERE id=?`,
+      [name, email, position, employeeId, joinDate, retirementDate || null, status, role, avatar || null, req.params.id]
+    );
+    res.json({ id: req.params.id, ...req.body });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error updating user');
+  }
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM users WHERE id=?', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error deleting user');
+  }
+});
+
+// ---------------------------
+// Department Histories API
+// ---------------------------
+app.get('/api/department_histories/:userId', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM department_histories WHERE user_id=? ORDER BY start_date ASC',
+      [req.params.userId]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching department histories');
+  }
+});
+
+app.post('/api/department_histories', async (req, res) => {
+  try {
+    const { userId, departmentName, startDate, endDate } = req.body;
+    const [result] = await pool.query(
+      `INSERT INTO department_histories (user_id, department_name, start_date, end_date)
+       VALUES (?, ?, ?, ?)`,
+      [userId, departmentName, startDate, endDate || null]
+    );
+    res.json({ id: result.insertId, ...req.body });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error creating department history');
+  }
+});
+
+app.put('/api/department_histories/:id', async (req, res) => {
+  try {
+    const { departmentName, startDate, endDate } = req.body;
+    await pool.query(
+      `UPDATE department_histories
+       SET department_name=?, start_date=?, end_date=?
+       WHERE id=?`,
+      [departmentName, startDate, endDate || null, req.params.id]
+    );
+    res.json({ id: req.params.id, ...req.body });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error updating department history');
+  }
+});
+
+app.delete('/api/department_histories/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM department_histories WHERE id=?', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error deleting department history');
+  }
+});
+
 // =======================
 // 🌐 補助 API
 // =======================
