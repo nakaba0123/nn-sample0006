@@ -181,7 +181,7 @@ function App() {
     };
     setAttendanceRecords(prev => [newRecord, ...prev]);
   };
-
+/*
   const handleUserSubmit = (data: UserFormData & { departmentHistory?: any[] }) => {
     if (editingUser) {
       // Edit existing user
@@ -216,6 +216,43 @@ function App() {
       setUsers(prev => [newUser, ...prev]);
     }
   };
+*/
+
+const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[] }) => {
+  try {
+    if (editingUser) {
+      // 既存ユーザー更新
+      const response = await fetch(`/api/staffs/${editingUser.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Update failed");
+      const updatedUser = await response.json();
+
+      setUsers(prev =>
+        prev.map(user =>
+          user.id === editingUser.id ? updatedUser : user
+        )
+      );
+      setEditingUser(null);
+    } else {
+      // 新規ユーザー登録
+      const response = await fetch("/api/staffs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Create failed");
+      const newUser = await response.json();
+
+      setUsers(prev => [newUser, ...prev]);
+    }
+  } catch (error) {
+    console.error("handleUserSubmit error:", error);
+    alert("登録に失敗しました");
+  }
+};
 
 const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
   try {

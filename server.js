@@ -863,114 +863,149 @@ app.get('/api/expansions', async (req, res) => {
   }
 });
 
-// ---------------------------
-// Users API
-// ---------------------------
-app.get('/api/users', async (req, res) => {
-  try {
-    const [rows] = await pool.query('SELECT * FROM users');
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error fetching users');
-  }
-});
-
+// -----------------------------------
+// POST /api/users - 新規ユーザー登録
+// -----------------------------------
 app.post('/api/users', async (req, res) => {
+  const {
+    name,
+    email,
+    department,
+    position,
+    employeeId,
+    joinDate,
+    retirementDate,
+    status,
+    role,
+    departmentHistory // [{ departmentName, startDate, endDate? }]
+  } = req.body;
+
+  const conn = await pool.getConnection();
   try {
-    const { name, email, position, employeeId, joinDate, retirementDate, status, role, avatar } = req.body;
-    const [result] = await pool.query(
-      `INSERT INTO users (name, email, position, employee_id, join_date, retirement_date, status, role, avatar)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, email, position, employeeId, joinDate, retirementDate || null, status, role, avatar || null]
+    await conn.beginTransaction();
+
+    // users テーブルに INSERT
+    const [userResult] = await conn.execute(
+      `INSERT INTO users
+        (name, email, department, position, employee_id, join_date, retirement_date, status, role, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+      [
+        name,
+        email,
+        department,
+        position || null,
+        employeeId || null,
+        joinDate,
+        retirementDate || null,
+        status || 'active',
+        role || 'staff'
+      ]
     );
-    res.json({ id: result.insertId, ...req.body });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error creating user');
+
+    const userId = userResult.insertId;
+
+    // department_histories テーブルに INSERT（あれば）
+    if (Array.isArray(departmentHistory) && departmentHistory.length > 0) {
+      const historyValues = departmentHistory.map(h => [
+        userId,
+        h.departmentName,
+        h.startDate,
+        h.endDate || null,
+        new Date()
+      ]);
+
+      await conn.query(
+        `INSERT INTO department_histories
+          (user_id, department_name, start_date, end_date, created_at)
+         VALUES ?`,
+        [historyValues]
+      );
+    }
+
+    await conn.commit();
+
+    // 返すときは users と department_histories をまとめる
+    const [userRows] = await conn.query('SELECT * FROM users WHERE id = ?', [userId]);
+    const [historyRows] = await conn.query('SELECT * FROM department_histories WHERE user_id = ?', [userId]);
+
+    res.json({
+      ...userRows[0],
+      departmentHistory: historyRows
+    });
+  } catch (error) {
+    await conn.rollback();
+    console.error(error);
+    res.status(500).json({ error: 'ユーザー登録に失敗しました' });
+  } finally {
+    conn.release();
   }
 });
 
-app.put('/api/users/:id', async (req, res) => {
+// -----------------------------------
+// PATCH /api/users/:id - ユーザー更新（簡易版）
+// -----------------------------------
+app.patch('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const {
+    name,
+    email,
+    department,
+    position,
+    employeeId,
+    joinDate,
+    retirementDate,
+    status,
+    role,
+    departmentHistory
+  } = req.body;
+
+  const conn = await pool.getConnection();
   try {
-    const { name, email, position, employeeId, joinDate, retirementDate, status, role, avatar } = req.body;
-    await pool.query(
-      `UPDATE users
-       SET name=?, email=?, position=?, employee_id=?, join_date=?, retirement_date=?, status=?, role=?, avatar=?
+    await conn.beginTransaction();
+
+    await conn.execute(
+      `UPDATE users SET
+        name=?, email=?, department=?, position=?, employee_id=?, join_date=?, retirement_date=?, status=?, role=?
        WHERE id=?`,
-      [name, email, position, employeeId, joinDate, retirementDate || null, status, role, avatar || null, req.params.id]
+      [name, email, department, position || null, employeeId || null, joinDate, retirementDate || null, status, role, id]
     );
-    res.json({ id: req.params.id, ...req.body });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error updating user');
-  }
-});
 
-app.delete('/api/users/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM users WHERE id=?', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error deleting user');
-  }
-});
+    // department_histories の更新は一旦 delete → insert 方式でも可
+    if (Array.isArray(departmentHistory)) {
+      await conn.execute(`DELETE FROM department_histories WHERE user_id=?`, [id]);
 
-// ---------------------------
-// Department Histories API
-// ---------------------------
-app.get('/api/department_histories/:userId', async (req, res) => {
-  try {
-    const [rows] = await pool.query(
-      'SELECT * FROM department_histories WHERE user_id=? ORDER BY start_date ASC',
-      [req.params.userId]
-    );
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error fetching department histories');
-  }
-});
+      if (departmentHistory.length > 0) {
+        const historyValues = departmentHistory.map(h => [
+          id,
+          h.departmentName,
+          h.startDate,
+          h.endDate || null,
+          new Date()
+        ]);
+        await conn.query(
+          `INSERT INTO department_histories
+            (user_id, department_name, start_date, end_date, created_at)
+           VALUES ?`,
+          [historyValues]
+        );
+      }
+    }
 
-app.post('/api/department_histories', async (req, res) => {
-  try {
-    const { userId, departmentName, startDate, endDate } = req.body;
-    const [result] = await pool.query(
-      `INSERT INTO department_histories (user_id, department_name, start_date, end_date)
-       VALUES (?, ?, ?, ?)`,
-      [userId, departmentName, startDate, endDate || null]
-    );
-    res.json({ id: result.insertId, ...req.body });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error creating department history');
-  }
-});
+    await conn.commit();
 
-app.put('/api/department_histories/:id', async (req, res) => {
-  try {
-    const { departmentName, startDate, endDate } = req.body;
-    await pool.query(
-      `UPDATE department_histories
-       SET department_name=?, start_date=?, end_date=?
-       WHERE id=?`,
-      [departmentName, startDate, endDate || null, req.params.id]
-    );
-    res.json({ id: req.params.id, ...req.body });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error updating department history');
-  }
-});
+    const [userRows] = await conn.query('SELECT * FROM users WHERE id = ?', [id]);
+    const [historyRows] = await conn.query('SELECT * FROM department_histories WHERE user_id = ?', [id]);
 
-app.delete('/api/department_histories/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM department_histories WHERE id=?', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error deleting department history');
+    res.json({
+      ...userRows[0],
+      departmentHistory: historyRows
+    });
+  } catch (error) {
+    await conn.rollback();
+    console.error(error);
+    res.status(500).json({ error: 'ユーザー更新に失敗しました' });
+  } finally {
+    conn.release();
   }
 });
 
