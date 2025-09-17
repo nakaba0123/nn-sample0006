@@ -2,6 +2,7 @@ import React from 'react';
 import { User, Mail, Building, Briefcase, Calendar, Hash, Edit, Trash2, History, LogOut, Shield } from 'lucide-react';
 import { User as UserType } from '../types/User';
 import { useAuth } from '../hooks/useAuth';
+import dayjs from "dayjs";
 
 interface UserCardProps {
   user: UserType;
@@ -21,10 +22,17 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete }) => {
   const getStatusText = (status: string) => {
     return status === 'active' ? '在職中' : '退職済み';
   };
-
+/*
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ja-JP');
   };
+*/
+
+const formatDate = (dateString?: string | null) => {
+  if (!dateString) return "未設定";
+  const d = dayjs(dateString);
+  return d.isValid() ? d.format("YYYY/MM/DD") : "未設定";
+};
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
