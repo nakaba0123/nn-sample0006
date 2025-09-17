@@ -870,7 +870,7 @@ app.post('/api/users', async (req, res) => {
   const {
     name,
     email,
-    department,
+    // department, // ←削除
     position,
     employeeId,
     joinDate,
@@ -884,15 +884,14 @@ app.post('/api/users', async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // users テーブルに INSERT
+    // users テーブルに INSERT（department は除外）
     const [userResult] = await conn.execute(
       `INSERT INTO users
-        (name, email, department, position, employee_id, join_date, retirement_date, status, role, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+        (name, email, position, employee_id, join_date, retirement_date, status, role, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
       [
         name,
         email,
-        department,
         position || null,
         employeeId || null,
         joinDate,
