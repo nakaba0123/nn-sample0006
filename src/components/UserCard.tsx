@@ -2,7 +2,6 @@ import React from 'react';
 import { User, Mail, Building, Briefcase, Calendar, Hash, Edit, Trash2, History, LogOut, Shield } from 'lucide-react';
 import { User as UserType } from '../types/User';
 import { useAuth } from '../hooks/useAuth';
-import dayjs from "dayjs";
 
 interface UserCardProps {
   user: UserType;
