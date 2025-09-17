@@ -1008,6 +1008,70 @@ app.patch('/api/users/:id', async (req, res) => {
   }
 });
 
+// -----------------------------------
+// POST /api/department_histories - 部署履歴の追加
+// -----------------------------------
+app.post('/api/department_histories', async (req, res) => {
+  const { user_id, departmentName, startDate, endDate } = req.body;
+
+  if (!user_id || !departmentName || !startDate) {
+    return res.status(400).json({ error: '必須項目が不足しています' });
+  }
+
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    const [result] = await conn.execute(
+      `INSERT INTO department_histories
+        (user_id, department_name, start_date, end_date, created_at)
+       VALUES (?, ?, ?, ?, NOW())`,
+      [
+        user_id,
+        departmentName,
+        startDate,
+        endDate || null
+      ]
+    );
+
+    await conn.commit();
+
+    const [rows] = await conn.query(
+      'SELECT * FROM department_histories WHERE id = ?',
+      [result.insertId]
+    );
+
+    res.json(rows[0]);
+  } catch (error) {
+    await conn.rollback();
+    console.error(error);
+    res.status(500).json({ error: '部署履歴の登録に失敗しました' });
+  } finally {
+    conn.release();
+  }
+});
+
+// -----------------------------------
+// GET /api/department_histories/:userId - 特定ユーザーの履歴一覧取得
+// -----------------------------------
+app.get('/api/department_histories/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  const conn = await pool.getConnection();
+  try {
+    const [rows] = await conn.query(
+      'SELECT * FROM department_histories WHERE user_id = ? ORDER BY start_date DESC',
+      [userId]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: '履歴の取得に失敗しました' });
+  } finally {
+    conn.release();
+  }
+});
+
 // =======================
 // 🌐 補助 API
 // =======================
