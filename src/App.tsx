@@ -222,7 +222,7 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
   try {
     if (editingUser) {
       // 既存ユーザー更新
-      const response = await fetch(`/api/staffs/${editingUser.id}`, {
+      const response = await fetch(`/api/users/${editingUser.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -231,14 +231,12 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
       const updatedUser = await response.json();
 
       setUsers(prev =>
-        prev.map(user =>
-          user.id === editingUser.id ? updatedUser : user
-        )
+        prev.map(user => (user.id === editingUser.id ? updatedUser : user))
       );
       setEditingUser(null);
     } else {
       // 新規ユーザー登録
-      const response = await fetch("/api/staffs", {
+      const response = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -247,6 +245,23 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
       const newUser = await response.json();
 
       setUsers(prev => [newUser, ...prev]);
+
+      // department_histories があれば追加
+      if (data.departmentHistory && data.departmentHistory.length > 0) {
+        await Promise.all(
+          data.departmentHistory.map(async dept => {
+            const deptResp = await fetch("/api/department_histories", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id: newUser.id,
+                ...dept
+              }),
+            });
+            if (!deptResp.ok) throw new Error("Department history insert failed");
+          })
+        );
+      }
     }
   } catch (error) {
     console.error("handleUserSubmit error:", error);
