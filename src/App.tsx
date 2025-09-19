@@ -29,7 +29,8 @@ import { UsageRecord } from './types/UsageRecord';
 import { mapGroupHome } from "./util/mapGroupHome"; // パスは適宜！1
 import { mapExpansion } from "./util/mapExpansion"; // パスは適宜！1
 import { mapResident } from "./util/mapResident"; // パスは適宜！1
-import { mapUser, mapDepartmentHistory } from "./util/mapUser"; // パスは適宜！1
+import { mapUser } from "./util/mapUser"; // パスは適宜！1
+import { mapDepartmentHistory } from "./util/mapUser"; // パスは適宜！1
 
 interface AttendanceData {
   name: string;
