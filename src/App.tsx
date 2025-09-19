@@ -495,7 +495,7 @@ useEffect(() => {
       setRawResidents((residentsRes || []).map(mapResident));
       setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
       setUsers((usersRes || []).map(mapUser));
-//      setDepartmentHistories(departmentHistoriesRes.map(mapDepartmentHistory));
+      setDepartmentHistories(departmentHistoriesRes.map(mapDepartmentHistory));
       setGroupHomesMain((groupHomesMainRes || []).map(mapGroupHome));
       setGroupHomesSub((groupHomesSubRes || []).map(mapGroupHome));
       setExpansionRecords((expansionsRes || []).map(mapExpansion));
