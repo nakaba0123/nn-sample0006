@@ -1,5 +1,5 @@
 // 部署履歴の型変換
-const mapDepartmentHistory = (history: any) => ({
+export const mapDepartmentHistory = (history: any) => ({
   id: history.id,
   userId: history.user_id,
   departmentName: history.department_name,
