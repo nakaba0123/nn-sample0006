@@ -486,7 +486,7 @@ useEffect(() => {
           fetchWithRetry("/api/residents"),
           fetchWithRetry("/api/disability_histories"),
           fetchWithRetry("/api/users"),
-          fetchWithRetry("/api/disability_histories"),
+          fetchWithRetry("/api/department_histories"),
           fetchWithRetry("/api/group-homes/main"),
           fetchWithRetry("/api/group-homes/sub"),
           fetchWithRetry("/api/expansions")
