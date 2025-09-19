@@ -22,7 +22,6 @@ export function mapUser(user: any) {
     retirementDate: user.retirement_date ? new Date(user.retirement_date).toISOString() : null,
     createdAt: user.created_at ? new Date(user.created_at).toISOString() : null,
 
-    avatar: user.avatar || null,
   };
 )
 
