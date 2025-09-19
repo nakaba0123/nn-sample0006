@@ -500,6 +500,14 @@ useEffect(() => {
       setGroupHomesSub((groupHomesSubRes || []).map(mapGroupHome));
       setExpansionRecords((expansionsRes || []).map(mapExpansion));
 
+console.log("residentsRes ->", residentsRes);
+console.log("historiesRes ->", historiesRes);
+console.log("usersRes ->", usersRes);
+console.log("departmentHistoriesRes ->", departmentHistoriesRes);
+console.log("groupHomesMainRes ->", groupHomesMainRes);
+console.log("groupHomesSubRes ->", groupHomesSubRes);
+console.log("expansionsRes ->", expansionsRes);
+
       // 🔥 usageRecordsのfetchをここに追加
       const year = new Date().getFullYear();
       const month = new Date().getMonth() + 1;
