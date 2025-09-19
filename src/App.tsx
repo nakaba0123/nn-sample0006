@@ -29,6 +29,7 @@ import { UsageRecord } from './types/UsageRecord';
 import { mapGroupHome } from "./util/mapGroupHome"; // パスは適宜！1
 import { mapExpansion } from "./util/mapExpansion"; // パスは適宜！1
 import { mapResident } from "./util/mapResident"; // パスは適宜！1
+import { mapUser, mapDepartmentHistory } from "./util/mapUser"; // パスは適宜！1
 
 interface AttendanceData {
   name: string;
@@ -171,6 +172,8 @@ function App() {
   const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);  // ← 追加
   const [rawResidents, setRawResidents] = useState([]);
   const [disabilityHistories, setDisabilityHistories] = useState([]);
+  const [userss, setUsers] = useState([]);
+  const [departmentHistories, setDepartmentHistories] = useState([]);
 
 //  console.log("👀 モーダル状態:", isResidentModalOpen);
 
@@ -478,9 +481,11 @@ async function fetchWithRetry(url, retries = 5, delay = 2000) {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const [residentsRes, historiesRes, groupHomesMainRes, groupHomesSubRes, expansionsRes] =
+      const [residentsRes, historiesRes, usersRes, departmentHistoriesRes, groupHomesMainRes, groupHomesSubRes, expansionsRes] =
         await Promise.all([
           fetchWithRetry("/api/residents"),
+          fetchWithRetry("/api/disability_histories"),
+          fetchWithRetry("/api/users"),
           fetchWithRetry("/api/disability_histories"),
           fetchWithRetry("/api/group-homes/main"),
           fetchWithRetry("/api/group-homes/sub"),
@@ -489,6 +494,8 @@ useEffect(() => {
 
       setRawResidents((residentsRes || []).map(mapResident));
       setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
+      setUsers((usersRes || []).map(mapUser));
+      setDepartmentHistories(departmentHistoriesRes.map(mapDepartmentHistory));
       setGroupHomesMain((groupHomesMainRes || []).map(mapGroupHome));
       setGroupHomesSub((groupHomesSubRes || []).map(mapGroupHome));
       setExpansionRecords((expansionsRes || []).map(mapExpansion));
