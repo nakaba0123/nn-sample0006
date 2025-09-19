@@ -7,23 +7,23 @@ export const mapDepartmentHistory = (history: any) => ({
   endDate: history.end_date ? new Date(history.end_date).toISOString() : null,
 });
 
-export const mapUser = (user: any): User => ({
-  id: user.id,
-  name: user.name,
-  email: user.email,
-  position: user.position,
-  employeeId: user.employee_id,
-  role: user.role,
-  status: user.status,
-  department: user.department || null,
+export function mapUser(user: any) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    position: user.position,
+    employeeId: user.employee_id,
+    role: user.role,
+    status: user.status,
+    department: user.department || null,
 
-  joinDate: user.join_date ? new Date(user.join_date).toISOString() : null,
-  retirementDate: user.retirement_date ? new Date(user.retirement_date).toISOString() : null,
-  createdAt: user.created_at ? new Date(user.created_at).toISOString() : null,
+    joinDate: user.join_date ? new Date(user.join_date).toISOString() : null,
+    retirementDate: user.retirement_date ? new Date(user.retirement_date).toISOString() : null,
+    createdAt: user.created_at ? new Date(user.created_at).toISOString() : null,
 
-  avatar: user.avatar || null,
-  departmentHistory: user.departmentHistory
-    ? user.departmentHistory.map(mapDepartmentHistory)
-    : [],
-});
+    avatar: user.avatar || null,
+    departmentHistory: user.departmentHistory,
+  };
+)
 
