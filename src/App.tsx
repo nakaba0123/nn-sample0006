@@ -172,7 +172,7 @@ function App() {
   const [isResidentModalOpen, setIsResidentModalOpen] = useState(false);  // ← 追加
   const [rawResidents, setRawResidents] = useState([]);
   const [disabilityHistories, setDisabilityHistories] = useState([]);
-  const [userss, setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [departmentHistories, setDepartmentHistories] = useState([]);
 
 //  console.log("👀 モーダル状態:", isResidentModalOpen);
