@@ -44,7 +44,6 @@ function App() {
   const [activeTab, setActiveTab] = useState<'attendance' | 'users' | 'grouphomes' | 'departments' | 'shifts' | 'masters' | 'residents' | 'usage'>('attendance');
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceData[]>([]);
   const [users, setUsers] = useState<User[]>([
-/*
     // デモ用の初期ユーザー（管理者）
     {
       id: 'user_admin_001',
@@ -108,7 +107,6 @@ function App() {
         }
       ]
     }
-*/
   ]);
   const [groupHomesMain, setGroupHomesMain] = useState<GroupHome[]>([]);
   const [groupHomesSub, setGroupHomesSub] = useState<GroupHome[]>([]);
