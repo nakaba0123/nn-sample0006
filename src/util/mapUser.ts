@@ -23,7 +23,6 @@ export function mapUser(user: any) {
     createdAt: user.created_at ? new Date(user.created_at).toISOString() : null,
 
     avatar: user.avatar || null,
-    departmentHistory: user.departmentHistory,
   };
 )
 
