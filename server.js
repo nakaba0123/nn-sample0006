@@ -1011,7 +1011,7 @@ app.patch('/api/users/:id', async (req, res) => {
 // 全ユーザー取得
 app.get("/api/users", async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT id, name, role_id, department_id FROM users");
+    const [rows] = await pool.query("SELECT id, name, role_id, department_id FROM users");
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -1087,7 +1087,7 @@ app.get('/api/department_histories/:userId', async (req, res) => {
 // 全部署履歴取得
 app.get("/api/department_histories", async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT id, user_id, department_id, start_date, end_date FROM department_histories");
+    const [rows] = await pool.query("SELECT id, user_id, department_id, start_date, end_date FROM department_histories");
     res.json(rows);
   } catch (err) {
     console.error(err);
