@@ -1087,7 +1087,7 @@ app.get('/api/department_histories/:userId', async (req, res) => {
 // 全部署履歴取得
 app.get("/api/department_histories", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT id, user_id, department_id, start_date, end_date FROM department_histories");
+    const [rows] = await pool.query("SELECT * FROM department_histories");
     res.json(rows);
   } catch (err) {
     console.error(err);
