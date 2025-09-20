@@ -1008,6 +1008,18 @@ app.patch('/api/users/:id', async (req, res) => {
   }
 });
 
+// 全ユーザー取得
+app.get("/api/users", async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT id, name, role_id, department_id FROM users");
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "ユーザー取得エラー" });
+  }
+});
+
+
 // -----------------------------------
 // POST /api/department_histories - 部署履歴の追加
 // -----------------------------------
@@ -1069,6 +1081,17 @@ app.get('/api/department_histories/:userId', async (req, res) => {
     res.status(500).json({ error: '履歴の取得に失敗しました' });
   } finally {
     conn.release();
+  }
+});
+
+// 全部署履歴取得
+app.get("/api/department_histories", async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT id, user_id, department_id, start_date, end_date FROM department_histories");
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "部署履歴取得エラー" });
   }
 });
 
