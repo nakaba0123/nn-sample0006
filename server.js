@@ -1011,7 +1011,7 @@ app.patch('/api/users/:id', async (req, res) => {
 // 全ユーザー取得
 app.get("/api/users", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT id, name, role_id, department_id FROM users");
+    const [rows] = await pool.query("SELECT * FROM users");
     res.json(rows);
   } catch (err) {
     console.error(err);
