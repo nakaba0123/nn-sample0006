@@ -45,6 +45,7 @@ const API_BASE_URL = 'https://nn-sample0006-production.up.railway.app/api';
 function App() {
   const [activeTab, setActiveTab] = useState<'attendance' | 'users' | 'grouphomes' | 'departments' | 'shifts' | 'masters' | 'residents' | 'usage'>('attendance');
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceData[]>([]);
+  const [users, setUsers] = useState<User[]>([
     // デモ用の初期ユーザー（管理者）
     {
       id: 'user_admin_001',
@@ -109,22 +110,6 @@ function App() {
       ]
     }
   ]);
-
-// 上の方にユーティリティを追加
-const ensureArray = (v: any) => {
-  if (Array.isArray(v)) return v;
-  if (!v) return [];
-  if (Array.isArray(v.data)) return v.data;
-  if (Array.isArray(v.rows)) return v.rows;
-  return [];
-};
-
-// state（既に users state があれば rawUsers を追加するだけ）
-const [rawUsers, setRawUsers] = useState<any[]>([]); // 生のAPIレスポンス（snake_case）
-const [users, setUsers] = useState<User[]>([]); // 表示用（camelCase + departmentHistoryがマージ済み）
-const [departmentHistoriesRaw, setDepartmentHistoriesRaw] = useState<any[]>([]); // もし既にあれば使う
-
-
   const [groupHomesMain, setGroupHomesMain] = useState<GroupHome[]>([]);
   const [groupHomesSub, setGroupHomesSub] = useState<GroupHome[]>([]);
   const [expansionRecords, setExpansionRecords] = useState<ExpansionRecord[]>([]);
@@ -509,15 +494,13 @@ useEffect(() => {
           fetchWithRetry("/api/expansions")
         ]);
 
-      setRawResidents(ensureArray(residentsRes).map(mapResident));
-      setDisabilityHistories(ensureArray(historiesRes).map(mapDisabilityHistory));
-
-      // ← ここは「生データ」を保持する
-      setRawUsers(ensureArray(usersRes)); // mapはまだしない（マージ前）
-      setDepartmentHistories(ensureArray(departmentHistoriesRes).map(mapDepartmentHistory));
-      setGroupHomesMain(ensureArray(groupHomesMainRes).map(mapGroupHome));
-      setGroupHomesSub(ensureArray(groupHomesSubRes).map(mapGroupHome));
-      setExpansionRecords(ensureArray(expansionsRes).map(mapExpansion));
+      setRawResidents((residentsRes || []).map(mapResident));
+      setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
+      setUsers((usersRes || []).map(mapUser));
+      setDepartmentHistories(departmentHistoriesRes.map(mapDepartmentHistory));
+      setGroupHomesMain((groupHomesMainRes || []).map(mapGroupHome));
+      setGroupHomesSub((groupHomesSubRes || []).map(mapGroupHome));
+      setExpansionRecords((expansionsRes || []).map(mapExpansion));
 
 console.log("residentsRes ->", residentsRes);
 console.log("historiesRes ->", historiesRes);
@@ -526,7 +509,7 @@ console.log("departmentHistoriesRes ->", departmentHistoriesRes);
 console.log("groupHomesMainRes ->", groupHomesMainRes);
 console.log("groupHomesSubRes ->", groupHomesSubRes);
 console.log("expansionsRes ->", expansionsRes);
-/*
+
       // 🔥 usageRecordsのfetchをここに追加
       const year = new Date().getFullYear();
       const month = new Date().getMonth() + 1;
@@ -550,7 +533,7 @@ console.log("expansionsRes ->", expansionsRes);
 
         setUsageRecords(allUsageRecords.flat());
       }
-*/
+
     } catch (err) {
       console.error("データ取得エラー:", err);
     }
@@ -585,39 +568,6 @@ useEffect(() => {
   console.log("rawResidents:::", rawResidents);
   }
 }, [rawResidents, disabilityHistories]);
-
-// departmentHistories は既に map された camelCase 配列（mapDepartmentHistoryを通している想定）
-useEffect(() => {
-  // rawUsers はサーバ返却（snake_case） -> mapUser を使って camelCase に変換しつつ、departmentHistoryを紐付ける
-  if (!Array.isArray(rawUsers)) {
-    setUsers([]);
-    return;
-  }
-
-  const deptByUserId = (departmentHistories || []).reduce((acc, dh) => {
-    if (!dh || !dh.userId) return acc;
-    if (!acc[dh.userId]) acc[dh.userId] = [];
-    acc[dh.userId].push(dh);
-    return acc;
-  }, {} as Record<string, any[]>);
-
-  const mappedUsers = rawUsers.map((raw: any) => {
-    // raw -> フロント用に変換（mapUser が既にあるなら使う）
-    // ただし mapUser が departmentHistory を期待しているなら、先に呼ぶとループするのでここでは基本fieldだけ手で作るか mapUserWithoutDept を使う
-    const base = mapUser(raw); // mapUser が departmentHistory を参照しない形であることを想定
-    const userId = base.id || String(raw.id);
-
-    const deptHistoryForUser = deptByUserId[userId] || [];
-    return {
-      ...base,
-      departmentHistory: deptHistoryForUser, // departmentHistory は既に mapDepartmentHistory により camelCase になってる想定
-      // もし departmentName や department を current field として入れたいならここで計算
-      department: deptHistoryForUser.find((d:any) => !d.endDate)?.departmentName || base.department || null
-    };
-  });
-
-  setUsers(mappedUsers);
-}, [rawUsers, departmentHistories]);
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
   if (editingExpansion) {
