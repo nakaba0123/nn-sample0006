@@ -249,6 +249,7 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
 
       setUsers(prev => [newUser, ...prev]);
 
+/*
       // department_histories があれば追加
       if (data.departmentHistory && data.departmentHistory.length > 0) {
         await Promise.all(
@@ -265,6 +266,7 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
           })
         );
       }
+*/
     }
   } catch (error) {
     console.error("handleUserSubmit error:", error);
