@@ -251,35 +251,32 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
       );
       setEditingUser(null);
     } else {
-      // 新規ユーザー登録
-      const response = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error("Create failed");
-      const newUser = await response.json();
+// handleUserSubmit の新規作成部分（抜粋）
+const response = await fetch("/api/users", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(/* サーバが期待する snake_case の body */),
+});
+if (!response.ok) throw new Error("Create failed");
+const createdRaw = await response.json();
 
-      setUsers(prev => [newUser, ...prev]);
+console.log("createdRaw ->", createdRaw);
 
-/*
-      // department_histories があれば追加
-      if (data.departmentHistory && data.departmentHistory.length > 0) {
-        await Promise.all(
-          data.departmentHistory.map(async dept => {
-            const deptResp = await fetch("/api/department_histories", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                user_id: newUser.id,
-                ...dept
-              }),
-            });
-            if (!deptResp.ok) throw new Error("Department history insert failed");
-          })
-        );
-      }
-*/
+// サーバが created user と一緒に department_history を返している場合
+//  - createdRaw.department_history などの可能性があるので安全に渡す
+const deptRaw = createdRaw.department_history ?? createdRaw.departmentHistories ?? createdRaw.departmentHistory ?? [];
+
+// map を通す
+const createdUser = mapUserWithDept(createdRaw, deptRaw);
+
+// 最終的に表示用 state に入れる
+if (createdUser) {
+  setUsers(prev => [createdUser, ...prev]);
+} else {
+  // まれに作成レスポンスが最小情報だけ（idだけ）だときは GET で再取得してマッピングする
+  await fetchWithRetry("/api/users");
+}
+
     }
   } catch (error) {
     console.error("handleUserSubmit error:", error);
