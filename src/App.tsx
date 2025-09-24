@@ -237,11 +237,24 @@ const [departmentHistoriesRaw, setDepartmentHistoriesRaw] = useState<any[]>([]);
 const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[] }) => {
   try {
     if (editingUser) {
-      // 既存ユーザー更新
+      // 既存ユーザー更新（PATCH）
+      const body = {
+        name: data.name,
+        email: data.email,
+        position: data.position,
+        employee_id: data.employeeId,
+        role: data.role,
+        status: data.status,
+        department: data.department,
+        join_date: data.joinDate,
+        retirement_date: data.retirementDate,
+        department_history: data.departmentHistory || [],
+      };
+
       const response = await fetch(`/api/users/${editingUser.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(body),
       });
       if (!response.ok) throw new Error("Update failed");
       const updatedUser = await response.json();
@@ -251,32 +264,39 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
       );
       setEditingUser(null);
     } else {
-// handleUserSubmit の新規作成部分（抜粋）
-const response = await fetch("/api/users", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(/* サーバが期待する snake_case の body */),
-});
-if (!response.ok) throw new Error("Create failed");
-const createdRaw = await response.json();
+      // 新規ユーザー作成（POST）
+      const body = {
+        name: data.name,
+        email: data.email,
+        position: data.position,
+        employee_id: data.employeeId,
+        role: data.role,
+        status: data.status,
+        department: data.department,
+        join_date: data.joinDate,
+        retirement_date: data.retirementDate,
+        department_history: data.departmentHistory || [],
+      };
 
-console.log("createdRaw ->", createdRaw);
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) throw new Error("Create failed");
+      const createdRaw = await response.json();
 
-// サーバが created user と一緒に department_history を返している場合
-//  - createdRaw.department_history などの可能性があるので安全に渡す
-const deptRaw = createdRaw.department_history ?? createdRaw.departmentHistories ?? createdRaw.departmentHistory ?? [];
+      // department_history を安全に取得
+      const deptRaw = createdRaw.department_history ?? [];
+      const createdUser = mapUserWithDept(createdRaw, deptRaw);
 
-// map を通す
-const createdUser = mapUserWithDept(createdRaw, deptRaw);
-
-// 最終的に表示用 state に入れる
-if (createdUser) {
-  setUsers(prev => [createdUser, ...prev]);
-} else {
-  // まれに作成レスポンスが最小情報だけ（idだけ）だときは GET で再取得してマッピングする
-  await fetchWithRetry("/api/users");
-}
-
+      if (createdUser) {
+        setUsers(prev => [createdUser, ...prev]);
+      } else {
+        // まれに最小情報だけのレスポンスの場合は GET で再取得
+        const refreshedUsers = await fetchWithRetry("/api/users");
+        setUsers(refreshedUsers.map(mapUser));
+      }
     }
   } catch (error) {
     console.error("handleUserSubmit error:", error);
