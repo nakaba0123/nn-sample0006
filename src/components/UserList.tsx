@@ -185,6 +185,7 @@ const UserList: React.FC<UserListProps> = ({ users, onAddUser, onEditUser, onDel
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              {console.log("filteredUsers::", filteredUsers)}
               {filteredUsers.map((user) => (
                 <UserCard
                   key={user.id}
