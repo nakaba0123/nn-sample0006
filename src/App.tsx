@@ -259,10 +259,16 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
         body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error("Create failed");
-      const newUser = await response.json();
 
-      setUsers(prev => [newUser, ...prev]);
+      const createdRaw = await response.json();
+      console.log("createdRaw ->", createdRaw);
 
+      // 🟢 mapUser + mapDepartmentHistory を通す
+      const createdUser = mapUser({
+        ...createdRaw,
+        departmentHistory: createdRaw.departmentHistory?.map(mapDepartmentHistory) ?? []
+      });
+      setUsers(prev => [createdUser, ...prev]);
     }
   } catch (error) {
     console.error("handleUserSubmit error:", error);
