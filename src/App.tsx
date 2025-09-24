@@ -239,16 +239,16 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
     if (editingUser) {
       // 既存ユーザー更新（PATCH）
       const body = {
-        name: data.name,
-        email: data.email,
-        position: data.position,
-        employee_id: data.employeeId,
-        role: data.role,
-        status: data.status,
-        department: data.department,
-        join_date: data.joinDate,
-        retirement_date: data.retirementDate,
-        department_history: data.departmentHistory || [],
+        name: data.name ?? null,
+        email: data.email ?? null,
+        position: data.position ?? null,
+        employee_id: data.employeeId ?? null,
+        role: data.role ?? null,
+        status: data.status ?? null,
+        department: data.department ?? null,
+        join_date: data.joinDate ?? null,
+        retirement_date: data.retirementDate ?? null,
+        department_history: data.departmentHistory ?? [],
       };
 
       const response = await fetch(`/api/users/${editingUser.id}`, {
@@ -266,16 +266,16 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
     } else {
       // 新規ユーザー作成（POST）
       const body = {
-        name: data.name,
-        email: data.email,
-        position: data.position,
-        employee_id: data.employeeId,
-        role: data.role,
-        status: data.status,
-        department: data.department,
-        join_date: data.joinDate,
-        retirement_date: data.retirementDate,
-        department_history: data.departmentHistory || [],
+        name: data.name ?? null,
+        email: data.email ?? null,
+        position: data.position ?? null,
+        employee_id: data.employeeId ?? null,
+        role: data.role ?? null,
+        status: data.status ?? null,
+        department: data.department ?? null,
+        join_date: data.joinDate ?? null,
+        retirement_date: data.retirementDate ?? null,
+        department_history: data.departmentHistory ?? [],
       };
 
       console.log("data::", data);
