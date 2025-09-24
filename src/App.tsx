@@ -121,7 +121,6 @@ const ensureArray = (v: any) => {
 
 // state（既に users state があれば rawUsers を追加するだけ）
 const [rawUsers, setRawUsers] = useState<any[]>([]); // 生のAPIレスポンス（snake_case）
-const [users, setUsers] = useState<User[]>([]); // 表示用（camelCase + departmentHistoryがマージ済み）
 const [departmentHistoriesRaw, setDepartmentHistoriesRaw] = useState<any[]>([]); // もし既にあれば使う
 
 
