@@ -278,6 +278,8 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
         department_history: data.departmentHistory || [],
       };
 
+      console.log("data::", data);
+
       const response = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
