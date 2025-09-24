@@ -893,9 +893,9 @@ app.post('/api/users', async (req, res) => {
         name,
         email,
         position || null,
-        employeeId || null,
-        joinDate,
-        retirementDate || null,
+        employeeId ?? null,
+        joinDate ?? null,
+        retirementDate ?? null,
         status || 'active',
         role || 'staff'
       ]
