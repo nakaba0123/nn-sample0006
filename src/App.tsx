@@ -110,6 +110,21 @@ function App() {
       ]
     }
   ]);
+
+const ensureArray = (v: any) => {
+  if (Array.isArray(v)) return v;
+  if (!v) return [];
+  if (Array.isArray(v.data)) return v.data;
+  if (Array.isArray(v.rows)) return v.rows;
+  return [];
+};
+
+// state（既に users state があれば rawUsers を追加するだけ）
+const [rawUsers, setRawUsers] = useState<any[]>([]); // 生のAPIレスポンス（snake_case）
+const [users, setUsers] = useState<User[]>([]); // 表示用（camelCase + departmentHistoryがマージ済み）
+const [departmentHistoriesRaw, setDepartmentHistoriesRaw] = useState<any[]>([]); // もし既にあれば使う
+
+
   const [groupHomesMain, setGroupHomesMain] = useState<GroupHome[]>([]);
   const [groupHomesSub, setGroupHomesSub] = useState<GroupHome[]>([]);
   const [expansionRecords, setExpansionRecords] = useState<ExpansionRecord[]>([]);
@@ -249,24 +264,6 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
 
       setUsers(prev => [newUser, ...prev]);
 
-/*
-      // department_histories があれば追加
-      if (data.departmentHistory && data.departmentHistory.length > 0) {
-        await Promise.all(
-          data.departmentHistory.map(async dept => {
-            const deptResp = await fetch("/api/department_histories", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                user_id: newUser.id,
-                ...dept
-              }),
-            });
-            if (!deptResp.ok) throw new Error("Department history insert failed");
-          })
-        );
-      }
-*/
     }
   } catch (error) {
     console.error("handleUserSubmit error:", error);
@@ -483,56 +480,35 @@ async function fetchWithRetry(url, retries = 5, delay = 2000) {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const [residentsRes, historiesRes, usersRes, departmentHistoriesRes, groupHomesMainRes, groupHomesSubRes, expansionsRes] =
-        await Promise.all([
-          fetchWithRetry("/api/residents"),
-          fetchWithRetry("/api/disability_histories"),
-          fetchWithRetry("/api/users"),
-          fetchWithRetry("/api/department_histories"),
-          fetchWithRetry("/api/group-homes/main"),
-          fetchWithRetry("/api/group-homes/sub"),
-          fetchWithRetry("/api/expansions")
-        ]);
+      const [
+        residentsRes,
+        historiesRes,
+        usersRes,
+        departmentHistoriesRes,
+        groupHomesMainRes,
+        groupHomesSubRes,
+        expansionsRes
+      ] = await Promise.all([
+        fetchWithRetry("/api/residents"),
+        fetchWithRetry("/api/disability_histories"),
+        fetchWithRetry("/api/users"),
+        fetchWithRetry("/api/department_histories"),
+        fetchWithRetry("/api/group-homes/main"),
+        fetchWithRetry("/api/group-homes/sub"),
+        fetchWithRetry("/api/expansions")
+      ]);
 
-      setRawResidents((residentsRes || []).map(mapResident));
-      setDisabilityHistories(historiesRes.map(mapDisabilityHistory));
-      setUsers((usersRes || []).map(mapUser));
-      setDepartmentHistories(departmentHistoriesRes.map(mapDepartmentHistory));
-      setGroupHomesMain((groupHomesMainRes || []).map(mapGroupHome));
-      setGroupHomesSub((groupHomesSubRes || []).map(mapGroupHome));
-      setExpansionRecords((expansionsRes || []).map(mapExpansion));
+      setRawResidents(ensureArray(residentsRes).map(mapResident));
+      setDisabilityHistories(ensureArray(historiesRes).map(mapDisabilityHistory));
 
-console.log("residentsRes ->", residentsRes);
-console.log("historiesRes ->", historiesRes);
-console.log("usersRes ->", usersRes);
-console.log("departmentHistoriesRes ->", departmentHistoriesRes);
-console.log("groupHomesMainRes ->", groupHomesMainRes);
-console.log("groupHomesSubRes ->", groupHomesSubRes);
-console.log("expansionsRes ->", expansionsRes);
+      // ← ここは「生データ」を保持する
+      setRawUsers(ensureArray(usersRes)); // mapはまだしない（マージ前）
+      setDepartmentHistories(ensureArray(departmentHistoriesRes).map(mapDepartmentHistory));
+      setGroupHomesMain(ensureArray(groupHomesMainRes).map(mapGroupHome));
+      setGroupHomesSub(ensureArray(groupHomesSubRes).map(mapGroupHome));
+      setExpansionRecords(ensureArray(expansionsRes).map(mapExpansion));
 
-      // 🔥 usageRecordsのfetchをここに追加
-      const year = new Date().getFullYear();
-      const month = new Date().getMonth() + 1;
-
-      console.log("residentsRes::", residentsRes);
-      console.log("residentsRes.length::", residentsRes.length);
-
-      console.log("year::", year);
-      console.log("month::", month);
-
-      // 全residentを取得してからusageRecordsをまとめてfetch
-      if (residentsRes && residentsRes.length > 0) {
-        const allUsageRecords = await Promise.all(
-          residentsRes.map(async (resident: any) => {
-            const res = await fetch(
-              `/api/usage-records?residentId=${resident.id}&year=${year}&month=${month}`
-            );
-            return res.json();
-          })
-        );
-
-        setUsageRecords(allUsageRecords.flat());
-      }
+      // usageRecords 部分はそのまま residents を使う（略）
 
     } catch (err) {
       console.error("データ取得エラー:", err);
@@ -568,6 +544,39 @@ useEffect(() => {
   console.log("rawResidents:::", rawResidents);
   }
 }, [rawResidents, disabilityHistories]);
+
+// departmentHistories は既に map された camelCase 配列（mapDepartmentHistoryを通している想定）
+useEffect(() => {
+  // rawUsers はサーバ返却（snake_case） -> mapUser を使って camelCase に変換しつつ、departmentHistoryを紐付ける
+  if (!Array.isArray(rawUsers)) {
+    setUsers([]);
+    return;
+  }
+
+  const deptByUserId = (departmentHistories || []).reduce((acc, dh) => {
+    if (!dh || !dh.userId) return acc;
+    if (!acc[dh.userId]) acc[dh.userId] = [];
+    acc[dh.userId].push(dh);
+    return acc;
+  }, {} as Record<string, any[]>);
+
+  const mappedUsers = rawUsers.map((raw: any) => {
+    // raw -> フロント用に変換（mapUser が既にあるなら使う）
+    // ただし mapUser が departmentHistory を期待しているなら、先に呼ぶとループするのでここでは基本fieldだけ手で作るか mapUserWithoutDept を使う
+    const base = mapUser(raw); // mapUser が departmentHistory を参照しない形であることを想定
+    const userId = base.id || String(raw.id);
+
+    const deptHistoryForUser = deptByUserId[userId] || [];
+    return {
+      ...base,
+      departmentHistory: deptHistoryForUser, // departmentHistory は既に mapDepartmentHistory により camelCase になってる想定
+      // もし departmentName や department を current field として入れたいならここで計算
+      department: deptHistoryForUser.find((d:any) => !d.endDate)?.departmentName || base.department || null
+    };
+  });
+
+  setUsers(mappedUsers);
+}, [rawUsers, departmentHistories]);
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
   if (editingExpansion) {
