@@ -779,7 +779,7 @@ const handleResidentSubmit = async (resident: Resident) => {
     setEditingUser(user);
     setIsUserModalOpen(true);
   };
-
+/*
   const handleDeleteUser = (userId: string) => {
     if (window.confirm('この職員を削除してもよろしいですか？')) {
       setUsers(prev => prev.filter(user => user.id !== userId));
@@ -787,6 +787,30 @@ const handleResidentSubmit = async (resident: Resident) => {
       setShiftPreferences(prev => prev.filter(pref => pref.userId !== userId));
     }
   };
+*/
+
+const handleDeleteUser = async (userId: string) => {
+  if (!window.confirm('この職員を削除してもよろしいですか？')) return;
+
+  try {
+    const response = await fetch(`/api/users/${userId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      alert(`削除できませんでした: ${data.message}`);
+      return;
+    }
+
+    // 成功したらフロント側の状態も更新
+    setUsers(prev => prev.filter(user => user.id !== userId));
+    setShiftPreferences(prev => prev.filter(pref => pref.userId !== userId));
+  } catch (err) {
+    console.error(err);
+    alert('削除中にエラーが発生しました');
+  }
+};
 
   const handleEditGroupHome = (groupHome: GroupHome) => {
     setEditingGroupHome(groupHome);

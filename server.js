@@ -1028,6 +1028,29 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
+// DELETE /api/users/:id
+app.delete("/api/users/:id", async (req, res) => {
+  const userId = req.params.id;
+  const connection = await db.getConnection();
+
+  try {
+    const [result] = await connection.query(
+      "DELETE FROM users WHERE id = ?",
+      [userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  } finally {
+    connection.release();
+  }
+});
 
 // -----------------------------------
 // POST /api/department_histories - 部署履歴の追加
