@@ -214,7 +214,7 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
 
       const updatedUser = mapUser({
         ...updatedUserRaw,
-        departmentHistory: updatedUserRaw.department_history?.map(mapDepartmentHistory) ?? []
+        departmentHistory: updatedUserRaw.departmentHistory?.map(mapDepartmentHistory) ?? []
       });
 
       setUsers(prev =>
