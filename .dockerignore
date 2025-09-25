@@ -1,0 +1,17 @@
+# node_modules は絶対にコピーしない
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Vite のビルド成果物（Railway 上で再生成するので不要）
+dist
+
+# 環境ファイル
+.env
+.env.local
+
+# OS/IDEの不要ファイル
+.DS_Store
+.vscode
+.idea
+
