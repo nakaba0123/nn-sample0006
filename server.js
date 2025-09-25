@@ -1031,7 +1031,7 @@ app.get("/api/users", async (req, res) => {
 // DELETE /api/users/:id
 app.delete("/api/users/:id", async (req, res) => {
   const userId = req.params.id;
-  const connection = await db.getConnection();
+  const connection = await pool.getConnection();
 
   try {
     const [result] = await connection.query(
