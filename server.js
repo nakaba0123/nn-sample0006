@@ -957,7 +957,7 @@ app.patch('/api/users/:id', async (req, res) => {
   const {
     name,
     email,
-    department,
+//    department,
     position,
     employeeId,
     joinDate,
@@ -973,9 +973,9 @@ app.patch('/api/users/:id', async (req, res) => {
 
     await conn.execute(
       `UPDATE users SET
-        name=?, email=?, department=?, position=?, employee_id=?, join_date=?, retirement_date=?, status=?, role=?
+        name=?, email=?, position=?, employee_id=?, join_date=?, retirement_date=?, status=?, role=?
        WHERE id=?`,
-      [name, email, department, position || null, employeeId || null, joinDate, retirementDate || null, status, role, id]
+      [name, email, position || null, employeeId || null, joinDate, retirementDate || null, status, role, id]
     );
 
     // department_histories の更新は一旦 delete → insert 方式でも可
