@@ -199,6 +199,7 @@ const [departmentHistoriesRaw, setDepartmentHistoriesRaw] = useState<any[]>([]);
     setAttendanceRecords(prev => [newRecord, ...prev]);
   };
 
+
 const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[] }) => {
   try {
     if (editingUser) {
