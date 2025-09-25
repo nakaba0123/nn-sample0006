@@ -922,14 +922,23 @@ app.post('/api/users', async (req, res) => {
     }
 
     await conn.commit();
-
     // 返すときは users と department_histories をまとめる
     const [userRows] = await conn.query('SELECT * FROM users WHERE id = ?', [userId]);
     const [historyRows] = await conn.query('SELECT * FROM department_histories WHERE user_id = ?', [userId]);
 
+    // snake_case → camelCase 変換関数
+    const toCamel = (row) => ({
+      id: row.id,
+      userId: row.user_id,
+      departmentName: row.department_name,
+      startDate: row.start_date,
+      endDate: row.end_date,
+      createdAt: row.created_at,
+    });
+
     res.json({
       ...userRows[0],
-      departmentHistory: historyRows
+      departmentHistory: historyRows.map(toCamel),
     });
   } catch (error) {
     await conn.rollback();
