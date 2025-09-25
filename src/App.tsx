@@ -233,14 +233,20 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
       const createdRaw = await response.json();
       console.log("createdRaw ->", createdRaw);
 
-      const deptHistory = createdRaw.department_history?.map(mapDepartmentHistory) ?? [];
+      // ← ここを必ず camel のキーで参照する
+      const deptHistory = createdRaw.departmentHistory?.map(mapDepartmentHistory) ?? [];
+
+      // mapUser が departmentHistory を上書きする可能性があるなら、先に base を作って上書きする
+      const baseUser = mapUser(createdRaw); // 既存の変換ロジック
       const createdUser = {
-        ...mapUser(createdRaw),
+        ...baseUser,
+        // 明示的に上書き（これをしないと mapUser のデフォルトが優先される）
         departmentHistory: deptHistory,
         department: deptHistory.find(d => !d.endDate)?.departmentName || null
       };
 
       setUsers(prev => [createdUser, ...prev]);
+
     }
   } catch (error) {
     console.error("handleUserSubmit error:", error);
