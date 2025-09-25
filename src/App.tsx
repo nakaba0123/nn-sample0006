@@ -273,7 +273,7 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
       const createdRaw = await response.json();
       console.log("createdRaw ->", createdRaw);
 
-      const deptHistory = createdRaw.department_history?.map(mapDepartmentHistory) ?? [];
+      const deptHistory = createdRaw.departmentHistory?.map(mapDepartmentHistory) ?? [];
       const createdUser = {
         ...mapUser(createdRaw),
         departmentHistory: deptHistory,
