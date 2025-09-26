@@ -52,8 +52,8 @@ const UserModal: React.FC<UserModalProps> = ({
         department: currentDepartment,
         position: editUser.position,
         employeeId: editUser.employeeId,
-        joinDate: editUser.joinDate,
-        retirementDate: editUser.retirementDate || '',
+        joinDate: editUser.joinDate?.slice(0, 10) || '',
+        retirementDate: editUser.retirementDate?.slice(0, 10) || '',
         status: editUser.status,
         role: editUser.role || 'staff',
         departmentStartDate: editUser.departmentHistory[0]?.startDate || ''
