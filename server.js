@@ -957,57 +957,42 @@ app.patch('/api/users/:id', async (req, res) => {
   const {
     name,
     email,
-//    department,
     position,
     employeeId,
     joinDate,
     retirementDate,
     status,
-    role,
-    departmentHistory
+    role
+    // departmentHistory は今は使わない
   } = req.body;
 
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-
+    // users テーブルだけ更新
     await conn.execute(
       `UPDATE users SET
         name=?, email=?, position=?, employee_id=?, join_date=?, retirement_date=?, status=?, role=?
        WHERE id=?`,
-      [name, email, position || null, employeeId || null, joinDate, retirementDate || null, status, role, id]
+      [
+        name,
+        email,
+        position || null,
+        employeeId || null,
+        joinDate || null,
+        retirementDate || null,
+        status,
+        role,
+        id
+      ]
     );
-
-    // department_histories の更新は一旦 delete → insert 方式でも可
-    if (Array.isArray(departmentHistory)) {
-      await conn.execute(`DELETE FROM department_histories WHERE user_id=?`, [id]);
-
-      if (departmentHistory.length > 0) {
-        const historyValues = departmentHistory.map(h => [
-          id,
-          h.departmentName,
-          h.startDate,
-          h.endDate || null,
-          new Date()
-        ]);
-        await conn.query(
-          `INSERT INTO department_histories
-            (user_id, department_name, start_date, end_date, created_at)
-           VALUES ?`,
-          [historyValues]
-        );
-      }
-    }
 
     await conn.commit();
 
+    // 更新後のユーザーだけ返す
     const [userRows] = await conn.query('SELECT * FROM users WHERE id = ?', [id]);
-    const [historyRows] = await conn.query('SELECT * FROM department_histories WHERE user_id = ?', [id]);
 
-    res.json({
-      ...userRows[0],
-      departmentHistory: historyRows
-    });
+    res.json(userRows[0]); // departmentHistory は返さない
   } catch (error) {
     await conn.rollback();
     console.error(error);
