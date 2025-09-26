@@ -58,6 +58,7 @@ const UserModal: React.FC<UserModalProps> = ({
         role: editUser.role || 'staff',
         departmentStartDate: editUser.departmentHistory[0]?.startDate || ''
       });
+      console.log("editUser::", editUser);
       setDepartmentHistory(editUser.departmentHistory);
     } else {
       setFormData({
