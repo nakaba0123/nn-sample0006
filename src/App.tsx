@@ -211,16 +211,18 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
       });
       if (!response.ok) throw new Error("Update failed");
       const updatedUserRaw = await response.json();
-
-      const updatedUser = mapUser({
-        ...updatedUserRaw,
-        departmentHistory: updatedUserRaw.departmentHistory?.map(mapDepartmentHistory) ?? []
-      });
+      const updatedUser = {
+        ...mapUser(updatedUserRaw),
+        departmentHistory: editingUser.departmentHistory, // 元の職歴を保持
+        department:
+          editingUser.departmentHistory.find(d => !d.endDate)?.departmentName || null,
+      };
 
       setUsers(prev =>
         prev.map(user => (user.id === editingUser.id ? updatedUser : user))
       );
       setEditingUser(null);
+
     } else {
       // 新規ユーザー登録
       const response = await fetch("/api/users", {
