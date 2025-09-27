@@ -29,6 +29,7 @@ const DepartmentHistoryModal: React.FC<DepartmentHistoryModalProps> = ({
   const [errors, setErrors] = useState<Partial<DepartmentHistoryFormData>>({});
 
   useEffect(() => {
+    console.log("editHistory;;", editHistory);
     if (editHistory) {
       setFormData({
         departmentName: editHistory.departmentName,
