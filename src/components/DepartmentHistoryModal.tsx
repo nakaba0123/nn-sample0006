@@ -197,6 +197,7 @@ const DepartmentHistoryModal: React.FC<DepartmentHistoryModalProps> = ({
               <Calendar className="w-4 h-4 inline mr-2" />
               開始日 *
             </label>
+            {console.log("formData.startDate?.slice(0, 10)::", formData.startDate?.slice(0, 10))}
             <input
               type="date"
               value={formData.startDate?.slice(0, 10) || ''}
