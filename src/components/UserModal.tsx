@@ -185,6 +185,7 @@ const UserModal: React.FC<UserModalProps> = ({
     }
   };
 
+/*
   const handleDepartmentHistorySubmit = (data: DepartmentHistoryFormData) => {
     if (editingHistory) {
       // 編集
@@ -205,6 +206,50 @@ const UserModal: React.FC<UserModalProps> = ({
     }
     setIsDepartmentHistoryModalOpen(false);
   };
+*/
+
+const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
+  try {
+    if (editingHistory) {
+      // 既存履歴の更新（PATCH）
+      const response = await fetch(`/api/department_histories/${editingHistory.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("更新に失敗しました");
+      const updated = await response.json();
+
+      // state更新
+      setDepartmentHistory(prev =>
+        prev.map(history => history.id === editingHistory.id ? updated : history)
+      );
+      setEditingHistory(null);
+
+    } else {
+      // 新規履歴の追加（POST）
+      const response = await fetch(`/api/department_histories`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: editingUser?.id, // ユーザーID
+          ...data,
+        }),
+      });
+      if (!response.ok) throw new Error("追加に失敗しました");
+      const created = await response.json();
+
+      // state更新
+      setDepartmentHistory(prev => [...prev, created]);
+    }
+
+    setIsDepartmentHistoryModalOpen(false);
+
+  } catch (error) {
+    console.error("handleDepartmentHistorySubmit error:", error);
+    alert("保存に失敗しました");
+  }
+};
 
   const handleEditHistory = (history: DepartmentHistory) => {
     // イベントの伝播を防ぐ

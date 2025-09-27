@@ -1112,6 +1112,76 @@ app.get("/api/department_histories", async (req, res) => {
   }
 });
 
+// -----------------------------------
+// PATCH /api/department_histories/:id - 特定履歴の更新
+// -----------------------------------
+app.patch('/api/department_histories/:id', async (req, res) => {
+  const { id } = req.params;
+  const { departmentName, startDate, endDate } = req.body;
+
+  const conn = await pool.getConnection();
+  try {
+    // 更新
+    await conn.query(
+      `UPDATE department_histories 
+       SET department_name = ?, start_date = ?, end_date = ?
+       WHERE id = ?`,
+      [
+        departmentName || null,
+        startDate || null,
+        endDate || null,
+        id
+      ]
+    );
+
+    // 更新後のレコードを返す
+    const [rows] = await conn.query(
+      'SELECT * FROM department_histories WHERE id = ?',
+      [id]
+    );
+    res.json(rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: '履歴の更新に失敗しました' });
+  } finally {
+    conn.release();
+  }
+});
+
+// -----------------------------------
+// POST /api/department_histories - 新しい履歴の追加
+// -----------------------------------
+app.post('/api/department_histories', async (req, res) => {
+  const { userId, departmentName, startDate, endDate } = req.body;
+
+  const conn = await pool.getConnection();
+  try {
+    // 挿入
+    const [result] = await conn.query(
+      `INSERT INTO department_histories (user_id, department_name, start_date, end_date)
+       VALUES (?, ?, ?, ?)`,
+      [
+        userId,
+        departmentName || null,
+        startDate || null,
+        endDate || null
+      ]
+    );
+
+    // 追加後のレコードを返す
+    const [rows] = await conn.query(
+      'SELECT * FROM department_histories WHERE id = ?',
+      [result.insertId]
+    );
+    res.json(rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: '履歴の追加に失敗しました' });
+  } finally {
+    conn.release();
+  }
+});
+
 // =======================
 // 🌐 補助 API
 // =======================
