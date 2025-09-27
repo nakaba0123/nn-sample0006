@@ -199,7 +199,7 @@ const DepartmentHistoryModal: React.FC<DepartmentHistoryModalProps> = ({
             </label>
             <input
               type="date"
-              value={console.log("formData.startDate?.slice(0, 10)::",formData.startDate?.slice(0, 10)}
+              value={formData.startDate?.slice(0, 10) || ''}
               onChange={(e) => handleInputChange('startDate', e.target.value)}
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
                 errors.startDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
