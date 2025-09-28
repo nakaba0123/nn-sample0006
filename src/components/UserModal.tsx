@@ -210,7 +210,6 @@ const UserModal: React.FC<UserModalProps> = ({
 */
 
 const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
-  console.log("Submit入った！！");
   try {
     if (editingHistory) {
       // 既存履歴の更新（PATCH）
@@ -220,17 +219,27 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
         body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error("更新に失敗しました");
-      const updatedRaw = await response.json();
-
-      // mapDepartmentHistory を通して camelCase + ISO 日付に変換
-      const updated = mapDepartmentHistory(updatedRaw);
+      const updated = await response.json();
 
       // state更新
       setDepartmentHistory(prev =>
-        prev.map(history =>
-          history.id === editingHistory.id ? updated : history
+        prev.map(history => history.id === editingHistory.id ? updated : history)
+      );
+
+      // ★ users state も更新
+      setUsers(prev =>
+        prev.map(user =>
+          user.id === editingUser?.id
+            ? {
+                ...user,
+                departmentHistory: prev
+                  .map(u => u.id === user.id ? updated : u)
+                  // mapDepartmentHistory で camelCase に変換しておくと安全
+              }
+            : user
         )
       );
+
       setEditingHistory(null);
 
     } else {
@@ -239,18 +248,26 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: editingUser?.id, // ユーザーID
+          userId: editingUser?.id,
           ...data,
         }),
       });
       if (!response.ok) throw new Error("追加に失敗しました");
-      const createdRaw = await response.json();
+      const created = await response.json();
 
-      // mapDepartmentHistory を通して camelCase + ISO 日付に変換
-      const created = mapDepartmentHistory(createdRaw);
-
-      // state更新
       setDepartmentHistory(prev => [...prev, created]);
+
+      // ★ users state も更新
+      setUsers(prev =>
+        prev.map(user =>
+          user.id === editingUser?.id
+            ? {
+                ...user,
+                departmentHistory: [...user.departmentHistory, created]
+              }
+            : user
+        )
+      );
     }
 
     setIsDepartmentHistoryModalOpen(false);
