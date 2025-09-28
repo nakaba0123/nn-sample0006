@@ -598,7 +598,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
     }
   }
 };
-
+/*
   const handleDepartmentSubmit = (data: DepartmentFormData) => {
     if (editingDepartment) {
       // Edit existing department
@@ -635,6 +635,51 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
       setDepartments(prev => [newDepartment, ...prev]);
     }
   };
+*/
+
+const handleDepartmentSubmit = (data: DepartmentFormData) => {
+  const formatDate = (dateStr: string | null | undefined) => {
+    if (!dateStr) return '';
+    return dateStr.slice(0, 10); // "YYYY-MM-DD" に変換
+  };
+
+  if (editingDepartment) {
+    const oldDepartmentName = editingDepartment.name;
+    const newDepartmentName = data.name;
+
+    // Update department
+    setDepartments(prev => prev.map(department =>
+      department.id === editingDepartment.id
+        ? { ...department, ...data }
+        : department
+    ));
+
+    // Update users' department history if department name changed
+    if (oldDepartmentName !== newDepartmentName) {
+      setUsers(prev => prev.map(user => ({
+        ...user,
+        department: user.department === oldDepartmentName ? newDepartmentName : user.department,
+        departmentHistory: user.departmentHistory?.map(history => ({
+          ...history,
+          departmentName: history.departmentName === oldDepartmentName ? newDepartmentName : history.departmentName,
+          startDate: formatDate(history.startDate),   // ← ここで変換
+          endDate: formatDate(history.endDate)        // ← ここで変換
+        })) || []
+      })));
+    }
+
+    setEditingDepartment(null);
+  } else {
+    // Add new department
+    const newDepartment: Department = {
+      id: `dept_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      ...data,
+      createdAt: new Date().toISOString()
+    };
+    setDepartments(prev => [newDepartment, ...prev]);
+  }
+};
+
 
   const handleRoleSubmit = (data: RoleFormData) => {
     if (editingRole) {
