@@ -12,6 +12,18 @@ interface DepartmentHistoryModalProps {
   existingHistory: DepartmentHistory[];
 }
 
+const formatDateForInput = (dateStr: string | null) => {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
+  // yyyy-MM-dd 形式に変換
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+
 const DepartmentHistoryModal: React.FC<DepartmentHistoryModalProps> = ({ 
   isOpen, 
   onClose, 
@@ -33,8 +45,8 @@ const DepartmentHistoryModal: React.FC<DepartmentHistoryModalProps> = ({
     if (editHistory) {
       setFormData({
         departmentName: editHistory.departmentName,
-        startDate: editHistory.startDate,
-        endDate: editHistory.endDate || ''
+        startDate: formatDateForInput(editHistory.startDate),
+        endDate: formatDateForInput(editHistory.endDate)
       });
     } else {
       setFormData({
