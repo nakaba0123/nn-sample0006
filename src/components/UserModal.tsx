@@ -5,6 +5,7 @@ import { Department } from '../types/Department';
 import { useAuth } from '../hooks/useAuth';
 import DepartmentHistoryCard from './DepartmentHistoryCard';
 import DepartmentHistoryModal from './DepartmentHistoryModal';
+import { mapDepartmentHistory } from "../util/mapUser"; // 先頭でインポート
 
 interface UserModalProps {
   isOpen: boolean;
@@ -207,8 +208,6 @@ const UserModal: React.FC<UserModalProps> = ({
     setIsDepartmentHistoryModalOpen(false);
   };
 */
-
-import { mapDepartmentHistory } from "@/utils/mapUser"; // 先頭でインポート
 
 const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
   console.log("Submit入った！！");
