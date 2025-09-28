@@ -232,11 +232,11 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
       // users state 更新（propsから受け取った setUsers を利用）
       setUsers(prev =>
         prev.map(user =>
-          user.id === editingUser?.id
+          user.id === editUser?.id
             ? {
                 ...user,
                 departmentHistory: prev
-                  .find(u => u.id === editingUser?.id)?.departmentHistory
+                  .find(u => u.id === editUser?.id)?.departmentHistory
                   ?.map(h => (h.id === updated.id ? updated : h)) || [],
               }
             : user
@@ -249,7 +249,7 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
       const response = await fetch(`/api/department_histories`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: editingUser?.id, ...data }),
+        body: JSON.stringify({ userId: editUser?.id, ...data }),
       });
       if (!response.ok) throw new Error("追加に失敗しました");
       const created = await response.json();
@@ -258,7 +258,7 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
 
       setUsers(prev =>
         prev.map(user =>
-          user.id === editingUser?.id
+          user.id === editUser?.id
             ? {
                 ...user,
                 departmentHistory: [
