@@ -214,7 +214,6 @@ const UserModal: React.FC<UserModalProps> = ({
 const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
   try {
     if (editingHistory) {
-      // 既存履歴の更新（PATCH）
       const response = await fetch(`/api/department_histories/${editingHistory.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -223,42 +222,47 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
       if (!response.ok) throw new Error("更新に失敗しました");
       const updated = await response.json();
 
-      // state更新
+      // departmentHistory state 更新
       setDepartmentHistory(prev =>
         prev.map(history => history.id === editingHistory.id ? updated : history)
       );
 
+      // users state 更新（propsから受け取った setUsers を利用）
       setUsers(prev =>
         prev.map(user =>
           user.id === editingUser?.id
-            ? { ...user, departmentHistory: updatedDepartmentHistory }
+            ? {
+                ...user,
+                departmentHistory: prev
+                  .find(u => u.id === editingUser?.id)?.departmentHistory
+                  ?.map(h => (h.id === updated.id ? updated : h)) || [],
+              }
             : user
         )
       );
-      setEditingHistory(null);
 
+      setEditingHistory(null);
     } else {
-      // 新規履歴の追加（POST）
+      // 新規追加のときも同様に setUsers で反映させる
       const response = await fetch(`/api/department_histories`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: editingUser?.id,
-          ...data,
-        }),
+        body: JSON.stringify({ userId: editingUser?.id, ...data }),
       });
       if (!response.ok) throw new Error("追加に失敗しました");
       const created = await response.json();
 
       setDepartmentHistory(prev => [...prev, created]);
 
-      // ★ users state も更新
       setUsers(prev =>
         prev.map(user =>
           user.id === editingUser?.id
             ? {
                 ...user,
-                departmentHistory: [...user.departmentHistory, created]
+                departmentHistory: [
+                  ...(user.departmentHistory || []),
+                  created,
+                ],
               }
             : user
         )
@@ -266,7 +270,6 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
     }
 
     setIsDepartmentHistoryModalOpen(false);
-
   } catch (error) {
     console.error("handleDepartmentHistorySubmit error:", error);
     alert("保存に失敗しました");
