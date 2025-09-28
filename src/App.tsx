@@ -665,6 +665,7 @@ const handleDepartmentSubmit = (data: DepartmentFormData) => {
             user.departmentHistory?.map(h => {
               // ここで mapDepartmentHistory を通して camelCase に変換
               const history = mapDepartmentHistory(h);
+              console.log("history:::", history);
               return {
                 ...history,
                 departmentName:
