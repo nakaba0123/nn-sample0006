@@ -166,6 +166,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete }) => {
             </span>
           </div>
           <div className="mt-2 text-xs text-blue-700">
+            {console.log("user::", user)}
             {user.departmentHistory
               ?.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
               .slice(0, 2)
