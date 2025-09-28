@@ -13,6 +13,8 @@ interface UserModalProps {
   onSubmit: (data: UserFormData) => void;
   editUser?: UserType | null;
   departments: Department[];
+  users: UserType[]; // ← 追加
+  setUsers: React.Dispatch<React.SetStateAction<UserType[]>>; // ← 追加
 }
 
 const UserModal: React.FC<UserModalProps> = ({ 
@@ -226,20 +228,13 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
         prev.map(history => history.id === editingHistory.id ? updated : history)
       );
 
-      // ★ users state も更新
       setUsers(prev =>
         prev.map(user =>
           user.id === editingUser?.id
-            ? {
-                ...user,
-                departmentHistory: prev
-                  .map(u => u.id === user.id ? updated : u)
-                  // mapDepartmentHistory で camelCase に変換しておくと安全
-              }
+            ? { ...user, departmentHistory: updatedDepartmentHistory }
             : user
         )
       );
-
       setEditingHistory(null);
 
     } else {

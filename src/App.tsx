@@ -1214,6 +1214,8 @@ const handleCloseResidentModal = useCallback(() => {
             onSubmit={handleUserSubmit}
             editUser={editingUser}
             departments={departments}
+            users={users}          // ← 追加
+            setUsers={setUsers}    // ← 追加
           />
         </PermissionGuard>
 
