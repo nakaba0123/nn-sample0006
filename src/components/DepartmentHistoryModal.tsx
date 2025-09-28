@@ -126,8 +126,8 @@ const DepartmentHistoryModal: React.FC<DepartmentHistoryModalProps> = ({
     if (validateForm()) {
       onSubmit({
         departmentName: formData.departmentName,
-        startDate: formData.startDate,
-        endDate: formData.endDate || undefined
+        startDate: formatDateForInput(formData.startDate),
+        endDate: formatDateForInput(formData.endDate)
       });
       setFormData({
         departmentName: '',
