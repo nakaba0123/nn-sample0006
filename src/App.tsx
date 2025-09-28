@@ -638,34 +638,43 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
 */
 
 const handleDepartmentSubmit = (data: DepartmentFormData) => {
-  const formatDate = (dateStr: string | null | undefined) => {
-    if (!dateStr) return '';
-    return dateStr.slice(0, 10); // "YYYY-MM-DD" に変換
-  };
-
   if (editingDepartment) {
+    // Edit existing department
     const oldDepartmentName = editingDepartment.name;
     const newDepartmentName = data.name;
 
     // Update department
-    setDepartments(prev => prev.map(department =>
-      department.id === editingDepartment.id
-        ? { ...department, ...data }
-        : department
-    ));
+    setDepartments(prev =>
+      prev.map(department =>
+        department.id === editingDepartment.id
+          ? { ...department, ...data }
+          : department
+      )
+    );
 
     // Update users' department history if department name changed
     if (oldDepartmentName !== newDepartmentName) {
-      setUsers(prev => prev.map(user => ({
-        ...user,
-        department: user.department === oldDepartmentName ? newDepartmentName : user.department,
-        departmentHistory: user.departmentHistory?.map(history => ({
-          ...history,
-          departmentName: history.departmentName === oldDepartmentName ? newDepartmentName : history.departmentName,
-          startDate: formatDate(history.startDate),   // ← ここで変換
-          endDate: formatDate(history.endDate)        // ← ここで変換
-        })) || []
-      })));
+      setUsers(prev =>
+        prev.map(user => ({
+          ...user,
+          department:
+            user.department === oldDepartmentName
+              ? newDepartmentName
+              : user.department,
+          departmentHistory:
+            user.departmentHistory?.map(h => {
+              // ここで mapDepartmentHistory を通して camelCase に変換
+              const history = mapDepartmentHistory(h);
+              return {
+                ...history,
+                departmentName:
+                  history.departmentName === oldDepartmentName
+                    ? newDepartmentName
+                    : history.departmentName
+              };
+            }) || []
+        }))
+      );
     }
 
     setEditingDepartment(null);
