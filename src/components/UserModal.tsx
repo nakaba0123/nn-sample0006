@@ -209,6 +209,7 @@ const UserModal: React.FC<UserModalProps> = ({
 */
 
 const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
+  console.log("Submit入った！！");
   try {
     if (editingHistory) {
       // 既存履歴の更新（PATCH）
