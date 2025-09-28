@@ -22,7 +22,9 @@ const UserModal: React.FC<UserModalProps> = ({
   onClose, 
   onSubmit, 
   editUser,
-  departments 
+  departments, 
+  users,
+  setUsers  // これを忘れない！
 }) => {
   const { roles } = useAuth();
   
