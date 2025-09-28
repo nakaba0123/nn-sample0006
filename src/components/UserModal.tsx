@@ -208,6 +208,8 @@ const UserModal: React.FC<UserModalProps> = ({
   };
 */
 
+import { mapDepartmentHistory } from "@/utils/mapUser"; // 先頭でインポート
+
 const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
   console.log("Submit入った！！");
   try {
@@ -219,11 +221,16 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
         body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error("更新に失敗しました");
-      const updated = await response.json();
+      const updatedRaw = await response.json();
+
+      // mapDepartmentHistory を通して camelCase + ISO 日付に変換
+      const updated = mapDepartmentHistory(updatedRaw);
 
       // state更新
       setDepartmentHistory(prev =>
-        prev.map(history => history.id === editingHistory.id ? updated : history)
+        prev.map(history =>
+          history.id === editingHistory.id ? updated : history
+        )
       );
       setEditingHistory(null);
 
@@ -238,7 +245,10 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
         }),
       });
       if (!response.ok) throw new Error("追加に失敗しました");
-      const created = await response.json();
+      const createdRaw = await response.json();
+
+      // mapDepartmentHistory を通して camelCase + ISO 日付に変換
+      const created = mapDepartmentHistory(createdRaw);
 
       // state更新
       setDepartmentHistory(prev => [...prev, created]);
