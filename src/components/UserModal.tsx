@@ -226,7 +226,9 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
 
       // departmentHistory state 更新
       setDepartmentHistory(prev =>
-        prev.map(history => history.id === editingHistory.id ? updated : history)
+        prev.map(history =>
+          history.id === editHistory.id ? mapDepartmentHistory(updated) : history
+        )
       );
 
       // users state 更新（propsから受け取った setUsers を利用）
