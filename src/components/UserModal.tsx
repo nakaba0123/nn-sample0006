@@ -572,6 +572,7 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {console.log("departmentHistory::", departmentHistory)}
                     {departmentHistory
                       .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                       .map((history) => (
