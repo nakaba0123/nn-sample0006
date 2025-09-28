@@ -227,7 +227,7 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
       // departmentHistory state 更新
       setDepartmentHistory(prev =>
         prev.map(history =>
-          history.id === editHistory.id ? mapDepartmentHistory(updated) : history
+          history.id === editingHistory.id ? mapDepartmentHistory(updated) : history
         )
       );
 
