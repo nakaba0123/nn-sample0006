@@ -1150,32 +1150,48 @@ app.patch('/api/department_histories/:id', async (req, res) => {
 });
 */
 // PATCH /api/department_histories/:id
-app.patch("/api/department_histories/:id", async (req, res) => {
+app.patch('/api/department_histories/:id', async (req, res) => {
   const { id } = req.params;
-  const { department_name, start_date, end_date } = req.body;
+  const { departmentName, startDate, endDate } = req.body;
 
+  const conn = await pool.getConnection();
   try {
-    const [result] = await pool.query(
-      `UPDATE department_histories 
+    // 更新
+    await conn.query(
+      `UPDATE department_histories
        SET department_name = ?, start_date = ?, end_date = ?
        WHERE id = ?`,
-      [department_name, start_date || null, end_date || null, id]
+      [
+        departmentName || null,
+        startDate || null,
+        endDate || null,
+        id
+      ]
     );
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Not found" });
-    }
-
-    // 👇 更新後のレコードを取得
-    const [rows] = await pool.query(
-      `SELECT * FROM department_histories WHERE id = ?`,
+    // 更新後のレコードを取得
+    const [rows] = await conn.query(
+      'SELECT * FROM department_histories WHERE id = ?',
       [id]
     );
+    const updated = rows[0];
 
-    res.json(rows[0]); // ← 更新後のデータを返す
-  } catch (err) {
-    console.error("Error updating department_history:", err);
-    res.status(500).json({ error: "Internal server error" });
+    // snake_case → camelCase に変換して返す
+    const mapped = {
+      id: updated.id,
+      userId: updated.user_id,
+      departmentName: updated.department_name,
+      startDate: updated.start_date,
+      endDate: updated.end_date,
+      createdAt: updated.created_at
+    };
+
+    res.json(mapped);
+  } catch (error) {
+    console.error("PATCH /api/department_histories/:id error:", error);
+    res.status(500).json({ error: '履歴の更新に失敗しました' });
+  } finally {
+    conn.release();
   }
 });
 
