@@ -963,13 +963,13 @@ app.patch('/api/users/:id', async (req, res) => {
     retirementDate,
     status,
     role
-    // departmentHistory は今は使わない
   } = req.body;
 
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    // users テーブルだけ更新
+
+    // users テーブル更新
     await conn.execute(
       `UPDATE users SET
         name=?, email=?, position=?, employee_id=?, join_date=?, retirement_date=?, status=?, role=?
@@ -989,10 +989,25 @@ app.patch('/api/users/:id', async (req, res) => {
 
     await conn.commit();
 
-    // 更新後のユーザーだけ返す
+    // 更新後のユーザー取得
     const [userRows] = await conn.query('SELECT * FROM users WHERE id = ?', [id]);
+    const user = userRows[0];
 
-    res.json(userRows[0]); // departmentHistory は返さない
+    // 部署履歴を取得
+    const [historyRows] = await conn.query(
+      `SELECT dh.id, dh.user_id, dh.department_id, dh.start_date, dh.end_date, d.name AS department_name
+       FROM department_histories dh
+       LEFT JOIN departments d ON dh.department_id = d.id
+       WHERE dh.user_id = ?
+       ORDER BY dh.start_date ASC`,
+      [id]
+    );
+
+    // ユーザーに departmentHistory を追加
+    user.departmentHistory = historyRows;
+
+    res.json(user);
+
   } catch (error) {
     await conn.rollback();
     console.error(error);
