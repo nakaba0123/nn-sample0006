@@ -260,6 +260,7 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
 */
 
 const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
+  console.log("handleDepartmentHistorySubmit入ったよ！");
   try {
     if (editingHistory) {
       // PATCH
