@@ -1050,7 +1050,7 @@ app.delete("/api/users/:id", async (req, res) => {
     connection.release();
   }
 });
-
+/*
 // -----------------------------------
 // POST /api/department_histories - 部署履歴の追加
 // -----------------------------------
@@ -1071,6 +1071,59 @@ app.post('/api/department_histories', async (req, res) => {
        VALUES (?, ?, ?, ?, NOW())`,
       [
         user_id,
+        departmentName,
+        startDate,
+        endDate || null
+      ]
+    );
+
+    await conn.commit();
+
+    const [rows] = await conn.query(
+      'SELECT * FROM department_histories WHERE id = ?',
+      [result.insertId]
+    );
+
+    res.json(rows[0]);
+  } catch (error) {
+    await conn.rollback();
+    console.error(error);
+    res.status(500).json({ error: '部署履歴の登録に失敗しました' });
+  } finally {
+    conn.release();
+  }
+});
+*/
+
+// -----------------------------------
+// POST /api/department_histories - 部署履歴の追加
+// -----------------------------------
+app.post('/api/department_histories', async (req, res) => {
+  // camelCase / snake_case 両対応
+  const {
+    user_id,
+    userId,
+    departmentName,
+    startDate,
+    endDate
+  } = req.body;
+
+  const userIdValue = user_id || userId;
+
+  if (!userIdValue || !departmentName || !startDate) {
+    return res.status(400).json({ error: '必須項目が不足しています' });
+  }
+
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();      
+
+    const [result] = await conn.execute(
+      `INSERT INTO department_histories
+        (user_id, department_name, start_date, end_date, created_at)
+       VALUES (?, ?, ?, ?, NOW())`,
+      [
+        userIdValue,
         departmentName,
         startDate,
         endDate || null
