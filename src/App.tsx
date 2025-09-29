@@ -199,7 +199,7 @@ const [departmentHistoriesRaw, setDepartmentHistoriesRaw] = useState<any[]>([]);
     setAttendanceRecords(prev => [newRecord, ...prev]);
   };
 
-
+/*
 const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[] }) => {
   try {
     if (editingUser) {
@@ -249,6 +249,62 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
 
       setUsers(prev => [createdUser, ...prev]);
 
+    }
+  } catch (error) {
+    console.error("handleUserSubmit error:", error);
+    alert("登録に失敗しました");
+  }
+};
+*/
+
+const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[] }) => {
+  try {
+    if (editingUser) {
+      // 既存ユーザー更新
+      const response = await fetch(`/api/users/${editingUser.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Update failed");
+      const updatedUserRaw = await response.json();
+
+      // サーバーから返された departmentHistory を map して利用
+      const deptHistory = updatedUserRaw.departmentHistory?.map(mapDepartmentHistory) ?? [];
+
+      const updatedUser = {
+        ...mapUser(updatedUserRaw),
+        departmentHistory: deptHistory,
+        department: deptHistory.find(d => !d.endDate)?.departmentName || null,
+      };
+
+      setUsers(prev =>
+        prev.map(user => (user.id === editingUser.id ? updatedUser : user))
+      );
+      setEditingUser(null);
+
+    } else {
+      // 新規ユーザー登録
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Create failed");
+
+      const createdRaw = await response.json();
+      console.log("createdRaw ->", createdRaw);
+
+      const deptHistory = createdRaw.departmentHistory?.map(mapDepartmentHistory) ?? [];
+
+      const baseUser = mapUser(createdRaw);
+      const createdUser = {
+        ...baseUser,
+        departmentHistory: deptHistory,
+        department: deptHistory.find(d => !d.endDate)?.departmentName || null,
+      };
+
+      setUsers(prev => [createdUser, ...prev]);
     }
   } catch (error) {
     console.error("handleUserSubmit error:", error);
