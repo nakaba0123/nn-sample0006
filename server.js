@@ -995,11 +995,10 @@ app.patch('/api/users/:id', async (req, res) => {
 
     // 部署履歴を取得
     const [historyRows] = await conn.query(
-      `SELECT dh.id, dh.user_id, dh.department_id, dh.start_date, dh.end_date, d.name AS department_name
-       FROM department_histories dh
-       LEFT JOIN departments d ON dh.department_id = d.id
-       WHERE dh.user_id = ?
-       ORDER BY dh.start_date ASC`,
+      `SELECT id, user_id, department_name, start_date, end_date
+       FROM department_histories
+       WHERE user_id = ?
+       ORDER BY start_date ASC`,
       [id]
     );
 
