@@ -1115,6 +1115,7 @@ app.get("/api/department_histories", async (req, res) => {
 // -----------------------------------
 // PATCH /api/department_histories/:id - 特定履歴の更新
 // -----------------------------------
+/*
 app.patch('/api/department_histories/:id', async (req, res) => {
   const { id } = req.params;
   const { departmentName, startDate, endDate } = req.body;
@@ -1147,41 +1148,37 @@ app.patch('/api/department_histories/:id', async (req, res) => {
     conn.release();
   }
 });
-/*
-// -----------------------------------
-// POST /api/department_histories - 新しい履歴の追加
-// -----------------------------------
-app.post('/api/department_histories', async (req, res) => {
-  const { userId, departmentName, startDate, endDate } = req.body;
+*/
+// PATCH /api/department_histories/:id
+app.patch("/api/department_histories/:id", async (req, res) => {
+  const { id } = req.params;
+  const { department_name, start_date, end_date } = req.body;
 
-  const conn = await pool.getConnection();
   try {
-    // 挿入
-    const [result] = await conn.query(
-      `INSERT INTO department_histories (user_id, department_name, start_date, end_date)
-       VALUES (?, ?, ?, ?)`,
-      [
-        userId,
-        departmentName || null,
-        startDate || null,
-        endDate || null
-      ]
+    const [result] = await pool.query(
+      `UPDATE department_histories 
+       SET department_name = ?, start_date = ?, end_date = ?
+       WHERE id = ?`,
+      [department_name, start_date || null, end_date || null, id]
     );
 
-    // 追加後のレコードを返す
-    const [rows] = await conn.query(
-      'SELECT * FROM department_histories WHERE id = ?',
-      [result.insertId]
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Not found" });
+    }
+
+    // 👇 更新後のレコードを取得
+    const [rows] = await pool.query(
+      `SELECT * FROM department_histories WHERE id = ?`,
+      [id]
     );
-    res.json(rows[0]);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: '履歴の追加に失敗しました' });
-  } finally {
-    conn.release();
+
+    res.json(rows[0]); // ← 更新後のデータを返す
+  } catch (err) {
+    console.error("Error updating department_history:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-*/
+
 // =======================
 // 🌐 補助 API
 // =======================
