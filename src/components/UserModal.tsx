@@ -191,28 +191,6 @@ const UserModal: React.FC<UserModalProps> = ({
   };
 
 /*
-  const handleDepartmentHistorySubmit = (data: DepartmentHistoryFormData) => {
-    if (editingHistory) {
-      // 編集
-      setDepartmentHistory(prev => prev.map(history => 
-        history.id === editingHistory.id 
-          ? { ...history, ...data }
-          : history
-      ));
-      setEditingHistory(null);
-    } else {
-      // 新規追加
-      const newHistory: DepartmentHistory = {
-        id: `hist_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        ...data,
-        createdAt: new Date().toISOString()
-      };
-      setDepartmentHistory(prev => [...prev, newHistory]);
-    }
-    setIsDepartmentHistoryModalOpen(false);
-  };
-*/
-
 const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
   try {
     if (editingHistory) {
@@ -279,6 +257,73 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
     alert("保存に失敗しました");
   }
 };
+*/
+
+const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) => {
+  try {
+    if (editingHistory) {
+      // PATCH
+      const response = await fetch(`/api/department_histories/${editingHistory.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("更新に失敗しました");
+      const updated = await response.json();
+      const mapped = mapDepartmentHistory(updated);
+
+      // departmentHistory state 更新
+      setDepartmentHistory(prev =>
+        prev.map(history =>
+          history.id === editingHistory.id ? mapped : history
+        )
+      );
+
+      // users state 更新
+      setUsers(prev =>
+        prev.map(user => {
+          if (user.id !== editUser?.id) return user;
+          return {
+            ...user,
+            departmentHistory: user.departmentHistory.map(h =>
+              h.id === mapped.id ? mapped : h
+            ),
+          };
+        })
+      );
+
+      setEditingHistory(null);
+    } else {
+      // POST
+      const response = await fetch(`/api/department_histories`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: editUser?.id, ...data }),
+      });
+      if (!response.ok) throw new Error("追加に失敗しました");
+      const created = await response.json();
+      const mapped = mapDepartmentHistory(created);
+
+      setDepartmentHistory(prev => [...prev, mapped]);
+
+      setUsers(prev =>
+        prev.map(user => {
+          if (user.id !== editUser?.id) return user;
+          return {
+            ...user,
+            departmentHistory: [...(user.departmentHistory || []), mapped],
+          };
+        })
+      );
+    }
+
+    setIsDepartmentHistoryModalOpen(false);
+  } catch (error) {
+    console.error("handleDepartmentHistorySubmit error:", error);
+    alert("保存に失敗しました");
+  }
+};
+
 
   const handleEditHistory = (history: DepartmentHistory) => {
     // イベントの伝播を防ぐ
@@ -286,11 +331,41 @@ const handleDepartmentHistorySubmit = async (data: DepartmentHistoryFormData) =>
     setIsDepartmentHistoryModalOpen(true);
   };
 
+/*
   const handleDeleteHistory = (historyId: string) => {
     if (window.confirm('この部署履歴を削除してもよろしいですか？')) {
       setDepartmentHistory(prev => prev.filter(h => h.id !== historyId));
     }
   };
+*/
+
+const handleDeleteHistory = async (historyId: string) => {
+  if (!window.confirm('この部署履歴を削除してもよろしいですか？')) return;
+
+  try {
+    const response = await fetch(`/api/department_histories/${historyId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("削除に失敗しました");
+
+    // state 更新
+    setDepartmentHistory(prev => prev.filter(h => h.id !== historyId));
+
+    // users state 更新
+    setUsers(prev =>
+      prev.map(user => {
+        if (user.id !== editUser?.id) return user;
+        return {
+          ...user,
+          departmentHistory: user.departmentHistory.filter(h => h.id !== historyId),
+        };
+      })
+    );
+  } catch (err) {
+    console.error(err);
+    alert("削除に失敗しました");
+  }
+};
 
   const handleAddHistory = () => {
     setEditingHistory(null);
