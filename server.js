@@ -1147,7 +1147,7 @@ app.patch('/api/department_histories/:id', async (req, res) => {
     conn.release();
   }
 });
-
+/*
 // -----------------------------------
 // POST /api/department_histories - 新しい履歴の追加
 // -----------------------------------
@@ -1181,7 +1181,7 @@ app.post('/api/department_histories', async (req, res) => {
     conn.release();
   }
 });
-
+*/
 // =======================
 // 🌐 補助 API
 // =======================
