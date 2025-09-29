@@ -1050,50 +1050,6 @@ app.delete("/api/users/:id", async (req, res) => {
     connection.release();
   }
 });
-/*
-// -----------------------------------
-// POST /api/department_histories - 部署履歴の追加
-// -----------------------------------
-app.post('/api/department_histories', async (req, res) => {
-  const { user_id, departmentName, startDate, endDate } = req.body;
-
-  if (!user_id || !departmentName || !startDate) {
-    return res.status(400).json({ error: '必須項目が不足しています' });
-  }
-
-  const conn = await pool.getConnection();
-  try {
-    await conn.beginTransaction();
-
-    const [result] = await conn.execute(
-      `INSERT INTO department_histories
-        (user_id, department_name, start_date, end_date, created_at)
-       VALUES (?, ?, ?, ?, NOW())`,
-      [
-        user_id,
-        departmentName,
-        startDate,
-        endDate || null
-      ]
-    );
-
-    await conn.commit();
-
-    const [rows] = await conn.query(
-      'SELECT * FROM department_histories WHERE id = ?',
-      [result.insertId]
-    );
-
-    res.json(rows[0]);
-  } catch (error) {
-    await conn.rollback();
-    console.error(error);
-    res.status(500).json({ error: '部署履歴の登録に失敗しました' });
-  } finally {
-    conn.release();
-  }
-});
-*/
 
 // -----------------------------------
 // POST /api/department_histories - 部署履歴の追加
@@ -1182,41 +1138,6 @@ app.get("/api/department_histories", async (req, res) => {
 // -----------------------------------
 // PATCH /api/department_histories/:id - 特定履歴の更新
 // -----------------------------------
-/*
-app.patch('/api/department_histories/:id', async (req, res) => {
-  const { id } = req.params;
-  const { departmentName, startDate, endDate } = req.body;
-
-  const conn = await pool.getConnection();
-  try {
-    // 更新
-    await conn.query(
-      `UPDATE department_histories 
-       SET department_name = ?, start_date = ?, end_date = ?
-       WHERE id = ?`,
-      [
-        departmentName || null,
-        startDate || null,
-        endDate || null,
-        id
-      ]
-    );
-
-    // 更新後のレコードを返す
-    const [rows] = await conn.query(
-      'SELECT * FROM department_histories WHERE id = ?',
-      [id]
-    );
-    res.json(rows[0]);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: '履歴の更新に失敗しました' });
-  } finally {
-    conn.release();
-  }
-});
-*/
-// PATCH /api/department_histories/:id
 app.patch('/api/department_histories/:id', async (req, res) => {
   const { id } = req.params;
   const { departmentName, startDate, endDate } = req.body;
@@ -1259,6 +1180,26 @@ app.patch('/api/department_histories/:id', async (req, res) => {
     res.status(500).json({ error: '履歴の更新に失敗しました' });
   } finally {
     conn.release();
+  }
+});
+
+// 部署履歴削除
+app.delete("/api/department_histories/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [result] = await pool.query(
+      "DELETE FROM department_histories WHERE id = ?",
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "削除対象が見つかりません" });
+    }
+
+    res.json({ message: "部署履歴を削除しました", id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "部署履歴削除エラー" });
   }
 });
 
