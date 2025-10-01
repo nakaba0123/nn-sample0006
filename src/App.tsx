@@ -434,7 +434,7 @@ const fetchGroupHomes = async () => {
 //    const res = await axios.get(
 //      "https://nn-sample0006-production.up.railway.app/api/group-homes"
 //    );
-      const res = await axios.get(`${API_BASE_URL}/group-homes/sub`);
+      const res = await axios.get(`${API_BASE_URL}/group-homes/main`);
 
     console.log("? group home raw response:", res.data); // ← ここ追加！
 
@@ -454,6 +454,7 @@ const fetchGroupHomes = async () => {
     }));
 
     setGroupHomesMain(data);   // ←ここを追加！
+    setGroupHomesSub(data);   // ←ここを追加！
 
     console.log("data:::", data);
 
