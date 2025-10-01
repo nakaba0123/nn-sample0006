@@ -863,6 +863,37 @@ app.get('/api/expansions', async (req, res) => {
   }
 });
 
+// PUT /api/expansions/update-property-name
+app.put('/api/expansions/update-property-name', async (req, res) => {
+  const { oldPropertyName, newPropertyName } = req.body;
+
+  if (!oldPropertyName || !newPropertyName) {
+    return res.status(400).json({ error: 'プロパティ名が不足しています' });
+  }
+
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    await conn.query(
+      `UPDATE expansions
+       SET property_name = ?
+       WHERE property_name = ?`,
+      [newPropertyName, oldPropertyName]
+    );
+
+    await conn.commit();
+    res.json({ message: 'expansionsテーブルのproperty_nameを更新しました' });
+  } catch (error) {
+    await conn.rollback();
+    console.error(error);
+    res.status(500).json({ error: 'expansionsテーブルの更新に失敗しました' });
+  } finally {
+    conn.release();
+  }
+});
+
+
 // -----------------------------------
 // POST /api/users - 新規ユーザー登録
 // -----------------------------------
