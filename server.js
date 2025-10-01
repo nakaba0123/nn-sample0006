@@ -217,12 +217,12 @@ app.put('/api/group-homes/:id', async (req, res) => {
       ]
     );
 
-    // expansions 側の property_name も更新（同じ group_home_id に対して）
+    // expansions 側の property_name も更新（旧property_nameで探す）
     await conn.execute(
       `UPDATE expansions
        SET property_name=?
-       WHERE group_home_id=?`,
-      [propertyName, id]
+       WHERE property_name=?`,
+      [propertyName, editingGroupHome.propertyName] // ←旧名称で検索
     );
 
     await conn.commit();
