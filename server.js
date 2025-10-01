@@ -151,7 +151,7 @@ app.delete('/api/group-homes/:id', async (req, res) => {
     res.status(500).json({ message: '削除に失敗しました' });
   }
 });
-
+/*
 app.put('/api/group-homes/:id', async (req, res) => {
   const { id } = req.params;
   const d = req.body;
@@ -178,6 +178,66 @@ app.put('/api/group-homes/:id', async (req, res) => {
     res.status(500).json({ message: '更新に失敗しました' });
   }
 });
+*/
+
+// PUT /api/group-homes/:id
+app.put('/api/group-homes/:id', async (req, res) => {
+  const { id } = req.params;
+  const {
+    propertyName,
+    unitName,
+    postalCode,
+    address,
+    phoneNumber,
+    commonRoom,
+    residentRooms,
+    openingDate
+  } = req.body;
+
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    // group_homes 更新
+    await conn.execute(
+      `UPDATE group_homes
+       SET property_name=?, unit_name=?, postal_code=?, address=?, phone_number=?, 
+           common_room=?, resident_rooms=?, opening_date=?
+       WHERE id=?`,
+      [
+        propertyName,
+        unitName,
+        postalCode,
+        address,
+        phoneNumber,
+        commonRoom,
+        JSON.stringify(residentRooms || []),
+        openingDate,
+        id
+      ]
+    );
+
+    // expansions 側の property_name も更新（同じ group_home_id に対して）
+    await conn.execute(
+      `UPDATE expansions
+       SET property_name=?
+       WHERE group_home_id=?`,
+      [propertyName, id]
+    );
+
+    await conn.commit();
+
+    const [rows] = await conn.query('SELECT * FROM group_homes WHERE id=?', [id]);
+    res.json(rows[0]);
+  } catch (err) {
+    await conn.rollback();
+    console.error(err);
+    res.status(500).json({ error: 'グループホーム更新に失敗しました' });
+  } finally {
+    conn.release();
+  }
+});
+
 
 // =======================
 // 👤 利用者 API（residents + disability_histories）
