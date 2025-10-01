@@ -433,8 +433,8 @@ const fetchGroupHomes = async () => {
   try {
     const res = await axios.get(
 //      "https://nn-sample0006-production.up.railway.app/api/group-homes"
-      const res = await axios.get(`${API_BASE_URL}/group-homess`);
-    );
+//    );
+      const res = await axios.get(`${API_BASE_URL}/group-homes`);
 
     console.log("? group home raw response:", res.data); // ← ここ追加！
 
