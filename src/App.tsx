@@ -467,49 +467,50 @@ const fetchGroupHomes = async () => {
 
 const fetchGroupHomes = async () => {
   try {
-    // main と sub を同時に取得
-    const [mainRes, subRes] = await Promise.all([
-      axios.get(`${API_BASE_URL}/group-homes/main`),
-      axios.get(`${API_BASE_URL}/group-homes/sub`)
-    ]);
+    // グループホーム一覧
+    const resHomes = await axios.get(`${API_BASE_URL}/group-homes/main`);
+    const homes = resHomes.data;
 
-    console.log("? group home main response:", mainRes.data);
-    console.log("? group home sub response:", subRes.data);
+    // 増床記録
+    const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
+    const expansions = resExpansions.data;
 
-    const mapGH = (gh: any) => ({
-      id: gh.id,
-      propertyName: gh.property_name,
-      unitName: gh.unit_name,
-      postalCode: gh.postal_code,
-      address: gh.address,
-      phoneNumber: gh.phone_number,
-      commonRoom: gh.common_room,
-      residentRooms: Array.isArray(gh.resident_rooms)
-        ? gh.resident_rooms
-        : JSON.parse(gh.resident_rooms || "[]"),
-      openingDate: gh.opening_date,
-      createdAt: gh.created_at,
+    console.log("raw homes:", homes);
+    console.log("raw expansions:", expansions);
+
+    // group_home_id で結合
+    const data = homes.map((gh: any) => {
+      const ghExpansions = expansions.filter(
+        (ex: any) => ex.group_home_id === gh.id
+      );
+
+      return {
+        id: gh.id,
+        propertyName: gh.property_name,
+        unitName: gh.unit_name,
+        postalCode: gh.postal_code,
+        address: gh.address,
+        phoneNumber: gh.phone_number,
+        commonRoom: gh.common_room,
+        residentRooms: Array.isArray(gh.resident_rooms)
+          ? gh.resident_rooms
+          : JSON.parse(gh.resident_rooms || "[]"),
+        openingDate: gh.opening_date,
+        createdAt: gh.created_at,
+
+        // ★ expansions を追加
+        expansions: ghExpansions,
+      };
     });
 
-    // main と sub を整形
-    const mainData = mainRes.data.map(mapGH);
-    const subData = subRes.data.map(mapGH);
-
-    // 結合して一つの配列に
-    const combinedData = [...mainData, ...subData];
-
-    setGroupHomesMain(combinedData);
-
-    console.log("combined data:::", combinedData);
-
-    return combinedData;
+    setGroupHomesMain(data);
+    return data;
   } catch (err) {
     console.error("一覧取得エラー:", err);
-    setGroupHomesMain([]); // 安全策
+    setGroupHomesMain([]);
     return [];
   }
 };
-
 
 // --- 利用者一覧取得 -----------------------------
 // App.tsx どこか上に
