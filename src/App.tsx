@@ -455,7 +455,7 @@ const fetchGroupHomes = async () => {
 
     setGroupHomesMain(data);   // ←ここを追加！
 
-    console.log(data);
+    console.log("data:::", data);
 
     return data; // ? ここを追加！setGroupHomes は App.tsx の useEffectでやる！
   } catch (err) {
