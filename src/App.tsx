@@ -311,7 +311,7 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
     alert("登録に失敗しました");
   }
 };
-/*
+
 const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
   try {
     if (editingGroupHome) {
@@ -356,8 +356,8 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
     alert('保存に失敗しました');
   }
 };
-*/
 
+/*
 const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
   try {
     if (editingGroupHome) {
@@ -409,7 +409,7 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
     alert("保存に失敗しました");
   }
 };
-
+*/
 
 // ----------------------------------------------
 // 🔁 汎用リトライ付き fetch ヘルパー
