@@ -453,8 +453,7 @@ const fetchGroupHomes = async () => {
       createdAt: gh.created_at,
     }));
 
-//    setGroupHomesMain(data);   // ←ここを追加！
-    setGroupHomesMain(ensureArray(data).map(mapGroupHome));
+    setGroupHomesMain(data);   // ←ここを追加！
 
     console.log(data);
 
