@@ -428,7 +428,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T | null
     }
   }
 }
-
+/*
 const fetchGroupHomes = async () => {
   try {
 //    const res = await axios.get(
@@ -454,7 +454,6 @@ const fetchGroupHomes = async () => {
     }));
 
     setGroupHomesMain(data);   // ←ここを追加！
-    setGroupHomesSub(data);   // ←ここを追加！
 
     console.log("data:::", data);
 
@@ -464,6 +463,53 @@ const fetchGroupHomes = async () => {
     return []; // ? 明示的に空配列を返すと、.mapエラー回避できる
   }
 };
+*/
+
+const fetchGroupHomes = async () => {
+  try {
+    // main と sub を同時に取得
+    const [mainRes, subRes] = await Promise.all([
+      axios.get(`${API_BASE_URL}/group-homes/main`),
+      axios.get(`${API_BASE_URL}/group-homes/sub`)
+    ]);
+
+    console.log("? group home main response:", mainRes.data);
+    console.log("? group home sub response:", subRes.data);
+
+    const mapGH = (gh: any) => ({
+      id: gh.id,
+      propertyName: gh.property_name,
+      unitName: gh.unit_name,
+      postalCode: gh.postal_code,
+      address: gh.address,
+      phoneNumber: gh.phone_number,
+      commonRoom: gh.common_room,
+      residentRooms: Array.isArray(gh.resident_rooms)
+        ? gh.resident_rooms
+        : JSON.parse(gh.resident_rooms || "[]"),
+      openingDate: gh.opening_date,
+      createdAt: gh.created_at,
+    });
+
+    // main と sub を整形
+    const mainData = mainRes.data.map(mapGH);
+    const subData = subRes.data.map(mapGH);
+
+    // 結合して一つの配列に
+    const combinedData = [...mainData, ...subData];
+
+    setGroupHomesMain(combinedData);
+
+    console.log("combined data:::", combinedData);
+
+    return combinedData;
+  } catch (err) {
+    console.error("一覧取得エラー:", err);
+    setGroupHomesMain([]); // 安全策
+    return [];
+  }
+};
+
 
 // --- 利用者一覧取得 -----------------------------
 // App.tsx どこか上に
