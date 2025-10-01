@@ -503,9 +503,8 @@ const fetchGroupHomes = async () => {
       };
     });
 
-    console.log("data:::::", data);
-
     setGroupHomesMain(data);
+    console.log("data:::::", data);
     return data;
   } catch (err) {
     console.error("一覧取得エラー:", err);
