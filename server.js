@@ -180,61 +180,35 @@ app.put('/api/group-homes/:id', async (req, res) => {
 });
 */
 
-// PUT /api/group-homes/:id
-app.put('/api/group-homes/:id', async (req, res) => {
+// /api/group_homes/:id PATCH
+app.patch("/api/group_homes/:id", async (req, res) => {
   const { id } = req.params;
-  const {
-    propertyName,
-    unitName,
-    postalCode,
-    address,
-    phoneNumber,
-    commonRoom,
-    residentRooms,
-    openingDate
-  } = req.body;
+  const { propertyName, unitName } = req.body;
 
-  const conn = await pool.getConnection();
   try {
-    await conn.beginTransaction();
+    const conn = await pool.getConnection();
 
-    // group_homes 更新
+    // group_homes の更新
     await conn.execute(
-      `UPDATE group_homes
-       SET property_name=?, unit_name=?, postal_code=?, address=?, phone_number=?, 
-           common_room=?, resident_rooms=?, opening_date=?
+      `UPDATE group_homes 
+       SET property_name=?, unit_name=? 
        WHERE id=?`,
-      [
-        propertyName,
-        unitName,
-        postalCode,
-        address,
-        phoneNumber,
-        commonRoom,
-        JSON.stringify(residentRooms || []),
-        openingDate,
-        id
-      ]
+      [propertyName, unitName, id]
     );
 
-    // expansions 側の property_name も更新（旧property_nameで探す）
+    // expansions の更新（property_nameだけ一致させる）
     await conn.execute(
       `UPDATE expansions
        SET property_name=?
        WHERE property_name=?`,
-      [propertyName, editingGroupHome.propertyName] // ←旧名称で検索
+      [propertyName, req.body.oldPropertyName] // ここ大事
     );
 
-    await conn.commit();
-
-    const [rows] = await conn.query('SELECT * FROM group_homes WHERE id=?', [id]);
-    res.json(rows[0]);
-  } catch (err) {
-    await conn.rollback();
-    console.error(err);
-    res.status(500).json({ error: 'グループホーム更新に失敗しました' });
-  } finally {
     conn.release();
+    res.json({ message: "グループホーム更新成功" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "更新失敗" });
   }
 });
 
