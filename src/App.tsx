@@ -505,6 +505,7 @@ const fetchGroupHomes = async () => {
     });
 
     setGroupHomesMain(data);
+    setExpansionRecords(expansions);
     console.log("data:::::", data);
     return data;
   } catch (err) {
