@@ -507,7 +507,7 @@ const fetchGroupHomes = async () => {
     setGroupHomesMain(data);
 
     // 追加: expansions 単体の state も更新
-    setExpansionRecords(expansions.map(mapExpansions));
+    setExpansionRecords(expansions);
 
     console.log("data:::::", data);
     console.log("expansions:::::", expansions);
