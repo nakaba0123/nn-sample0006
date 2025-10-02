@@ -198,6 +198,8 @@ app.put("/api/group-homes/:id", async (req, res) => {
       [propertyName, unitName, id]
     );
 
+    console.log("req.body:::", req.body);
+
     // expansions の更新（property_nameだけ一致させる）
     await conn.execute(
       `UPDATE expansions
