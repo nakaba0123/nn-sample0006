@@ -185,6 +185,8 @@ app.put("/api/group-homes/:id", async (req, res) => {
   const { id } = req.params;
   const { propertyName, unitName } = req.body;
 
+  console.log("req.body::", req.body);
+
   try {
     const conn = await pool.getConnection();
 
