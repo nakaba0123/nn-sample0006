@@ -381,6 +381,8 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
         oldPropertyName: editingGroupHome.propertyName, // 変更前
         newPropertyName: data.propertyName              // 変更後
       });
+      console.log("oldPropertyName::", editingGroupHome.propertyName);
+      console.log("newPropertyName::", data.propertyName);
 
       alert("更新に成功しました！");
     } else {
