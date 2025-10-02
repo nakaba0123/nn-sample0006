@@ -484,7 +484,7 @@ const fetchGroupHomes = async () => {
     // group_home_id で結合
     const data = homes.map((gh: any) => {
       const ghExpansions = expansions.filter(
-        (ex: any) => ex.group_home_id === gh.id
+        (ex: any) => ex.property_name === gh.property_name
       );
 
       return {
@@ -501,7 +501,6 @@ const fetchGroupHomes = async () => {
         openingDate: gh.opening_date,
         createdAt: gh.created_at,
 
-        // ★ expansions を追加
         expansions: ghExpansions,
       };
     });
