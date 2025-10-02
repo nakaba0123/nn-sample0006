@@ -181,7 +181,7 @@ app.put('/api/group-homes/:id', async (req, res) => {
 */
 
 // /api/group_homes/:id PATCH
-app.patch("/api/group-homes/:id", async (req, res) => {
+app.put("/api/group-homes/:id", async (req, res) => {
   const { id } = req.params;
   const { propertyName, unitName } = req.body;
 
