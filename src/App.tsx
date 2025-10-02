@@ -481,7 +481,6 @@ const fetchGroupHomes = async () => {
     console.log("raw homes:", homes);
     console.log("raw expansions:", expansions);
 
-    // group_home_id で結合
     const data = homes.map((gh: any) => {
       const ghExpansions = expansions.filter(
         (ex: any) => ex.property_name === gh.property_name
