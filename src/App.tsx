@@ -480,7 +480,7 @@ const fetchGroupHomes = async () => {
 
     console.log("raw homes:", homes);
     console.log("raw expansions:", expansions);
-/*
+
     const data = homes.map((gh: any) => {
       const ghExpansions = expansions.filter(
         (ex: any) => ex.property_name === gh.property_name
@@ -502,29 +502,6 @@ const fetchGroupHomes = async () => {
         expansions: ghExpansions,  // ここは GH ごとの配列
       };
     });
-*/
-
-const data = homes.map((gh: any) => {
-  // expansions を camelCase に変換
-  const ghExpansions = expansions
-    .map(exp => ({
-      id: exp.id,
-      propertyName: exp.property_name,
-      unitName: exp.unit_name,
-      expansionType: exp.expansion_type,
-      newRooms: Array.isArray(exp.new_rooms) ? exp.new_rooms : JSON.parse(exp.new_rooms || "[]"),
-      commonRoom: exp.common_room,
-      startDate: exp.start_date,
-      createdAt: exp.created_at,
-    }))
-    .filter(exp => exp.propertyName === gh.property_name);
-
-  return {
-    ...gh, // GH 本体はそのまま（元々 camelCase なら変換不要）
-    expansions: ghExpansions,
-  };
-});
-
 
     // GH 一覧を更新
     setGroupHomesMain(data);
@@ -533,6 +510,7 @@ const data = homes.map((gh: any) => {
     setExpansionRecords(expansions);
 
     console.log("data:::::", data);
+    console.log("expansions:::::", expansions);
     return data;
   } catch (err) {
     console.error("一覧取得エラー:", err);
