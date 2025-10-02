@@ -503,25 +503,29 @@ const fetchGroupHomes = async () => {
       };
     });
 */
+
 const data = homes.map((gh: any) => {
-  // camelCase に変換
+  // expansions を camelCase に変換
   const ghExpansions = expansions
     .map(exp => ({
-      ...exp,
-      propertyName: exp.property_name, // ← ここ重要
+      id: exp.id,
+      propertyName: exp.property_name,
       unitName: exp.unit_name,
-      startDate: exp.start_date,
       expansionType: exp.expansion_type,
       newRooms: Array.isArray(exp.new_rooms) ? exp.new_rooms : JSON.parse(exp.new_rooms || "[]"),
       commonRoom: exp.common_room,
+      startDate: exp.start_date,
+      createdAt: exp.created_at,
     }))
     .filter(exp => exp.propertyName === gh.property_name);
 
   return {
-    ...gh,
+    ...gh, // GH 本体はそのまま（元々 camelCase なら変換不要）
     expansions: ghExpansions,
   };
 });
+
+
     // GH 一覧を更新
     setGroupHomesMain(data);
 
