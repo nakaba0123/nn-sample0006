@@ -373,6 +373,7 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
           commonRoom:    data.commonRoom,
           residentRooms: data.residentRooms,
           openingDate:   data.openingDate,
+          oldPropertyName: editingGroupHome.propertyName
         } 
       );
 
