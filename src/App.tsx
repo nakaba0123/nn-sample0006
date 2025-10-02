@@ -480,7 +480,7 @@ const fetchGroupHomes = async () => {
 
     console.log("raw homes:", homes);
     console.log("raw expansions:", expansions);
-
+/*
     const data = homes.map((gh: any) => {
       const ghExpansions = expansions.filter(
         (ex: any) => ex.property_name === gh.property_name
@@ -502,7 +502,26 @@ const fetchGroupHomes = async () => {
         expansions: ghExpansions,  // ここは GH ごとの配列
       };
     });
+*/
+const data = homes.map((gh: any) => {
+  // camelCase に変換
+  const ghExpansions = expansions
+    .map(exp => ({
+      ...exp,
+      propertyName: exp.property_name, // ← ここ重要
+      unitName: exp.unit_name,
+      startDate: exp.start_date,
+      expansionType: exp.expansion_type,
+      newRooms: Array.isArray(exp.new_rooms) ? exp.new_rooms : JSON.parse(exp.new_rooms || "[]"),
+      commonRoom: exp.common_room,
+    }))
+    .filter(exp => exp.propertyName === gh.property_name);
 
+  return {
+    ...gh,
+    expansions: ghExpansions,
+  };
+});
     // GH 一覧を更新
     setGroupHomesMain(data);
 
