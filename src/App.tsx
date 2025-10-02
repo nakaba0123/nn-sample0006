@@ -482,27 +482,33 @@ const fetchGroupHomes = async () => {
     console.log("raw expansions:", expansions);
 
     const data = homes.map((gh: any) => {
-      // camelCase に変換
-      const ghExpansions = expansions
-        .map(exp => ({
-          ...exp,
-          propertyName: exp.property_name, // ← ここ重要
-          unitName: exp.unit_name,
-          startDate: exp.start_date,
-          expansionType: exp.expansion_type,
-          newRooms: Array.isArray(exp.new_rooms) ? exp.new_rooms : JSON.parse(exp.new_rooms || "[]"),
-          commonRoom: exp.common_room,
-        }))
-        .filter(exp => exp.propertyName === gh.property_name);
+      const ghExpansions = expansions.filter(
+        (ex: any) => ex.property_name === gh.property_name
+      );
 
       return {
-        ...gh,
-        expansions: ghExpansions,
+        id: gh.id,
+        propertyName: gh.property_name,
+        unitName: gh.unit_name,
+        postalCode: gh.postal_code,
+        address: gh.address,
+        phoneNumber: gh.phone_number,
+        commonRoom: gh.common_room,
+        residentRooms: Array.isArray(gh.resident_rooms)
+          ? gh.resident_rooms
+          : JSON.parse(gh.resident_rooms || "[]"),
+        openingDate: gh.opening_date,
+        createdAt: gh.created_at,
+        expansions: ghExpansions,  // ここは GH ごとの配列
       };
     });
 
+    // GH 一覧を更新
     setGroupHomesMain(data);
+
+    // 追加: expansions 単体の state も更新
     setExpansionRecords(expansions);
+
     console.log("data:::::", data);
     return data;
   } catch (err) {
