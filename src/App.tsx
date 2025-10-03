@@ -466,7 +466,6 @@ const fetchGroupHomes = async () => {
     return []; // ? 明示的に空配列を返すと、.mapエラー回避できる
   }
 };
-*/
 
 const fetchGroupHomes = async () => {
   try {
@@ -518,6 +517,55 @@ const fetchGroupHomes = async () => {
     return [];
   }
 };
+*/
+
+const fetchGroupHomes = async () => {
+  try {
+    // 1. GH 一覧を取得
+    const resHomes = await axios.get(`${API_BASE_URL}/group-homes/main`);
+    const homes = resHomes.data;
+
+    // 2. 増床記録を取得
+    const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
+    const expansionsRaw = resExpansions.data;
+
+    console.log("raw homes:", homes);
+    console.log("raw expansions:", expansionsRaw);
+
+    // 3. expansions を camelCase に変換
+    const expansions = expansionsRaw.map(mapExpansion);
+
+    // 4. GH も mapGroupHome で camelCase 化して、expansions を結合
+    const data = homes.map((gh: any) => {
+      const ghCamel = mapGroupHome(gh);
+
+      // GH ごとの expansions を取得
+      const ghExpansions = expansions.filter(
+        (ex) => ex.propertyName === ghCamel.propertyName
+      );
+
+      return {
+        ...ghCamel,
+        expansions: ghExpansions,
+      };
+    });
+
+    // 5. state 更新
+    setGroupHomesMain(data);
+    setExpansionRecords(expansions);
+
+    console.log("data:::::", data);
+    console.log("expansions:::::", expansions);
+
+    return data;
+  } catch (err) {
+    console.error("一覧取得エラー:", err);
+    setGroupHomesMain([]);
+    setExpansionRecords([]);
+    return [];
+  }
+};
+
 
 // --- 利用者一覧取得 -----------------------------
 // App.tsx どこか上に
