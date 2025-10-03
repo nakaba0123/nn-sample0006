@@ -180,10 +180,20 @@ app.put('/api/group-homes/:id', async (req, res) => {
 });
 */
 
-// /api/group_homes/:id PATCH
+// /api/group-homes/:id PUT
 app.put("/api/group-homes/:id", async (req, res) => {
   const { id } = req.params;
-  const { propertyName, unitName } = req.body;
+  const {
+    propertyName,
+    unitName,
+    postalCode,
+    address,
+    phoneNumber,
+    commonRoom,
+    residentRooms,
+    openingDate,
+    oldPropertyName,
+  } = req.body;
 
   console.log("req.body::", req.body);
 
@@ -192,20 +202,35 @@ app.put("/api/group-homes/:id", async (req, res) => {
 
     // group_homes の更新
     await conn.execute(
-      `UPDATE group_homes 
-       SET property_name=?, unit_name=? 
+      `UPDATE group_homes
+       SET property_name=?,
+           unit_name=?,
+           postal_code=?,
+           address=?,
+           phone_number=?,
+           common_room=?,
+           resident_rooms=?,
+           opening_date=?
        WHERE id=?`,
-      [propertyName, unitName, id]
+      [
+        propertyName,
+        unitName,
+        postalCode,
+        address,
+        phoneNumber,
+        commonRoom,
+        JSON.stringify(residentRooms || []),
+        openingDate,
+        id,
+      ]
     );
-
-    console.log("req.body:::", req.body);
 
     // expansions の更新（property_nameだけ一致させる）
     await conn.execute(
       `UPDATE expansions
        SET property_name=?
        WHERE property_name=?`,
-      [propertyName, req.body.oldPropertyName] // ここ大事
+      [propertyName, oldPropertyName]
     );
 
     conn.release();
@@ -215,7 +240,6 @@ app.put("/api/group-homes/:id", async (req, res) => {
     res.status(500).json({ error: "更新失敗" });
   }
 });
-
 
 // =======================
 // 👤 利用者 API（residents + disability_histories）
