@@ -226,13 +226,26 @@ app.put("/api/group-homes/:id", async (req, res) => {
     commonRoom,
     residentRooms,
     openingDate,
-    oldPropertyName,
   } = req.body;
 
   console.log("req.body::", req.body);
 
   try {
     const conn = await pool.getConnection();
+
+    // まず古い値を取得
+    const [rows] = await conn.execute(
+      `SELECT property_name, unit_name FROM group_homes WHERE id = ?`,
+      [id]
+    );
+
+    if (rows.length === 0) {
+      conn.release();
+      return res.status(404).json({ error: "対象のグループホームが存在しません" });
+    }
+
+    const oldPropertyName = rows[0].property_name;
+    const oldUnitName = rows[0].unit_name;
 
     // group_homes の更新
     await conn.execute(
@@ -259,12 +272,12 @@ app.put("/api/group-homes/:id", async (req, res) => {
       ]
     );
 
-    // expansions の更新（property_nameだけ一致させる）
+    // expansions の更新（property_name と unit_name を両方見る）
     await conn.execute(
       `UPDATE expansions
-       SET property_name=?
-       WHERE property_name=?`,
-      [propertyName, oldPropertyName]
+       SET property_name=?, unit_name=?
+       WHERE property_name=? AND unit_name=?`,
+      [propertyName, unitName, oldPropertyName, oldUnitName]
     );
 
     conn.release();
