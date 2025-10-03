@@ -152,30 +152,64 @@ app.delete('/api/group-homes/:id', async (req, res) => {
   }
 });
 /*
-app.put('/api/group-homes/:id', async (req, res) => {
+// /api/group-homes/:id PUT
+app.put("/api/group-homes/:id", async (req, res) => {
   const { id } = req.params;
-  const d = req.body;
-  const sql = `
-    UPDATE group_homes SET
-      property_name = ?,
-      unit_name = ?,
-      postal_code = ?,
-      address = ?,
-      phone_number = ?,
-      common_room = ?,
-      resident_rooms = ?,
-      opening_date = ?
-    WHERE id = ?`;
-  const values = [
-    d.propertyName, d.unitName, d.postalCode, d.address,
-    d.phoneNumber, d.commonRoom, JSON.stringify(d.residentRooms), d.openingDate, id
-  ];
+  const {
+    propertyName,
+    unitName,
+    postalCode,
+    address,
+    phoneNumber,
+    commonRoom,
+    residentRooms,
+    openingDate,
+    oldPropertyName,
+  } = req.body;
+
+  console.log("req.body::", req.body);
+
   try {
-    await pool.query(sql, values);
-    res.json({ message: '更新に成功しました' });
+    const conn = await pool.getConnection();
+
+    // group_homes の更新
+    await conn.execute(
+      `UPDATE group_homes
+       SET property_name=?,
+           unit_name=?,
+           postal_code=?,
+           address=?,
+           phone_number=?,
+           common_room=?,
+           resident_rooms=?,
+           opening_date=?
+       WHERE id=?`,
+      [
+        propertyName,
+        unitName,
+        postalCode,
+        address,
+        phoneNumber,
+        commonRoom,
+        JSON.stringify(residentRooms || []),
+        openingDate,
+        id,
+      ]
+    );
+
+    // expansions の更新（property_nameだけ一致させる）
+    await conn.execute(
+      `UPDATE expansions
+       SET property_name=?
+       WHERE property_name=?`,
+      [propertyName, oldPropertyName]
+    );
+
+    conn.release();
+    res.json({ message: "グループホーム更新成功" });
   } catch (err) {
-    console.error('更新エラー:', err);
-    res.status(500).json({ message: '更新に失敗しました' });
+    console.error(err);
+    res.status(500).json({ error: "更新失敗" });
   }
 });
 */
