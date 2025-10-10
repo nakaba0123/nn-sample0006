@@ -9,6 +9,7 @@ export interface GroupHome {
   residentRooms: string[];
   openingDate: string;
   createdAt: string;
+  facilityCode: string;
 }
 
 export interface GroupHomeFormData {
@@ -20,6 +21,7 @@ export interface GroupHomeFormData {
   commonRoom: string;
   residentRooms: string[];
   openingDate: string;
+  facilityCode: string;
 }
 
 export interface ExpansionRecord {

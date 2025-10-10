@@ -311,52 +311,6 @@ const handleUserSubmit = async (data: UserFormData & { departmentHistory?: any[]
     alert("登録に失敗しました");
   }
 };
-/*
-const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
-  try {
-    if (editingGroupHome) {
-      // === 編集モード：PUT ===
-      await axios.put(
-        `${API_BASE_URL}/group-homes/${editingGroupHome.id}`,
-        {
-          propertyName:  data.propertyName,
-          unitName:      data.unitName,
-          postalCode:    data.postalCode,
-          address:       data.address,
-          phoneNumber:   data.phoneNumber,
-          commonRoom:    data.commonRoom,
-          residentRooms: data.residentRooms,
-          openingDate:   data.openingDate,
-        }
-      );
-      alert('更新に成功しました！');
-      await fetchGroupHomes();   // 最新の一覧を取得して state を更新
-    } else {
-      // === 新規登録：POST ===
-      await axios.post(`${API_BASE_URL}/group-homes`, {
-        propertyName:  data.propertyName,
-        unitName:      data.unitName,
-        postalCode:    data.postalCode,
-        address:       data.address,
-        phoneNumber:   data.phoneNumber,
-        commonRoom:    data.commonRoom,
-        residentRooms: data.residentRooms,
-        openingDate:   data.openingDate,
-      });
-      alert('登録に成功しました！');
-    }
-
-    // 一覧を最新化
-    fetchGroupHomes();
-
-    // モーダルを閉じ、編集状態をリセット
-    handleCloseGroupHomeModal();
-  } catch (err) {
-    console.error('保存エラー:', err);
-    alert('保存に失敗しました');
-  }
-};
-*/
 
 const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
   try {
@@ -389,6 +343,7 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
     } else {
       // === 新規登録：POST ===
       await axios.post(`${API_BASE_URL}/group-homes`, {
+        facilityCode:  data.facilityCode,
         propertyName:  data.propertyName,
         unitName:      data.unitName,
         postalCode:    data.postalCode,

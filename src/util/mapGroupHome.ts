@@ -11,6 +11,7 @@ export const mapGroupHome = (gh: any) => {
     commonRoom: gh.common_room,
     openingDate: gh.opening_date,
     createdAt: gh.created_at,
+    facilityCode: gh.facility_code,
     residentRooms: gh.resident_rooms,
     expansions: gh.expansions,
   };
