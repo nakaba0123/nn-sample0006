@@ -25,6 +25,7 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
   editGroupHome 
 }) => {
   const [formData, setFormData] = useState<GroupHomeFormData>({
+    facilityCode: '',
     propertyName: '',
     unitName: '',
     postalCode: '',
@@ -41,6 +42,7 @@ const GroupHomeModal: React.FC<GroupHomeModalProps> = ({
 useEffect(() => {
   if (editGroupHome) {
     setFormData({
+      facilityCode: editGroupHome.facilityCode,
       propertyName: editGroupHome.propertyName,
       unitName: editGroupHome.unitName,
       postalCode: editGroupHome.postalCode,
@@ -54,6 +56,7 @@ useEffect(() => {
     });
   } else {
     setFormData({
+      facilityCode: '',
       propertyName: '',
       unitName: '',
       postalCode: '',
