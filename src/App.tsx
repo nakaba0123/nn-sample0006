@@ -319,6 +319,7 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
       await axios.put(
         `${API_BASE_URL}/group-homes/${editingGroupHome.id}`,
         { 
+          facilityCode:  data.facilityCode,
           propertyName:  data.propertyName,
           unitName:      data.unitName,
           postalCode:    data.postalCode,
