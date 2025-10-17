@@ -69,9 +69,15 @@ app.get('/api/group-homes/main', async (req, res) => {
 });
 
 app.get('/api/group-homes/sub', async (req, res) => {
-  try {
     const [results] = await pool.query(
-      'SELECT * FROM group_homes'
+      `SELECT *
+       FROM group_homes
+       ORDER BY
+         -- 1️⃣ ハイフンを含まない（番号なし）を先に
+         (name NOT LIKE '%-%') DESC,
+         -- 2️⃣ ベース名＋番号を自然順で
+         LENGTH(name),
+         name`
     );
     const fixed = results.map(row => ({
       ...row,
