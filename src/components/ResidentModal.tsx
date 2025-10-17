@@ -782,6 +782,7 @@ console.log("formData: ", formData);
   <option value="">物件・ユニットを選択 *</option>
   {allUnits().map((unit) => (
     <option key={unit.id} value={unit.id}>
+      {console.log("unit:::", unit)}
       {unit.facilityCode}：{unit.propertyName}／{unit.unitName}
     </option>
   ))}
