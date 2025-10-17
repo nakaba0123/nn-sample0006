@@ -69,6 +69,7 @@ app.get('/api/group-homes/main', async (req, res) => {
 });
 
 app.get('/api/group-homes/sub', async (req, res) => {
+  try {
     const [results] = await pool.query(
       `SELECT *
        FROM group_homes
