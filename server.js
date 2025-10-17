@@ -74,17 +74,19 @@ app.get('/api/group-homes/sub', async (req, res) => {
       `SELECT *
        FROM group_homes
        ORDER BY
-         -- 1️⃣ facility_code が NULL または空欄なら先に
+         -- ① 番号が空欄またはNULLなら先に
          (facility_code IS NULL OR facility_code = '') DESC,
-         -- 2️⃣ 文字列長（短いコードを先に）
+         -- ② コードの文字数（短い順）
          LENGTH(facility_code),
-         -- 3️⃣ 最後に文字列順（例: 10-1, 10-2, 11-1）
+         -- ③ 最後に文字列昇順（自然順）
          facility_code`
     );
+
     const fixed = results.map(row => ({
       ...row,
       resident_rooms: safeParse(row.resident_rooms),
     }));
+
     res.json(fixed);
   } catch (err) {
     console.error('SUB取得エラー:', err);
