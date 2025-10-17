@@ -74,11 +74,12 @@ app.get('/api/group-homes/sub', async (req, res) => {
       `SELECT *
        FROM group_homes
        ORDER BY
-         -- 1️⃣ ハイフンを含まない（番号なし）を先に
-         (name NOT LIKE '%-%') DESC,
-         -- 2️⃣ ベース名＋番号を自然順で
-         LENGTH(name),
-         name`
+         -- 1️⃣ facility_code が NULL または空欄なら先に
+         (facility_code IS NULL OR facility_code = '') DESC,
+         -- 2️⃣ 文字列長（短いコードを先に）
+         LENGTH(facility_code),
+         -- 3️⃣ 最後に文字列順（例: 10-1, 10-2, 11-1）
+         facility_code`
     );
     const fixed = results.map(row => ({
       ...row,
