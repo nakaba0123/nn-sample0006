@@ -180,7 +180,7 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
 */
 // 物件・ユニット一覧（修正版）
 const allUnits = () => {
-  const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
+  const map = new Map<string, { id: string; propertyName: string; unitName: string; facilityCode: string }>();
 
   console.log("groupHomes::", groupHomes);
   // groupHomes の基本ユニット
@@ -189,6 +189,7 @@ const allUnits = () => {
       id: String(g.id),
       propertyName: g.propertyName,
       unitName: g.unitName,
+      facilityCode: g.facilityCode,
     })
   );
 
@@ -203,6 +204,7 @@ const allUnits = () => {
         id: `expansion_${e.id}`,
         propertyName: e.property_name,
         unitName: e.unit_name,
+        facilityCode: e.facility_code,
       });
     });
 
