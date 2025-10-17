@@ -208,11 +208,18 @@ const allUnits = () => {
       });
     });
 
-  return [...map.values()].sort((a, b) =>
-    a.propertyName === b.propertyName
-      ? a.unitName.localeCompare(b.unitName)
-      : a.propertyName.localeCompare(b.propertyName)
-  );
+  // ✅ 並べ替え：facilityCode順（番号なしが先）
+  return [...map.values()].sort((a, b) => {
+    const codeA = a.facilityCode || "";
+    const codeB = b.facilityCode || "";
+
+    // 番号なしは先
+    if (!codeA && codeB) return -1;
+    if (codeA && !codeB) return 1;
+
+    // 数字を含む自然順で比較（例: 1-2 < 10-1）
+    return codeA.localeCompare(codeB, "ja", { numeric: true });
+  });
 };
 
   const selectedUnit = () => allUnits()?.find((u) => u.id === formData.groupHomeId);
