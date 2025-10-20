@@ -103,37 +103,6 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-//  const handleSubmit = (e: React.FormEvent) => {
-//    e.preventDefault();
-//    
-//    if (validateForm()) {
-//      // 空の居室を除外し、タイプBの場合は共用室を除外
-//      const cleanedData: ExpansionFormData = {
-//        ...formData,
-//        newRooms: formData.newRooms?.filter(room => room.trim() !== ''),
-//        commonRoom: formData.expansionType === 'A' ? formData.commonRoom : undefined
-//      };
-//      
-//      onSubmit(cleanedData);
-//      
-//      // 編集モードでない場合のみフォームをリセット
-//      if (!editExpansion) {
-//        const defaultPropertyName = groupHomes.length > 0 ? groupHomes[0].propertyName : '';
-//        setFormData({
-//          propertyName: defaultPropertyName,
-//          unitName: '第1ユニット',
-//          expansionType: 'A',
-//          newRooms: ['201', '202', '203'],
-//          commonRoom: '共用室A',
-//          startDate: '2025-04-01'
-//        });
-//      }
-//      
-//      setErrors({});
-//      onClose();
-//    }
-//  };
-
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
