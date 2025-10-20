@@ -150,34 +150,6 @@ const handleDisabilityHistorySubmit = async (data: DisabilityHistoryFormData) =>
     setEditingDisabilityHistory(null);
   };
 
-/*
-  const allUnits = () => {
-    const map = new Map<string, { id: string; propertyName: string; unitName: string }>();
-    groupHomes.forEach((g) =>
-      map.set(`${g.propertyName}-${g.unitName}`, {
-        id: String(g.id),
-        propertyName: g.propertyName,
-        unitName: g.unitName,
-      })
-    );
-    expansionRecords
-      .filter((e) => e.expansionType === "A")
-      .forEach((e) => {
-        const key = `${e.propertyName}-${e.unitName}`;
-        if (!map.has(key))
-          map.set(key, {
-            id: `expansion_${e.id}`,
-            propertyName: e.propertyName,
-            unitName: e.unitName,
-          });
-      });
-    return [...map.values()].sort((a, b) =>
-      a.propertyName === b.propertyName
-        ? a.unitName.localeCompare(b.unitName)
-        : a.propertyName.localeCompare(b.propertyName)
-    );
-  };
-*/
 // 物件・ユニット一覧（修正版）
 const allUnits = () => {
   const map = new Map<string, { id: string; propertyName: string; unitName: string; facilityCode: string }>();
