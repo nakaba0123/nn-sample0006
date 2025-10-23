@@ -859,6 +859,7 @@ app.post('/api/expansions', async (req, res) => {
     commonRoom,
     startDate,
     facilityCode, // ← ★ 追加：別ユニット登録時に受け取る
+    createdAt,    // 追加
   } = req.body;
 
   if (!propertyName || !unitName) {
