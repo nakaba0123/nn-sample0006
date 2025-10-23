@@ -916,12 +916,13 @@ app.post('/api/expansions', async (req, res) => {
         INSERT INTO group_homes (
           property_name,
           facility_code,
+          created_at,
           unit_name,
           capacity,
           unit_type
-        ) VALUES (?, ?, ?, ?, "SUB")
+        ) VALUES (?, ?, ?, ?, ?, "SUB")
       `;
-      await conn.query(groupHomeSql, [propertyName, facilityCode, unitName, capacity]);
+      await conn.query(groupHomeSql, [propertyName, facilityCode, createdAt, unitName, capacity]);
 
     // === B: 単純増床（同ユニット） ===
     } else if (expansionType === 'B') {
