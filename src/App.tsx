@@ -387,93 +387,6 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T | null
     }
   }
 }
-/*
-const fetchGroupHomes = async () => {
-  try {
-//    const res = await axios.get(
-//      "https://nn-sample0006-production.up.railway.app/api/group-homes"
-//    );
-      const res = await axios.get(`${API_BASE_URL}/group-homes/main`);
-
-    console.log("? group home raw response:", res.data); // ← ここ追加！
-
-    const data = res.data.map((gh: any) => ({
-      id: gh.id,
-      propertyName: gh.property_name,
-      unitName: gh.unit_name,
-      postalCode: gh.postal_code,
-      address: gh.address,
-      phoneNumber: gh.phone_number,
-      commonRoom: gh.common_room,
-      residentRooms: Array.isArray(gh.resident_rooms)
-        ? gh.resident_rooms
-        : JSON.parse(gh.resident_rooms || "[]"),
-      openingDate: gh.opening_date,
-      createdAt: gh.created_at,
-    }));
-
-    setGroupHomesMain(data);   // ←ここを追加！
-
-    console.log("data:::", data);
-
-    return data; // ? ここを追加！setGroupHomes は App.tsx の useEffectでやる！
-  } catch (err) {
-    console.error("一覧取得エラー:", err);
-    return []; // ? 明示的に空配列を返すと、.mapエラー回避できる
-  }
-};
-
-const fetchGroupHomes = async () => {
-  try {
-    // グループホーム一覧
-    const resHomes = await axios.get(`${API_BASE_URL}/group-homes/main`);
-    const homes = resHomes.data;
-
-    // 増床記録
-    const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
-    const expansions = resExpansions.data;
-
-    console.log("raw homes:", homes);
-    console.log("raw expansions:", expansions);
-
-    const data = homes.map((gh: any) => {
-      const ghExpansions = expansions.filter(
-        (ex: any) => ex.property_name === gh.property_name
-      );
-
-      return {
-        id: gh.id,
-        propertyName: gh.property_name,
-        unitName: gh.unit_name,
-        postalCode: gh.postal_code,
-        address: gh.address,
-        phoneNumber: gh.phone_number,
-        commonRoom: gh.common_room,
-        residentRooms: Array.isArray(gh.resident_rooms)
-          ? gh.resident_rooms
-          : JSON.parse(gh.resident_rooms || "[]"),
-        openingDate: gh.opening_date,
-        createdAt: gh.created_at,
-        expansions: ghExpansions,  // ここは GH ごとの配列
-      };
-    });
-
-    // GH 一覧を更新
-    setGroupHomesMain(data);
-
-    // 追加: expansions 単体の state も更新
-    setExpansionRecords(expansions);
-
-    console.log("data:::::", data);
-    console.log("expansions:::::", expansions);
-    return data;
-  } catch (err) {
-    console.error("一覧取得エラー:", err);
-    setGroupHomesMain([]);
-    return [];
-  }
-};
-*/
 
 const fetchGroupHomes = async () => {
   try {
@@ -745,6 +658,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
         : expansion
     ));
     alert("増床更新に成功しました！");
+    fetchGroupHomes();
     setEditingExpansion(null);
   } else {
     // 新規登録モード → バックエンドへPOST
@@ -767,6 +681,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
         timestamp: new Date().toISOString()
       };
       alert("増床登録に成功しました！");
+      fetchGroupHomes();
       setExpansionRecords(prev => [newExpansion, ...prev]);
     } catch (err) {
       console.error('増床登録エラー:', err);
