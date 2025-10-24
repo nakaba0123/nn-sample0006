@@ -744,6 +744,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
         ? { ...expansion, ...data }
         : expansion
     ));
+    alert("増床更新に成功しました！");
     setEditingExpansion(null);
   } else {
     // 新規登録モード → バックエンドへPOST
@@ -765,6 +766,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
         ...data,
         timestamp: new Date().toISOString()
       };
+      alert("増床登録に成功しました！");
       setExpansionRecords(prev => [newExpansion, ...prev]);
     } catch (err) {
       console.error('増床登録エラー:', err);
