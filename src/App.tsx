@@ -388,6 +388,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T | null
   }
 }
 
+/*
 const fetchGroupHomes = async () => {
   try {
     // 1. GH 一覧を取得
@@ -434,6 +435,50 @@ const fetchGroupHomes = async () => {
     return [];
   }
 };
+/*
+
+const fetchGroupHomes = async () => {
+  try {
+    // 1. MAIN と SUB の両方を取得
+    const [resMain, resSub] = await Promise.all([
+      axios.get(`${API_BASE_URL}/group-homes/main`),
+      axios.get(`${API_BASE_URL}/group-homes/sub`),
+    ]);
+
+    const homesMain = resMain.data.map(mapGroupHome);
+    const homesSub = resSub.data.map(mapGroupHome);
+
+    // 2. 全グループホームをまとめる
+    const allHomes = [...homesMain, ...homesSub];
+
+    // 3. 増床記録を取得して camelCase 化
+    const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
+    const expansionsRaw = resExpansions.data;
+    const expansions = expansionsRaw.map(mapExpansion);
+
+    // 4. expansions を各 GH に紐づける
+    const data = allHomes.map((gh) => ({
+      ...gh,
+      expansions: expansions.filter(
+        (ex) => ex.propertyName === gh.propertyName
+      ),
+    }));
+
+    // 5. state 更新
+    setGroupHomesMain(data);
+    setExpansionRecords(expansions);
+
+    console.log("✅ fetchGroupHomes: 結合済みデータ", data);
+    return data;
+  } catch (err) {
+    console.error("一覧取得エラー:", err);
+    setGroupHomesMain([]);
+    setExpansionRecords([]);
+    return [];
+  }
+};
+
+
 
 // --- 利用者一覧取得 -----------------------------
 // App.tsx どこか上に
