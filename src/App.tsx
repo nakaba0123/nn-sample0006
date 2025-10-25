@@ -449,7 +449,7 @@ const fetchGroupHomes = async () => {
     const homesSub = resSub.data.map(mapGroupHome);
 
     // 2. 全グループホームをまとめる
-    const allHomes = [...homesMain, ...homesSub];
+//    const allHomes = [...homesMain, ...homesSub];
 
     console.log("allHomes:::::", allHomes);
 
@@ -457,7 +457,7 @@ const fetchGroupHomes = async () => {
     const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
     const expansionsRaw = resExpansions.data;
     const expansions = expansionsRaw.map(mapExpansion);
-
+/*
     // 4. expansions を各 GH に紐づける
     const data = allHomes.map((gh) => ({
       ...gh,
@@ -465,11 +465,44 @@ const fetchGroupHomes = async () => {
         (ex) => ex.propertyName === gh.propertyName
       ),
     }));
+*/
+    // 4. GH も mapGroupHome で camelCase 化して、expansions を結合
+    const dataMain = homesMain.map((gh: any) => {
+      const ghCamel = mapGroupHome(gh);
+      
+      // GH ごとの expansions を取得
+      const ghExpansions = expansions.filter(
+        (ex) => ex.propertyName === ghCamel.propertyName
+      );
+        
+      return {
+        ...ghCamel,
+        expansions: ghExpansions,
+      };
+    });
+    
+    // 4. GH も mapGroupHome で camelCase 化して、expansions を結合
+    const dataSub = homesSub.map((gh: any) => {
+      const ghCamel = mapGroupHome(gh);
+      
+      // GH ごとの expansions を取得
+      const ghExpansions = expansions.filter(
+        (ex) => ex.propertyName === ghCamel.propertyName
+      );
+        
+      return {
+        ...ghCamel,
+        expansions: ghExpansions,
+      };
+    });
+    
 
-    console.log("data:::::", data);
+    console.log("dataMain:::::", dataMain);
+    console.log("dataSub:::::", dataSub);
 
     // 5. state 更新
-    setGroupHomesMain(data);
+    setGroupHomesMain(dataMain);
+    setGroupHomesSub(dataSub);
     setExpansionRecords(expansions);
 
     console.log("✅ fetchGroupHomes: 結合済みデータ", data);
