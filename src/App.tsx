@@ -439,36 +439,47 @@ const fetchGroupHomes = async () => {
 
 const fetchGroupHomes = async () => {
   try {
-    // 1. MAIN と SUB の両方を取得
-    const [resMain, resSub] = await Promise.all([
+    const [resMain, resSub, resExp] = await Promise.all([
       axios.get(`${API_BASE_URL}/group-homes/main`),
       axios.get(`${API_BASE_URL}/group-homes/sub`),
+      axios.get(`${API_BASE_URL}/expansions`),
     ]);
 
-    const homesMain = resMain.data.map(mapGroupHome);
-    const homesSub = resSub.data.map(mapGroupHome);
-
-    // 2. 全グループホームをまとめる
-    const allHomes = [...homesMain, ...homesSub];
-
-    // 3. 増床記録を取得して camelCase 化
-    const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
-    const expansionsRaw = resExpansions.data;
+    const homesMain = (resMain.data || []).map(mapGroupHome);
+    const homesSub  = (resSub.data  || []).map(mapGroupHome);
+    const expansionsRaw = resExp.data || [];
     const expansions = expansionsRaw.map(mapExpansion);
 
-    // 4. expansions を各 GH に紐づける
-    const data = allHomes.map((gh) => ({
+    console.log("raw counts -> main:", homesMain.length, " sub:", homesSub.length, " expansions:", expansions.length);
+
+    // Mapでユニーク化（キーは propertyName + '|' + unitName。facilityCodeが一意ならそれでもOK）
+    const m = new Map<string, any>();
+
+    // まず main を入れる
+    homesMain.forEach((gh: any) => {
+      const key = `${gh.propertyName}|${gh.unitName}`;
+      m.set(key, gh);
+    });
+
+    // 次に sub を入れる（同キーがあれば上書きしたければここで上書き）
+    homesSub.forEach((gh: any) => {
+      const key = `${gh.propertyName}|${gh.unitName}`;
+      // もし完全に重複を無視したければ `if (!m.has(key)) m.set(key, gh);`
+      m.set(key, gh);
+    });
+
+    const allHomes = Array.from(m.values());
+
+    // expansions を各 GH に紐づける
+    const data = allHomes.map((gh: any) => ({
       ...gh,
-      expansions: expansions.filter(
-        (ex) => ex.propertyName === gh.propertyName
-      ),
+      expansions: expansions.filter((ex: any) => ex.propertyName === gh.propertyName),
     }));
 
-    // 5. state 更新
     setGroupHomesMain(data);
     setExpansionRecords(expansions);
 
-    console.log("✅ fetchGroupHomes: 結合済みデータ", data);
+    console.log("fetchGroupHomes: merged allHomes count =", data.length);
     return data;
   } catch (err) {
     console.error("一覧取得エラー:", err);
@@ -477,8 +488,6 @@ const fetchGroupHomes = async () => {
     return [];
   }
 };
-
-
 
 // --- 利用者一覧取得 -----------------------------
 // App.tsx どこか上に
