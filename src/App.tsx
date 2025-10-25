@@ -435,7 +435,7 @@ const fetchGroupHomes = async () => {
     return [];
   }
 };
-/*
+*/
 
 const fetchGroupHomes = async () => {
   try {
