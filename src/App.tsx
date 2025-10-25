@@ -388,7 +388,6 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T | null
   }
 }
 
-/*
 const fetchGroupHomes = async () => {
   try {
     // 1. GH 一覧を取得
@@ -428,85 +427,6 @@ const fetchGroupHomes = async () => {
     console.log("expansions:::::", expansions);
 
     return data;
-  } catch (err) {
-    console.error("一覧取得エラー:", err);
-    setGroupHomesMain([]);
-    setExpansionRecords([]);
-    return [];
-  }
-};
-*/
-
-const fetchGroupHomes = async () => {
-  try {
-    // 1. MAIN と SUB の両方を取得
-    const [resMain, resSub] = await Promise.all([
-      axios.get(`${API_BASE_URL}/group-homes/main`),
-      axios.get(`${API_BASE_URL}/group-homes/sub`),
-    ]);
-
-    const homesMain = resMain.data.map(mapGroupHome);
-    const homesSub = resSub.data.map(mapGroupHome);
-
-    // 2. 全グループホームをまとめる
-//    const allHomes = [...homesMain, ...homesSub];
-
-//    console.log("allHomes:::::", allHomes);
-
-    // 3. 増床記録を取得して camelCase 化
-    const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
-    const expansionsRaw = resExpansions.data;
-    const expansions = expansionsRaw.map(mapExpansion);
-/*
-    // 4. expansions を各 GH に紐づける
-    const data = allHomes.map((gh) => ({
-      ...gh,
-      expansions: expansions.filter(
-        (ex) => ex.propertyName === gh.propertyName
-      ),
-    }));
-*/
-    // 4. GH も mapGroupHome で camelCase 化して、expansions を結合
-    const dataMain = homesMain.map((gh: any) => {
-      const ghCamel = mapGroupHome(gh);
-      
-      // GH ごとの expansions を取得
-      const ghExpansions = expansions.filter(
-        (ex) => ex.propertyName === ghCamel.propertyName
-      );
-        
-      return {
-        ...ghCamel,
-        expansions: ghExpansions,
-      };
-    });
-    
-    // 4. GH も mapGroupHome で camelCase 化して、expansions を結合
-    const dataSub = homesSub.map((gh: any) => {
-      const ghCamel = mapGroupHome(gh);
-      
-      // GH ごとの expansions を取得
-      const ghExpansions = expansions.filter(
-        (ex) => ex.propertyName === ghCamel.propertyName
-      );
-        
-      return {
-        ...ghCamel,
-        expansions: ghExpansions,
-      };
-    });
-    
-
-    console.log("dataMain:::::", dataMain);
-    console.log("dataSub:::::", dataSub);
-
-    // 5. state 更新
-//    setGroupHomesMain(dataMain);
-//    setGroupHomesSub(dataSub);
-    setExpansionRecords(expansions);
-
-//    console.log("✅ fetchGroupHomes: 結合済みデータ", data);
-//    return dataMain;
   } catch (err) {
     console.error("一覧取得エラー:", err);
     setGroupHomesMain([]);
