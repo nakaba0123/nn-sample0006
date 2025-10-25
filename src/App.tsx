@@ -451,6 +451,8 @@ const fetchGroupHomes = async () => {
     // 2. 全グループホームをまとめる
     const allHomes = [...homesMain, ...homesSub];
 
+    console.log("allHomes:::::", allHomes);
+
     // 3. 増床記録を取得して camelCase 化
     const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
     const expansionsRaw = resExpansions.data;
@@ -463,6 +465,8 @@ const fetchGroupHomes = async () => {
         (ex) => ex.propertyName === gh.propertyName
       ),
     }));
+
+    console.log("data:::::", data);
 
     // 5. state 更新
     setGroupHomesMain(data);
