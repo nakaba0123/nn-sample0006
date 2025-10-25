@@ -501,7 +501,7 @@ const fetchGroupHomes = async () => {
     console.log("dataSub:::::", dataSub);
 
     // 5. state 更新
-    setGroupHomesMain(dataMain);
+//    setGroupHomesMain(dataMain);
 //    setGroupHomesSub(dataSub);
     setExpansionRecords(expansions);
 
