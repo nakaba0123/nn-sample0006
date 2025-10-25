@@ -502,7 +502,7 @@ const fetchGroupHomes = async () => {
 
     // 5. state 更新
     setGroupHomesMain(dataMain);
-    setGroupHomesSub(dataSub);
+//    setGroupHomesSub(dataSub);
     setExpansionRecords(expansions);
 
 //    console.log("✅ fetchGroupHomes: 結合済みデータ", data);
