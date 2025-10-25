@@ -506,7 +506,7 @@ const fetchGroupHomes = async () => {
     setExpansionRecords(expansions);
 
 //    console.log("✅ fetchGroupHomes: 結合済みデータ", data);
-    return dataMain;
+//    return dataMain;
   } catch (err) {
     console.error("一覧取得エラー:", err);
     setGroupHomesMain([]);
