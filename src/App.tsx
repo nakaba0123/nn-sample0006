@@ -388,7 +388,6 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T | null
   }
 }
 
-/*
 const fetchGroupHomes = async () => {
   try {
     // 1. GH 一覧を取得
@@ -427,59 +426,6 @@ const fetchGroupHomes = async () => {
     console.log("data:::::", data);
     console.log("expansions:::::", expansions);
 
-    return data;
-  } catch (err) {
-    console.error("一覧取得エラー:", err);
-    setGroupHomesMain([]);
-    setExpansionRecords([]);
-    return [];
-  }
-};
-*/
-
-const fetchGroupHomes = async () => {
-  try {
-    const [resMain, resSub, resExp] = await Promise.all([
-      axios.get(`${API_BASE_URL}/group-homes/main`),
-      axios.get(`${API_BASE_URL}/group-homes/sub`),
-      axios.get(`${API_BASE_URL}/expansions`),
-    ]);
-
-    const homesMain = (resMain.data || []).map(mapGroupHome);
-    const homesSub  = (resSub.data  || []).map(mapGroupHome);
-    const expansionsRaw = resExp.data || [];
-    const expansions = expansionsRaw.map(mapExpansion);
-
-    console.log("raw counts -> main:", homesMain.length, " sub:", homesSub.length, " expansions:", expansions.length);
-
-    // Mapでユニーク化（キーは propertyName + '|' + unitName。facilityCodeが一意ならそれでもOK）
-    const m = new Map<string, any>();
-
-    // まず main を入れる
-    homesMain.forEach((gh: any) => {
-      const key = `${gh.propertyName}|${gh.unitName}`;
-      m.set(key, gh);
-    });
-
-    // 次に sub を入れる（同キーがあれば上書きしたければここで上書き）
-    homesSub.forEach((gh: any) => {
-      const key = `${gh.propertyName}|${gh.unitName}`;
-      // もし完全に重複を無視したければ `if (!m.has(key)) m.set(key, gh);`
-      m.set(key, gh);
-    });
-
-    const allHomes = Array.from(m.values());
-
-    // expansions を各 GH に紐づける
-    const data = allHomes.map((gh: any) => ({
-      ...gh,
-      expansions: expansions.filter((ex: any) => ex.propertyName === gh.propertyName),
-    }));
-
-    setGroupHomesMain(data);
-    setExpansionRecords(expansions);
-
-    console.log("fetchGroupHomes: merged allHomes count =", data.length);
     return data;
   } catch (err) {
     console.error("一覧取得エラー:", err);
