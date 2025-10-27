@@ -388,6 +388,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T | null
   }
 }
 
+/*
 const fetchGroupHomes = async () => {
   try {
     // 1. GH 一覧を取得
@@ -431,6 +432,55 @@ const fetchGroupHomes = async () => {
     console.error("一覧取得エラー:", err);
     setGroupHomesMain([]);
     setExpansionRecords([]);
+    return [];
+  }
+};
+*/
+
+// =======================
+// 🏠 MAIN（グループホーム一覧用）
+// =======================
+const fetchGroupHomesMain = async () => {
+  try {
+    const resHomes = await axios.get(`${API_BASE_URL}/group-homes/main`);
+    const homes = resHomes.data;
+
+    const resExpansions = await axios.get(`${API_BASE_URL}/expansions`);
+    const expansionsRaw = resExpansions.data;
+    const expansions = expansionsRaw.map(mapExpansion);
+
+    const data = homes.map((gh: any) => {
+      const ghCamel = mapGroupHome(gh);
+      const ghExpansions = expansions.filter(
+        (ex) => ex.propertyName === ghCamel.propertyName
+      );
+      return { ...ghCamel, expansions: ghExpansions };
+    });
+
+    setGroupHomesMain(data);
+    setExpansionRecords(expansions);
+    console.log("✅ MAIN 更新完了:", data);
+    return data;
+  } catch (err) {
+    console.error("MAIN取得エラー:", err);
+    setGroupHomesMain([]);
+    return [];
+  }
+};
+
+// =======================
+// 🏠 SUB（利用者登録用）
+// =======================
+const fetchGroupHomesSub = async () => {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/group-homes/sub`);
+    const subs = res.data.map(mapGroupHome);
+    setGroupHomesSub(subs);
+    console.log("✅ SUB 更新完了:", subs);
+    return subs;
+  } catch (err) {
+    console.error("SUB取得エラー:", err);
+    setGroupHomesSub([]);
     return [];
   }
 };
@@ -648,6 +698,7 @@ useEffect(() => {
   setUsers(mappedUsers);
 }, [rawUsers, departmentHistories]);
 
+/*
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
   if (editingExpansion) {
     // 編集モード
@@ -687,6 +738,37 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
     }
   }
 };
+*/
+
+const handleExpansionSubmit = async (data: ExpansionFormData) => {
+  try {
+    const res = await fetch('/api/expansions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error('登録失敗');
+    const result = await res.json();
+
+    alert("増床登録に成功しました！");
+
+    // MAIN / SUB 両方更新！
+    await Promise.all([fetchGroupHomesMain(), fetchGroupHomesSub()]);
+
+    // 新しいレコードを state に追加
+    const newExpansion: ExpansionRecord = {
+      id: result.id || `exp_${Date.now()}`,
+      ...data,
+      timestamp: new Date().toISOString()
+    };
+    setExpansionRecords(prev => [newExpansion, ...prev]);
+
+  } catch (err) {
+    console.error('増床登録エラー:', err);
+  }
+};
+
 /*
   const handleDepartmentSubmit = (data: DepartmentFormData) => {
     if (editingDepartment) {
