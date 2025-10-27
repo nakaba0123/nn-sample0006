@@ -902,7 +902,8 @@ app.post('/api/expansions', async (req, res) => {
       unitName,
       expansionType || null,
       JSON.stringify(normalizedRooms),
-      commonRoom ? 1 : 0,
+//      commonRoom ? 1 : 0,
+      expansionType === 'A' ? commonRoom : null,
       startDate || null,
     ];
     const [expansionResult] = await conn.query(expansionSql, expansionValues);
