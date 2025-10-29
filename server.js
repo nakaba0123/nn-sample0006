@@ -740,7 +740,7 @@ app.patch('/api/disability_histories/:id', async (req, res) => {
   }
 });
 
-
+/*
 app.delete('/api/expansions/:id', async (req, res) => {
   const expansionId = req.params.id;
 
@@ -755,97 +755,54 @@ app.delete('/api/expansions/:id', async (req, res) => {
     res.status(500).json({ error: '削除失敗' });
   }
 });
-/*
-app.post('/api/expansions', async (req, res) => {
-  console.log("POST /api/expansions が呼ばれました！");
-  console.log("req.body:", req.body);
+*/
 
-  const {
-    propertyName,
-    unitName,       // GHのユニット名
-    expansionType,  // A or B
-    newRooms,
-    commonRoom,
-    startDate
-  } = req.body;
+app.delete('/api/expansions/:id', async (req, res) => {
+  const expansionId = req.params.id;
 
-  if (!propertyName || !unitName) {
-    return res.status(400).json({ message: "propertyName と unitName は必須です" });
-  }
-
-  let normalizedRooms;
   try {
-    if (Array.isArray(newRooms)) {
-      normalizedRooms = newRooms;
-    } else if (typeof newRooms === "string") {
-      normalizedRooms = JSON.parse(newRooms || "[]");
+    // 1️⃣ 対象のexpansionを取得
+    const [rows] = await pool.execute(
+      'SELECT * FROM expansions WHERE id = ?',
+      [expansionId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: '該当する増床記録がありません' });
+    }
+
+    const { expansion_type, property_name, unit_name } = rows[0];
+
+    // 2️⃣ 種類に応じて削除処理を分岐
+    if (expansion_type === 'B') {
+      // --- B: 同ユニットで単純増床 ---
+      await pool.execute('DELETE FROM expansions WHERE id = ?', [expansionId]);
+      console.log(`✅ expansion_type=B → expansions.id=${expansionId} 削除完了`);
+    } else if (expansion_type === 'A') {
+      // --- A: 別ユニットとして登録 ---
+      await pool.execute(
+        'DELETE FROM expansions WHERE property_name = ? AND unit_name = ?',
+        [property_name, unit_name]
+      );
+      await pool.execute(
+        'DELETE FROM group_homes WHERE property_name = ? AND unit_name = ?',
+        [property_name, unit_name]
+      );
+      console.log(
+        `✅ expansion_type=A → expansions & group_homes (${property_name}/${unit_name}) 削除完了`
+      );
     } else {
-      normalizedRooms = [];
-    }
-  } catch (e) {
-    console.error("newRooms の JSON 変換失敗:", e);
-    normalizedRooms = [];
-  }
-
-  const capacity = normalizedRooms.length + (commonRoom ? 1 : 0);
-
-  const conn = await pool.getConnection();
-  try {
-    await conn.beginTransaction();
-
-    const expansionSql = `
-      INSERT INTO expansions (
-        property_name,
-        unit_name,
-        expansion_type,
-        new_rooms,
-        common_room,
-        start_date
-      ) VALUES (?, ?, ?, ?, ?, ?)
-    `;
-    const expansionValues = [
-      propertyName,
-      unitName,
-      expansionType || null,
-      JSON.stringify(normalizedRooms),
-      commonRoom ? 1 : 0,
-      startDate || null
-    ];
-    const [expansionResult] = await conn.query(expansionSql, expansionValues);
-
-    if (expansionType === 'A') {
-      const groupHomeSql = `
-        INSERT INTO group_homes (
-          property_name,
-          unit_name,
-          capacity,
-          unit_type
-        ) VALUES (?, ?, ?, "SUB")
-      `;
-      await conn.query(groupHomeSql, [propertyName, unitName, capacity]);
-    } else if (expansionType === 'B') {
-      const updateSql = `
-        UPDATE group_homes
-        SET capacity = capacity + ?
-        WHERE property_name = ? AND unit_name = ? AND unit_type = "MAIN"
-      `;
-      await conn.query(updateSql, [capacity, propertyName, unitName]);
+      // --- 想定外タイプ ---
+      await pool.execute('DELETE FROM expansions WHERE id = ?', [expansionId]);
+      console.warn(`⚠️ 未知のexpansion_type=${expansion_type} → expansionsのみ削除`);
     }
 
-    await conn.commit();
-    res.status(201).json({
-      message: '増床情報を登録しました',
-      id: expansionResult.insertId
-    });
+    res.status(200).json({ message: '削除成功' });
   } catch (err) {
-    await conn.rollback();
-    console.error('増床登録エラー:', err);
-    res.status(500).json({ message: '増床登録に失敗しました' });
-  } finally {
-    conn.release();
+    console.error('増床削除エラー:', err);
+    res.status(500).json({ error: '削除失敗' });
   }
 });
-*/
 
 app.post('/api/expansions', async (req, res) => {
   console.log("POST /api/expansions が呼ばれました！");
