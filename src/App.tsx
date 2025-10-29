@@ -388,7 +388,6 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T | null
   }
 }
 
-/*
 const fetchGroupHomes = async () => {
   try {
     // 1. GH 一覧を取得
@@ -435,7 +434,6 @@ const fetchGroupHomes = async () => {
     return [];
   }
 };
-*/
 
 // =======================
 // 🏠 MAIN（グループホーム一覧用）
