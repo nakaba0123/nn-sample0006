@@ -1106,8 +1106,8 @@ const handleDeleteExpansion = async (expansionId: string) => {
     // ✅ 削除後に「expansions」と「groupHomes」を再取得して完全同期
     const [expansionsRes, mainHomes, subHomes] = await Promise.all([
       axios.get(`${API_BASE_URL}/expansions`),
-      fetchGroupHomeMain(),
-      fetchGroupHomeSub(),
+      fetchGroupHomesMain(),
+      fetchGroupHomesSub(),
     ]);
 
     // 最新の expansions state を反映
