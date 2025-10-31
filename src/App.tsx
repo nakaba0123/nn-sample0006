@@ -1101,14 +1101,19 @@ const handleDeleteExpansion = async (expansionId: string) => {
 
     if (!response.ok) throw new Error('削除に失敗しました');
 
-    // フロント側の増床記録を更新
-    setExpansionRecords(prev => prev.filter(exp => exp.id !== expansionId));
-
-    // 🧩 ここが重要！
-    // グループホーム情報を再取得してUIを更新する
-    await Promise.all([fetchGroupHomeMain(), fetchGroupHomeSub()]);
-
     alert('増床記録を削除しました');
+
+    // ✅ 削除後に「expansions」と「groupHomes」を再取得して完全同期
+    const [expansionsRes, mainHomes, subHomes] = await Promise.all([
+      axios.get(`${API_BASE_URL}/expansions`),
+      fetchGroupHomeMain(),
+      fetchGroupHomeSub(),
+    ]);
+
+    // 最新の expansions state を反映
+    const expansionsUpdated = expansionsRes.data.map(mapExpansion);
+    setExpansionRecords(expansionsUpdated);
+
   } catch (error) {
     console.error('増床削除エラー:', error);
     alert('削除に失敗しました');
