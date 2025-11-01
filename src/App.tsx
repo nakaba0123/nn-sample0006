@@ -745,7 +745,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
       // ✏️ 編集モード
       // ===========================
       const res = await fetch(`/api/expansions/${editingExpansion.id}`, {
-        method: 'PATCH', // or 'PUT'
+        method: 'PUT', // or 'PUT'
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
