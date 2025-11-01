@@ -953,7 +953,7 @@ app.get('/api/expansions', async (req, res) => {
     res.status(500).json({ message: '取得に失敗しました' });
   }
 });
-
+/*
 // PUT /api/expansions/update-property-name
 app.put('/api/expansions/update-property-name', async (req, res) => {
   const { oldPropertyName, newPropertyName } = req.body;
@@ -979,6 +979,64 @@ app.put('/api/expansions/update-property-name', async (req, res) => {
     await conn.rollback();
     console.error(error);
     res.status(500).json({ error: 'expansionsテーブルの更新に失敗しました' });
+  } finally {
+    conn.release();
+  }
+});
+*/
+
+// =======================
+// PUT /api/expansions/:id
+// =======================
+app.put("/api/expansions/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    property_name,
+    unit_name,
+    expansion_type, // "A→B" or "B→A"
+    group_home_id,
+    capacity,
+  } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "IDが指定されていません" });
+  }
+
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    // 1️⃣ expansionsテーブルを更新
+    await conn.query(
+      `UPDATE expansions
+       SET property_name = ?, unit_name = ?, expansion_type = ?
+       WHERE id = ?`,
+      [property_name, unit_name, expansion_type, id]
+    );
+
+    // 2️⃣ A↔B変換の処理
+    if (expansion_type === "A→B") {
+      // 「既存GHに新規ユニットを追加」パターン
+      await conn.query(
+        `INSERT INTO group_homes (property_name, unit_name, capacity, created_at)
+         VALUES (?, ?, ?, NOW())`,
+        [property_name, unit_name, capacity || 0]
+      );
+    } else if (expansion_type === "B→A") {
+      // 「既存ユニットを統合」パターン
+      await conn.query(
+        `DELETE FROM group_homes
+         WHERE property_name = ? AND unit_name = ?`,
+        [property_name, unit_name]
+      );
+    }
+
+    await conn.commit();
+    res.json({ message: "expansionsテーブルとgroup_homesテーブルを更新しました" });
+  } catch (error) {
+    await conn.rollback();
+    console.error("PUT /api/expansions/:id エラー:", error);
+    res.status(500).json({ error: "増床更新処理に失敗しました" });
   } finally {
     conn.release();
   }
