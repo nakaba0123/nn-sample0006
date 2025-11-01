@@ -740,30 +740,69 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
   try {
-    const res = await fetch('/api/expansions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    if (editingExpansion) {
+      // ===========================
+      // ✏️ 編集モード
+      // ===========================
+      const res = await fetch(`/api/expansions/${editingExpansion.id}`, {
+        method: 'PATCH', // or 'PUT'
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
 
-    if (!res.ok) throw new Error('登録失敗');
-    const result = await res.json();
+      if (!res.ok) throw new Error('更新失敗');
+      const result = await res.json();
 
-    alert("増床登録に成功しました！");
+      alert('増床情報を更新しました！');
 
-    // MAIN / SUB 両方更新！
-    await Promise.all([fetchGroupHomesMain(), fetchGroupHomesSub()]);
+      // ステート更新
+      setExpansionRecords(prev =>
+        prev.map(expansion =>
+          expansion.id === editingExpansion.id
+            ? { ...expansion, ...data, updatedAt: new Date().toISOString() }
+            : expansion
+        )
+      );
 
-    // 新しいレコードを state に追加
-    const newExpansion: ExpansionRecord = {
-      id: result.id || `exp_${Date.now()}`,
-      ...data,
-      timestamp: new Date().toISOString()
-    };
-//    setExpansionRecords(prev => [newExpansion, ...prev]);
+      // MAIN / SUB 両方更新！
+      await Promise.all([fetchGroupHomesMain(), fetchGroupHomesSub()]);
 
+      // 編集モード解除
+      setEditingExpansion(null);
+      handleCloseExpansionModal();
+
+    } else {
+      // ===========================
+      // 🆕 新規登録モード
+      // ===========================
+      const res = await fetch('/api/expansions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) throw new Error('登録失敗');
+      const result = await res.json();
+
+      alert('増床登録に成功しました！');
+
+      const newExpansion: ExpansionRecord = {
+        id: result.id || `exp_${Date.now()}`,
+        ...data,
+        timestamp: new Date().toISOString(),
+      };
+
+      // ステート追加
+      setExpansionRecords(prev => [newExpansion, ...prev]);
+
+      // MAIN / SUB 両方更新！
+      await Promise.all([fetchGroupHomesMain(), fetchGroupHomesSub()]);
+
+      handleCloseExpansionModal();
+    }
   } catch (err) {
-    console.error('増床登録エラー:', err);
+    console.error('増床登録/更新エラー:', err);
+    alert('登録または更新に失敗しました。');
   }
 };
 
