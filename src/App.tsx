@@ -1083,19 +1083,35 @@ const handleDeleteUser = async (userId: string) => {
   };
 
 const handleDeleteGroupHome = async (groupHomeId: string) => {
-  if (!window.confirm('このグループホームを削除してもよろしいですか？')) return;
+  // 🔍 削除対象の物件情報を取得（expansions用にpropertyNameを残す）
+  const targetGroupHome = groupHomesMain.find(gh => gh.id === groupHomeId);
+  const deletedPropertyName = targetGroupHome?.propertyName;
+
+  if (!window.confirm(`${deletedPropertyName ?? 'このグループホーム'} を削除してもよろしいですか？`)) return;
 
   try {
-    // 🔥 DELETEリクエストを送る（バックエンドAPI呼び出し）
+    // 🔥 DELETEリクエストを送信
     await axios.delete(`${API_BASE_URL}/group-homes/${groupHomeId}`);
 
-    // ✅ 削除成功したらローカル状態も更新
+    // ✅ group_homesリスト更新
     setGroupHomesMain(prev => prev.filter(gh => gh.id !== groupHomeId));
-    setShiftPreferences(prev => prev.map(pref => ({
-      ...pref,
-      preferences: pref.preferences.filter(ghPref => ghPref.groupHomeId !== groupHomeId)
-    })).filter(pref => pref.preferences.length > 0));
+
+    // ✅ シフト希望情報の更新
+    setShiftPreferences(prev => prev
+      .map(pref => ({
+        ...pref,
+        preferences: pref.preferences.filter(ghPref => ghPref.groupHomeId !== groupHomeId)
+      }))
+      .filter(pref => pref.preferences.length > 0)
+    );
+
+    // ✅ 利用者リスト更新
     setResidents(prev => prev.filter(resident => resident.groupHomeId !== groupHomeId));
+
+    // ✅ 🔥 増床記録(expansions)も削除
+    if (deletedPropertyName) {
+      setExpansions(prev => prev.filter(exp => exp.propertyName !== deletedPropertyName));
+    }
 
     alert('削除に成功しました');
   } catch (err) {
