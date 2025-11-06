@@ -1110,7 +1110,7 @@ const handleDeleteGroupHome = async (groupHomeId: string) => {
 
     // ✅ 🔥 増床記録(expansions)も削除
     if (deletedPropertyName) {
-      setExpansions(prev => prev.filter(exp => exp.propertyName !== deletedPropertyName));
+      setExpansionRecords(prev => prev.filter(exp => exp.propertyName !== deletedPropertyName));
     }
 
     alert('削除に成功しました');
