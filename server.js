@@ -165,8 +165,8 @@ app.delete('/api/group-homes/:id', async (req, res) => {
 
     // 同じproperty_name/unit_nameの増床記録を削除
     await conn.query(
-      'DELETE FROM expansions WHERE property_name = ? AND unit_name = ?',
-      [property_name, unit_name]
+      'DELETE FROM expansions WHERE property_name = ?',
+      [property_name]
     );
 
     await conn.commit();
