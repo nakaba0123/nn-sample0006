@@ -127,7 +127,7 @@ app.post('/api/group-homes', async (req, res) => {
     res.status(500).json({ message: '登録に失敗しました' });
   }
 });
-
+/*
 app.delete('/api/group-homes/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -136,6 +136,47 @@ app.delete('/api/group-homes/:id', async (req, res) => {
   } catch (err) {
     console.error('削除エラー:', err);
     res.status(500).json({ message: '削除に失敗しました' });
+  }
+});
+*/
+
+app.delete('/api/group-homes/:id', async (req, res) => {
+  const { id } = req.params;
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    // まず削除対象のgroup_home情報を取得（property_name と unit_name）
+    const [rows] = await conn.query(
+      'SELECT property_name, unit_name FROM group_homes WHERE id = ?',
+      [id]
+    );
+
+    if (rows.length === 0) {
+      await conn.rollback();
+      return res.status(404).json({ message: '指定されたグループホームが存在しません。' });
+    }
+
+    const { property_name, unit_name } = rows[0];
+
+    // group_homes を削除
+    await conn.query('DELETE FROM group_homes WHERE id = ?', [id]);
+
+    // 同じproperty_name/unit_nameの増床記録を削除
+    await conn.query(
+      'DELETE FROM expansions WHERE property_name = ? AND unit_name = ?',
+      [property_name, unit_name]
+    );
+
+    await conn.commit();
+    res.json({ message: 'グループホームおよび関連する増床記録を削除しました。' });
+  } catch (err) {
+    await conn.rollback();
+    console.error('削除エラー:', err);
+    res.status(500).json({ message: '削除に失敗しました。' });
+  } finally {
+    conn.release();
   }
 });
 
