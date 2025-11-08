@@ -40,8 +40,10 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
           ? editExpansion.newRooms
           : [''],
         commonRoom: editExpansion.commonRoom || '',
+//        startDate: editExpansion.startDate
         startDate: editExpansion.startDate
-      });
+          ? editExpansion.startDate.split('T')[0] // ← ← ← ここで日付だけ抽出！
+          : ''      });
     } else {
       // デフォルト値を設定（物件名は空にして選択を促す）
       const defaultPropertyName = groupHomes.length > 0 ? groupHomes[0].propertyName : '';
