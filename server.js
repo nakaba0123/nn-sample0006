@@ -1032,9 +1032,9 @@ app.put('/api/expansions/update-property-name', async (req, res) => {
 app.put("/api/expansions/:id", async (req, res) => {
   const { id } = req.params;
   const {
-    property_name,
-    unit_name,
-    expansion_type, // "A→B" or "B→A"
+    propertyName,
+    unitName,
+    expansionType, // "A→B" or "B→A"
     group_home_id,
     capacity,
   } = req.body;
@@ -1042,6 +1042,11 @@ app.put("/api/expansions/:id", async (req, res) => {
   if (!id) {
     return res.status(400).json({ error: "IDが指定されていません" });
   }
+
+  // camelCase → snake_case に変換
+  const property_name = propertyName || null;
+  const unit_name = unitName || null;
+  const expansion_type = expansionType || null;
 
   const conn = await pool.getConnection();
   try {
@@ -1055,7 +1060,7 @@ app.put("/api/expansions/:id", async (req, res) => {
       [property_name, unit_name, expansion_type, id]
     );
 
-    // 2️⃣ A↔B変換の処理
+    // 2️⃣ AB変換の処理
     if (expansion_type === "A→B") {
       // 「既存GHに新規ユニットを追加」パターン
       await conn.query(
@@ -1082,7 +1087,6 @@ app.put("/api/expansions/:id", async (req, res) => {
     conn.release();
   }
 });
-
 
 // -----------------------------------
 // POST /api/users - 新規ユーザー登録
