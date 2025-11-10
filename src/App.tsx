@@ -739,6 +739,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
 */
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
+  console.log("handleExpansionSumbitのdata:::", data);
   try {
     if (editingExpansion) {
       // ===========================
