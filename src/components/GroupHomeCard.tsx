@@ -40,6 +40,7 @@ type Props = {
     residentRooms: any[];
     openingDate: string;
     createdAt: string;
+    facilityCode: string;
   };
   expansions?: Expansion[];
   onEdit?: () => void;
@@ -122,6 +123,8 @@ useEffect(() => {
             <div>
               <h3 className="font-semibold text-gray-800 text-lg">{groupHome.propertyName}</h3>
               <p className="text-sm text-gray-500">{groupHome.unitName}</p>
+              <p className="text-sm text-gray-500 mt-1">番号: {groupHome.facilityCode}</p>
+
             </div>
           </div>
           
