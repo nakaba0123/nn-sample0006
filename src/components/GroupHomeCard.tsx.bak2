@@ -92,12 +92,6 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   const relatedExpansions = camelExpansions.filter(
     exp => exp.propertyName?.trim() === groupHome.propertyName?.trim()
   );
-
-const relatedExpansionsWithCode = relatedExpansions.map(exp => ({
-  ...exp,
-  facilityCode: groupHome.facilityCode,
-}));
-
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   console.log("?　relatedExpansions:", relatedExpansions);
   console.log("?? groupHome.propertyName:", groupHome.propertyName);
@@ -234,14 +228,14 @@ useEffect(() => {
               <span className="text-sm font-medium text-gray-700">増床記録 ({relatedExpansions.length}件)</span>
             </div>
             <div className="space-y-3">
-{relatedExpansionsWithCode.map((expansion) => (
-  <ExpansionCard
-    key={expansion.id}
-    expansion={expansion}
-    onEdit={onEditExpansion}
-    onDelete={onDeleteExpansion}
-  />
-))}
+              {relatedExpansions.map((expansion) => (
+                <ExpansionCard
+                  key={expansion.id}
+                  expansion={expansion}
+                  onEdit={onEditExpansion}
+                  onDelete={onDeleteExpansion}
+                />
+              ))}
             </div>
             
           </div>
