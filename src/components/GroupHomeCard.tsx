@@ -245,6 +245,7 @@ useEffect(() => {
               <span className="text-sm font-medium text-gray-700">増床記録 ({relatedExpansions.length}件)</span>
             </div>
             <div className="space-y-3">
+            {console.log("expansion::", expansion)}
 {relatedExpansionsWithCode.map((expansion) => (
   <ExpansionCard
     key={expansion.id}
