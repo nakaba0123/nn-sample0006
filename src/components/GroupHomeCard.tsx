@@ -89,14 +89,13 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   };
 
   // この物件に関連する増床記録を取得
-// ① 「別ユニット(A)」だけを抽出する
+// ★ ① 同じグループホーム名のすべての増床(AもBも) を取得
 const relatedExpansions = camelExpansions.filter(
   exp =>
-    exp.propertyName?.trim() === groupHome.propertyName?.trim() &&
-    exp.expansionType === "A"  // ★ unitName は比較しない！
+    exp.propertyName?.trim() === groupHome.propertyName?.trim()
 );
 
-// ② facility_code を groupHomes から「ユニット名一致」で探して付与する
+// ★ ② expansion の unitName に合う facility_code を GH から探して付与
 const relatedExpansionsWithCode = relatedExpansions.map(exp => {
   const match = groupHomes.find(
     gh =>
@@ -106,7 +105,7 @@ const relatedExpansionsWithCode = relatedExpansions.map(exp => {
 
   return {
     ...exp,
-    facilityCode: match?.facilityCode ?? "", // ★ 別ユニットはここで facility_code が決まる
+    facilityCode: match?.facilityCode ?? "",
   };
 });
 
