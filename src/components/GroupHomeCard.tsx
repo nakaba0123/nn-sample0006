@@ -92,7 +92,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
 const relatedExpansions = camelExpansions.filter(
   exp =>
     exp.propertyName?.trim() === groupHome.propertyName?.trim() &&
-    (exp.facilityCode ?? '') === (groupHome.facilityCode ?? '')
+    exp.unitName?.trim() === groupHome.unitName?.trim()
 );
 
 const relatedExpansionsWithCode = relatedExpansions.map(exp => ({
