@@ -89,9 +89,11 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   };
 
   // この物件に関連する増床記録を取得
-  const relatedExpansions = camelExpansions.filter(
-    exp => exp.propertyName?.trim() === groupHome.propertyName?.trim()
-  );
+const relatedExpansions = camelExpansions.filter(
+  exp =>
+    exp.propertyName?.trim() === groupHome.propertyName?.trim() &&
+    (exp.facilityCode ?? '') === (groupHome.facilityCode ?? '')
+);
 
 const relatedExpansionsWithCode = relatedExpansions.map(exp => ({
   ...exp,
