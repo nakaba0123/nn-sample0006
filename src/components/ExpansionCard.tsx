@@ -38,9 +38,9 @@ const ExpansionCard: React.FC<ExpansionCardProps> = ({ expansion, onEdit, onDele
             <h3 className="font-semibold text-gray-800">{expansion.propertyName}</h3>
             <p className="text-sm text-gray-500">{expansion.unitName}</p>
               {/* 🟩 ここ追加：タイプA（別ユニット）のみ番号を表示 */}
-              {expansion.expansionType === 'A' && expansion.facilityCode && (
-                <p className="text-sm text-gray-500 mt-1">番号: {expansion.facilityCode}</p>
-              )}
+<p className="text-sm text-gray-500 mt-1">
+  番号: {expansion.facilityCode ?? ''}
+</p>
           </div>
         </div>
         
