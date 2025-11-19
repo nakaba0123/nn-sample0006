@@ -786,7 +786,7 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
       const result = await res.json();
 
       alert('増床登録に成功しました！');
-
+/*
       const newExpansion: ExpansionRecord = {
         id: result.id || `exp_${Date.now()}`,
         ...data,
@@ -798,6 +798,14 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
 
       // MAIN / SUB 両方更新！
       await Promise.all([fetchGroupHomesMain(), fetchGroupHomesSub()]);
+*/
+
+      // MAIN / SUB 両方更新！
+      await Promise.all([
+        fetchGroupHomesMain(),
+        fetchGroupHomesSub(),
+        fetchExpansionRecords(),   // ← これ追加！
+      ]);
 
       handleCloseExpansionModal();
     }
