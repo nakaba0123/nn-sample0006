@@ -989,6 +989,7 @@ app.get('/api/expansions', async (req, res) => {
     }, 3, 1000); // 3回リトライ、1秒待機
 
     res.status(200).json(rows);
+    console.log("res:", res);
   } catch (err) {
     console.error('増床一覧取得リトライ失敗:', err);
     res.status(500).json({ message: '取得に失敗しました' });
