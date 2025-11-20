@@ -10,7 +10,6 @@ import ExpansionCard from './ExpansionCard';
 interface GroupHomeCardProps {
   groupHome: GroupHome;
   expansions: ExpansionRecord[];
-  groupHomes: groupHome[]; // 追加
   onEdit: (groupHome: GroupHome) => void;
   onDelete: (groupHomeId: string) => void;
   onEditExpansion: (expansion: ExpansionRecord) => void;
