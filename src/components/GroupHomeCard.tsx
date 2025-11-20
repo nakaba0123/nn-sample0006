@@ -10,6 +10,7 @@ import ExpansionCard from './ExpansionCard';
 interface GroupHomeCardProps {
   groupHome: GroupHome;
   expansions: ExpansionRecord[];
+  groupHomes: GroupHome[];   // ← 新規追加
   onEdit: (groupHome: GroupHome) => void;
   onDelete: (groupHomeId: string) => void;
   onEditExpansion: (expansion: ExpansionRecord) => void;
@@ -55,6 +56,7 @@ const toCamel = (s: string) =>
 const GroupHomeCard: React.FC<GroupHomeCardProps> = ({ 
   groupHome, 
   expansions,
+  groupHomes,
   onEdit, 
   onDelete,
   onEditExpansion,
@@ -72,7 +74,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
     camelExpansions = [expansions];
   }
 
-  const [groupHomes, setGroupHomes] = useState([]);
+//  const [groupHomes, setGroupHomes] = useState([]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ja-JP');
@@ -119,14 +121,14 @@ const fetchExpansions = async () => {
   const mapped = res.data.map(mapExpansionResponse);
   setExpansions(mapped);
 };
-
+/*
 useEffect(() => {
   axios.get("/api/group-homes/main").then((res) => {
     const mapped = res.data.map((gh) => mapGroupHome(gh));
     setGroupHomes(mapped);
   });
 }, []);
-
+*/
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
       {/* メイン施設情報 */}

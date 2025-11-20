@@ -223,6 +223,7 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                     key={gh.id}
                     groupHome={gh}
                     expansions={matchedExpansions}
+                    groupHomes={groupHomes}   // ← 追加
                     onEdit={onEditGroupHome}
                     onDelete={onDeleteGroupHome}
                     onEditExpansion={onEditExpansion}
