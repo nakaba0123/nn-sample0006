@@ -120,14 +120,12 @@ const fetchExpansions = async () => {
   setExpansions(mapped);
 };
 
-/*
 useEffect(() => {
   axios.get("/api/group-homes/main").then((res) => {
     const mapped = res.data.map((gh) => mapGroupHome(gh));
     setGroupHomes(mapped);
   });
 }, []);
-*/
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
