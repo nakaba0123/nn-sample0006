@@ -10,6 +10,7 @@ import ExpansionCard from './ExpansionCard';
 interface GroupHomeCardProps {
   groupHome: GroupHome;
   expansions: ExpansionRecord[];
+  groupHomes: groupHome[]; // 追加
   onEdit: (groupHome: GroupHome) => void;
   onDelete: (groupHomeId: string) => void;
   onEditExpansion: (expansion: ExpansionRecord) => void;
@@ -72,7 +73,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
     camelExpansions = [expansions];
   }
 
-  const [groupHomes, setGroupHomes] = useState([]);
+//  const [groupHomes, setGroupHomes] = useState([]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ja-JP');
@@ -121,12 +122,12 @@ const fetchExpansions = async () => {
 };
 
 
-useEffect(() => {
-  axios.get("/api/group-homes/main").then((res) => {
-    const mapped = res.data.map((gh) => mapGroupHome(gh));
-    setGroupHomes(mapped);
-  });
-}, []);
+//useEffect(() => {
+//  axios.get("/api/group-homes/main").then((res) => {
+//    const mapped = res.data.map((gh) => mapGroupHome(gh));
+//    setGroupHomes(mapped);
+//  });
+//}, []);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
