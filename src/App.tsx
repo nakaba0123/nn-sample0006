@@ -802,9 +802,15 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
 
       // MAIN / SUB 両方更新！
       await Promise.all([
+/*
         fetchGroupHomesMain(),
         fetchGroupHomesSub(),
         fetchExpansionRecords(),   // ← これ追加！
+*/
+        fetchWithRetry("/api/group-homes/main"),
+        fetchWithRetry("/api/group-homes/sub"),
+        fetchWithRetry("/api/expansions")
+
       ]);
 
       handleCloseExpansionModal();
