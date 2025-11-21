@@ -766,7 +766,20 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
       );
 
       // MAIN / SUB 両方更新！
-      await Promise.all([fetchGroupHomesMain(), fetchGroupHomesSub()]);
+//      await Promise.all([fetchGroupHomesMain(), fetchGroupHomesSub()]);
+      const [
+        groupHomesMainRes,
+        groupHomesSubRes,
+        expansionsRes
+      ] = await Promise.all([
+        fetchWithRetry("/api/group-homes/main"),
+        fetchWithRetry("/api/group-homes/sub"),
+        fetchWithRetry("/api/expansions")
+      ]);
+
+      setGroupHomesMain(ensureArray(groupHomesMainRes).map(mapGroupHome));
+      setGroupHomesSub(ensureArray(groupHomesSubRes).map(mapGroupHome));
+      setExpansionRecords(ensureArray(expansionsRes).map(mapExpansion));
 
       // 編集モード解除
       setEditingExpansion(null);
@@ -786,31 +799,6 @@ const handleExpansionSubmit = async (data: ExpansionFormData) => {
       const result = await res.json();
 
       alert('増床登録に成功しました！');
-/*
-      const newExpansion: ExpansionRecord = {
-        id: result.id || `exp_${Date.now()}`,
-        ...data,
-        timestamp: new Date().toISOString(),
-      };
-
-      // ステート追加
-      setExpansionRecords(prev => [newExpansion, ...prev]);
-
-      // MAIN / SUB 両方更新！
-      await Promise.all([fetchGroupHomesMain(), fetchGroupHomesSub()]);
-*/
-/*
-      // MAIN / SUB 両方更新！
-      await Promise.all([
-
-        fetchGroupHomesMain(),
-        fetchGroupHomesSub(),
-        fetchExpansionRecords(),   // ← これ追加！
-
-        fetchWithRetry("/api/group-homes/main"),
-        fetchWithRetry("/api/group-homes/sub"),
-        fetchWithRetry("/api/expansions")
-*/
 
       const [
         groupHomesMainRes,
