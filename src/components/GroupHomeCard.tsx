@@ -97,6 +97,7 @@ const relatedExpansions = camelExpansions.filter(
     exp.propertyName?.trim() === groupHome.propertyName?.trim()
 );
 
+/*
 // ★ ② expansion の unitName に合う facility_code を GH から探して付与
 const relatedExpansionsWithCode = relatedExpansions.map(exp => {
   const match = groupHomes.find(
@@ -112,6 +113,49 @@ const relatedExpansionsWithCode = relatedExpansions.map(exp => {
     facilityCode: match?.facilityCode ?? "",
   };
 });
+*/
+
+// ★ ② expansion の unitName に合う facility_code を GH から探して付与
+const relatedExpansionsWithCode = relatedExpansions.map(exp => {
+
+  // === デバッグログ（比較用）===
+  console.log(
+    "%c=== GH vs EXP 比較 ===",
+    "color: yellow; background:black;"
+  );
+  console.log("GH list ↓");
+  groupHomes.forEach((g, i) => {
+    console.log(
+      `[${i}]`,
+      JSON.stringify(g.propertyName),
+      JSON.stringify(g.unitName)
+    );
+  });
+  console.log(
+    "比較中 EXP:",
+    JSON.stringify(exp.propertyName),
+    JSON.stringify(exp.unitName)
+  );
+
+  const match = groupHomes.find(
+    gh =>
+      gh.propertyName?.trim() === exp.propertyName?.trim() &&
+      gh.unitName?.trim() === exp.unitName?.trim()
+  );
+
+  // === マッチ結果ログ ===
+  console.log(
+    "マッチ判定 →",
+    match ? "✔ 一致" : "✘ 不一致"
+  );
+  console.log("マッチしたGH:", match);
+
+  return {
+    ...exp,
+    facilityCode: match?.facilityCode ?? "",
+  };
+});
+
 
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   console.log("?　relatedExpansions:", relatedExpansions);
