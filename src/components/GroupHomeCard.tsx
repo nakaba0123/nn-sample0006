@@ -114,6 +114,7 @@ const relatedExpansionsWithCode = relatedExpansions.map(exp => {
   const totalExpansionRooms = relatedExpansions.reduce((sum, exp) => sum + (exp.newRooms?.length ?? 0), 0);
   console.log("?　relatedExpansions:", relatedExpansions);
   console.log("?? groupHome.propertyName:", groupHome.propertyName);
+  console.log("??? totalExpansionRooms::", totalExpansionRooms);
 
 
 const fetchExpansions = async () => {
