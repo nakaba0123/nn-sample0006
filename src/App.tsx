@@ -1421,6 +1421,7 @@ const handleCloseResidentModal = useCallback(() => {
             <PermissionGuard permissions={['grouphome.create', 'grouphome.edit', 'grouphome.delete']}>
               <GroupHomeList
                 groupHomes={groupHomesMain}
+                groupHomesSub={groupHomesSub}
                 residents={residents}
                 expansionRecords={expansionRecords}
                 onAddGroupHome={handleAddGroupHome}

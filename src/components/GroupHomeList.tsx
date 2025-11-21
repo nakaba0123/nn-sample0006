@@ -7,6 +7,7 @@ import { mapExpansion } from '../util/mapExpansion'; // パスは適宜調整
 
 interface GroupHomeListProps {
   groupHomes: GroupHome[];
+  groupHomesSub: GroupHome[];
   residents: Resident[];
   expansionRecords: ExpansionRecord[];
   onAddGroupHome: () => void;
@@ -21,6 +22,7 @@ const apiBaseUrl = 'https://nn-sample0006-production.up.railway.app';
 
 const GroupHomeList: React.FC<GroupHomeListProps> = ({ 
   groupHomes, 
+  groupHomesSub, 
   residents,
   expansionRecords,
   onAddGroupHome, 
@@ -32,6 +34,7 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
 }) => {
 
   console.log(" groupHomes:", groupHomes);
+  console.log(" groupHomesSub:", groupHomesSub);
   console.log(" expansionRecords", expansionRecords);
 
   groupHomes.forEach(gh => {
@@ -224,6 +227,7 @@ const GroupHomeList: React.FC<GroupHomeListProps> = ({
                     groupHome={gh}
                     expansions={matchedExpansions}
                     groupHomes={groupHomes}   // ← 追加
+                    groupHomesSub={groupHomesSub}   // ← 追加
                     onEdit={onEditGroupHome}
                     onDelete={onDeleteGroupHome}
                     onEditExpansion={onEditExpansion}

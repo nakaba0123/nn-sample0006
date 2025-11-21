@@ -11,6 +11,7 @@ interface GroupHomeCardProps {
   groupHome: GroupHome;
   expansions: ExpansionRecord[];
   groupHomes: GroupHome[];   // ← 新規追加
+  groupHomesSub: GroupHome[];   // ← 新規追加
   onEdit: (groupHome: GroupHome) => void;
   onDelete: (groupHomeId: string) => void;
   onEditExpansion: (expansion: ExpansionRecord) => void;
@@ -57,6 +58,7 @@ const GroupHomeCard: React.FC<GroupHomeCardProps> = ({
   groupHome, 
   expansions,
   groupHomes,
+  groupHomesSub,
   onEdit, 
   onDelete,
   onEditExpansion,
@@ -124,7 +126,7 @@ const relatedExpansionsWithCode = relatedExpansions.map(exp => {
     "color: yellow; background:black;"
   );
   console.log("GH list ↓");
-  groupHomes.forEach((g, i) => {
+  groupHomesSub.forEach((g, i) => {
     console.log(
       `[${i}]`,
       JSON.stringify(g.propertyName),
@@ -137,7 +139,7 @@ const relatedExpansionsWithCode = relatedExpansions.map(exp => {
     JSON.stringify(exp.unitName)
   );
 
-  const match = groupHomes.find(
+  const match = groupHomesSub.find(
     gh =>
       gh.propertyName?.trim() === exp.propertyName?.trim() &&
       gh.unitName?.trim() === exp.unitName?.trim()
