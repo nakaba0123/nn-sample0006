@@ -105,7 +105,7 @@ const relatedExpansionsWithCode = relatedExpansions.map(exp => {
       gh.unitName?.trim() === exp.unitName?.trim()
   );
 
-  console.log("match::", match);
+  console.log("relatedExpansionsのmatch::", match);
 
   return {
     ...exp,
