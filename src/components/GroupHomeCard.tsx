@@ -249,6 +249,7 @@ useEffect(() => {
             <div className="space-y-3">
             {console.log("groupHome.facilityCode:::", groupHome.facilityCode)}
             {console.log("expansions:::", expansions)}
+            {console.log("relatedExpansionsWithCode:::", relatedExpansionsWithCode)}
 {relatedExpansionsWithCode.map((expansion) => (
   <ExpansionCard
     key={expansion.id}
