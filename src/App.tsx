@@ -331,14 +331,13 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
           oldPropertyName: editingGroupHome.propertyName
         } 
       );
-
+/*
       // ← 追加部分：expansionsテーブルも同期更新
       await axios.put(`${API_BASE_URL}/expansions/update-property-name`, {
         oldPropertyName: editingGroupHome.propertyName, // 変更前
         newPropertyName: data.propertyName              // 変更後
       });
-      console.log("oldPropertyName::", editingGroupHome.propertyName);
-      console.log("newPropertyName::", data.propertyName);
+*/
 
       alert("更新に成功しました！");
     } else {
