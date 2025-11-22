@@ -363,16 +363,13 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
     const [
       groupHomesMainRes,
       groupHomesSubRes,
-      expansionsRes
     ] = await Promise.all([
       fetchWithRetry("/api/group-homes/main"),
       fetchWithRetry("/api/group-homes/sub"),
-      fetchWithRetry("/api/expansions")
     ]);
 
     setGroupHomesMain(ensureArray(groupHomesMainRes).map(mapGroupHome));
     setGroupHomesSub(ensureArray(groupHomesSubRes).map(mapGroupHome));
-    setExpansionRecords(ensureArray(expansionsRes).map(mapExpansion));
 
     // モーダルを閉じ、編集状態をリセット
     handleCloseGroupHomeModal();
