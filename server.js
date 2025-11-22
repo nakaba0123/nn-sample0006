@@ -1060,6 +1060,7 @@ app.put("/api/expansions/:id", async (req, res) => {
     );
 
     if (oldRows.length === 0) {
+      console.log("id:", id);
       throw new Error("対象のexpansionが存在しません");
     }
 
