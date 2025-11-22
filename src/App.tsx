@@ -331,13 +331,6 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
           oldPropertyName: editingGroupHome.propertyName
         } 
       );
-/*
-      // ← 追加部分：expansionsテーブルも同期更新
-      await axios.put(`${API_BASE_URL}/expansions/update-property-name`, {
-        oldPropertyName: editingGroupHome.propertyName, // 変更前
-        newPropertyName: data.propertyName              // 変更後
-      });
-*/
 
       alert("更新に成功しました！");
     } else {
@@ -362,13 +355,16 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
     const [
       groupHomesMainRes,
       groupHomesSubRes,
+      expansionsRes
     ] = await Promise.all([
       fetchWithRetry("/api/group-homes/main"),
       fetchWithRetry("/api/group-homes/sub"),
+      fetchWithRetry("/api/expansions")
     ]);
 
     setGroupHomesMain(ensureArray(groupHomesMainRes).map(mapGroupHome));
     setGroupHomesSub(ensureArray(groupHomesSubRes).map(mapGroupHome));
+    setExpansionRecords(ensureArray(expansionsRes).map(mapExpansion));
 
     // モーダルを閉じ、編集状態をリセット
     handleCloseGroupHomeModal();
