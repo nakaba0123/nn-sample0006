@@ -359,7 +359,20 @@ const handleGroupHomeSubmit = async (data: GroupHomeFormData) => {
     }
 
     // 一覧を最新化
-    fetchGroupHomes();
+//    fetchGroupHomes();
+    const [
+      groupHomesMainRes,
+      groupHomesSubRes,
+      expansionsRes
+    ] = await Promise.all([
+      fetchWithRetry("/api/group-homes/main"),
+      fetchWithRetry("/api/group-homes/sub"),
+      fetchWithRetry("/api/expansions")
+    ]);
+
+    setGroupHomesMain(ensureArray(groupHomesMainRes).map(mapGroupHome));
+    setGroupHomesSub(ensureArray(groupHomesSubRes).map(mapGroupHome));
+    setExpansionRecords(ensureArray(expansionsRes).map(mapExpansion));
 
     // モーダルを閉じ、編集状態をリセット
     handleCloseGroupHomeModal();
@@ -695,48 +708,6 @@ useEffect(() => {
 
   setUsers(mappedUsers);
 }, [rawUsers, departmentHistories]);
-
-/*
-const handleExpansionSubmit = async (data: ExpansionFormData) => {
-  if (editingExpansion) {
-    // 編集モード
-    setExpansionRecords(prev => prev.map(expansion =>
-      expansion.id === editingExpansion.id
-        ? { ...expansion, ...data }
-        : expansion
-    ));
-    alert("増床更新に成功しました！");
-    fetchGroupHomes();
-    setEditingExpansion(null);
-  } else {
-    // 新規登録モード → バックエンドへPOST
-    try {
-      const res = await fetch('/api/expansions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) throw new Error('登録失敗');
-
-      const result = await res.json(); // ← 成功時の応答(JSON)を取得しておくと便利
-      console.log('増床登録成功:', result);
-
-      // 状態の更新（任意）
-      const newExpansion: ExpansionRecord = {
-        id: result.id || `exp_${Date.now()}`,
-        ...data,
-        timestamp: new Date().toISOString()
-      };
-      alert("増床登録に成功しました！");
-      fetchGroupHomes();
-      setExpansionRecords(prev => [newExpansion, ...prev]);
-    } catch (err) {
-      console.error('増床登録エラー:', err);
-    }
-  }
-};
-*/
 
 const handleExpansionSubmit = async (data: ExpansionFormData) => {
   console.log("handleExpansionSumbitのdata:::", data);
