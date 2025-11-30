@@ -1171,7 +1171,7 @@ app.put("/api/expansions/:id", async (req, res) => {
 
     // 2️⃣ モード変化判定
     const modeTransition = `${old_expansion_type}->${new_expansion_type}`;
-
+/*
     //
     // ===============================
     // A → A
@@ -1189,6 +1189,34 @@ app.put("/api/expansions/:id", async (req, res) => {
          old_property_name, old_unit_name]
       );
     }
+*/
+
+//
+// ===============================
+// A → A
+// ===============================
+//
+
+if (modeTransition === "A->A") {
+  // ① SUB（＝group_homes）の更新
+  await conn.query(
+    `UPDATE group_homes
+     SET property_name=?, unit_name=?, capacity=?
+     WHERE property_name=? AND unit_name=?`,
+    [new_property_name, new_unit_name, capacity || 0,
+     old_property_name, old_unit_name]
+  );
+
+  // ② expansions の全件更新（同じユニットのA/Bまとめて）
+  await conn.query(
+    `UPDATE expansions
+     SET unit_name = ?
+     WHERE property_name = ?
+       AND unit_name = ?`,
+    [new_unit_name, old_property_name, old_unit_name]
+  );
+}
+
 
     //
     // ===============================
