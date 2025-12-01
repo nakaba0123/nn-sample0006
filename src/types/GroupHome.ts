@@ -33,6 +33,7 @@ export interface ExpansionRecord {
   commonRoom?: string; // タイプAの場合のみ
   startDate: string;
   timestamp: string;
+  facilityCode?: string;   // ← ★ 追加
 }
 
 export interface ExpansionFormData {
@@ -42,4 +43,5 @@ export interface ExpansionFormData {
   newRooms: string[];
   commonRoom?: string; // タイプAの場合のみ
   startDate: string;
+  facilityCode?: string;   // ← ★ 追加
 }

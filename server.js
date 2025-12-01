@@ -932,6 +932,7 @@ app.post('/api/expansions', async (req, res) => {
   }
 });
 
+/*
 app.get('/api/expansions', async (req, res) => {
   console.log("GET /api/expansions");
 
@@ -949,6 +950,46 @@ app.get('/api/expansions', async (req, res) => {
         return (await pool.query(sql))[0];
       }
     }, 3, 1000); // 3回リトライ、1秒待機
+
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error('増床一覧取得リトライ失敗:', err);
+    res.status(500).json({ message: '取得に失敗しました' });
+  }
+});
+*/
+
+// =======================
+// GET /api/expansions
+// =======================
+app.get('/api/expansions', async (req, res) => {
+  console.log("GET /api/expansions");
+
+  const { group_home_id } = req.query;
+
+  // JOIN 追加版
+  const baseSql = `
+    SELECT 
+      e.*,
+      gh.facility_code AS facilityCode
+    FROM expansions e
+    LEFT JOIN group_homes gh
+      ON e.property_name = gh.property_name
+     AND e.unit_name = gh.unit_name
+  `;
+
+  const sql = group_home_id
+    ? `${baseSql} WHERE e.group_home_id = ? ORDER BY e.id DESC`
+    : `${baseSql} ORDER BY e.id DESC`;
+
+  try {
+    const rows = await queryWithRetry(async () => {
+      if (group_home_id) {
+        return (await pool.query(sql, [group_home_id]))[0];
+      } else {
+        return (await pool.query(sql))[0];
+      }
+    }, 3, 1000);
 
     res.status(200).json(rows);
   } catch (err) {

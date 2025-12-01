@@ -26,6 +26,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
     newRooms: ['201', '202', '203'],
     commonRoom: '共用室A',
     startDate: '2025-04-01'
+    facilityCode: '',     // ← ★ 追加
   });
 
   const [errors, setErrors] = useState<Partial<ExpansionFormData & { commonRoom: string }>>({});
@@ -36,6 +37,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
         propertyName: editExpansion.propertyName,
         unitName: editExpansion.unitName,
         expansionType: editExpansion.expansionType,
+        facilityCode: editExpansion?.facilityCode || '',
         newRooms: Array.isArray(editExpansion.newRooms) && editExpansion.newRooms.length > 0
           ? editExpansion.newRooms
           : [''],
@@ -51,6 +53,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
         propertyName: defaultPropertyName,
         unitName: '第1ユニット',
         expansionType: 'A',
+        facilityCode: ''
         newRooms: ['201', '202', '203'],
         commonRoom: '共用室A',
         startDate: '2025-04-01'
