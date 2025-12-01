@@ -25,7 +25,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
     expansionType: 'A',
     newRooms: ['201', '202', '203'],
     commonRoom: '共用室A',
-    startDate: '2025-04-01'
+    startDate: '2025-04-01',
     facilityCode: '',     // ← ★ 追加
   });
 
