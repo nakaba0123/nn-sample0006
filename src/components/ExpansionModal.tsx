@@ -53,7 +53,7 @@ const ExpansionModal: React.FC<ExpansionModalProps> = ({
         propertyName: defaultPropertyName,
         unitName: '第1ユニット',
         expansionType: 'A',
-        facilityCode: ''
+        facilityCode: '',
         newRooms: ['201', '202', '203'],
         commonRoom: '共用室A',
         startDate: '2025-04-01'
