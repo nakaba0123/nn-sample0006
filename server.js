@@ -1008,6 +1008,7 @@ app.put("/api/expansions/:id", async (req, res) => {
     unitName,
     expansionType,
     capacity,
+    facilityCode,
   } = req.body;
 
   if (!id) {
@@ -1036,7 +1037,7 @@ app.put("/api/expansions/:id", async (req, res) => {
     const old_property_name = oldRows[0].property_name;
     const old_unit_name     = oldRows[0].unit_name;
     const old_expansion_type = oldRows[0].expansion_type;
-
+/*
     // ⭐ group_homes から facility_code を取得
     const [homeRows] = await conn.query(
       `SELECT facility_code
@@ -1047,6 +1048,7 @@ app.put("/api/expansions/:id", async (req, res) => {
 
     const old_facility_code =
       homeRows.length > 0 ? homeRows[0].facility_code : null;
+*/
 
     // 1️⃣ expansions 自体を更新
     await conn.query(
@@ -1075,7 +1077,7 @@ await conn.query(
     new_property_name,
     new_unit_name,
     capacity || 0,
-    old_facility_code,
+    facilityCode,
     old_property_name,
     old_unit_name
   ]
@@ -1132,7 +1134,7 @@ await conn.query(
     new_property_name,
     new_unit_name,
     capacity || 0,
-    old_facility_code   // ここ大事！
+    facilityCode   // ここ大事！
   ]
 );
 
