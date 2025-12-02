@@ -1128,8 +1128,8 @@ await conn.query(
 
       // ① まず新しい SUB を追加
 await conn.query(
-  `INSERT INTO group_homes (property_name, unit_name, capacity, facility_code, created_at)
-   VALUES (?, ?, ?, ?, NOW())`,
+  `INSERT INTO group_homes (property_name, unit_name, capacity, facility_code,unit_type,  created_at)
+   VALUES (?, ?, ?, ?, 'SUB', NOW())`,
   [
     new_property_name,
     new_unit_name,
