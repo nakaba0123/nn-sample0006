@@ -1009,6 +1009,7 @@ app.put("/api/expansions/:id", async (req, res) => {
     expansionType,
     capacity,
     facilityCode,
+    commonRoom,
   } = req.body;
 
   if (!id) {
@@ -1071,13 +1072,14 @@ if (modeTransition === "A->A") {
   // ① SUB（＝group_homes）の更新
 await conn.query(
   `UPDATE group_homes
-   SET property_name=?, unit_name=?, capacity=?, facility_code=?
+   SET property_name=?, unit_name=?, capacity=?, facility_code=?, common_room=?
    WHERE property_name=? AND unit_name=?`,
   [
     new_property_name,
     new_unit_name,
     capacity || 0,
     facilityCode,
+    commonRoom,
     old_property_name,
     old_unit_name
   ]
@@ -1128,13 +1130,14 @@ await conn.query(
 
       // ① まず新しい SUB を追加
 await conn.query(
-  `INSERT INTO group_homes (property_name, unit_name, capacity, facility_code,unit_type,  created_at)
-   VALUES (?, ?, ?, ?, 'SUB', NOW())`,
+  `INSERT INTO group_homes (property_name, unit_name, capacity, facility_code, common_room, unit_type, created_at)
+   VALUES (?, ?, ?, ?, ?, 'SUB', NOW())`,
   [
     new_property_name,
     new_unit_name,
     capacity || 0,
-    facilityCode   // ここ大事！
+    facilityCode,   // ここ大事！
+    commonRoom
   ]
 );
 
