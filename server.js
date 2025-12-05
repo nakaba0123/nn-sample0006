@@ -1207,21 +1207,24 @@ app.put("/api/expansions/:id", async (req, res) => {
     const old_expansion_type = oldRows[0].expansion_type;
 
     // 1️⃣ expansions 自体を更新（★ new_rooms を含む）
-    await conn.query(
-      `UPDATE expansions
-         SET property_name = ?, 
-             unit_name = ?, 
-             expansion_type = ?,
-             new_rooms = ?
-       WHERE id = ?`,
-      [
-        new_property_name,
-        new_unit_name,
-        new_expansion_type,
-        newRooms || null,   // ←★ ここ！
-        id
-      ]
-    );
+// 1️⃣ expansions 自体を更新（new_rooms + common_room）
+await conn.query(
+  `UPDATE expansions
+     SET property_name = ?,
+         unit_name = ?,
+         expansion_type = ?,
+         new_rooms = ?,
+         common_room = ?     -- ★ 追加
+   WHERE id = ?`,
+  [
+    new_property_name,
+    new_unit_name,
+    new_expansion_type,
+    newRooms || null,
+    commonRoom || null,      // ★ ここ！
+    id
+  ]
+);
 
     // 2️⃣ モード変化判定
     const modeTransition = `${old_expansion_type}->${new_expansion_type}`;
@@ -1233,20 +1236,25 @@ app.put("/api/expansions/:id", async (req, res) => {
     //
     if (modeTransition === "A->A") {
       // ① SUB（＝group_homes）の更新
-      await conn.query(
-        `UPDATE group_homes
-           SET property_name=?, unit_name=?, capacity=?, facility_code=?, common_room=?
-         WHERE property_name=? AND unit_name=?`,
-        [
-          new_property_name,
-          new_unit_name,
-          capacity || 0,
-          facilityCode,
-          commonRoom,
-          old_property_name,
-          old_unit_name
-        ]
-      );
+await conn.query(
+  `UPDATE group_homes
+     SET property_name=?, 
+         unit_name=?, 
+         capacity=?, 
+         facility_code=?,
+         common_room='-'    -- ★ ここ固定でOK
+   WHERE property_name=? 
+     AND unit_name=?`,
+  [
+    new_property_name,
+    new_unit_name,
+    capacity || 0,
+    facilityCode,
+
+    old_property_name,
+    old_unit_name
+  ]
+);
 
       // ② expansions の全件更新（A/Bまとめて）
       await conn.query(
@@ -1295,13 +1303,12 @@ app.put("/api/expansions/:id", async (req, res) => {
       await conn.query(
         `INSERT INTO group_homes 
            (property_name, unit_name, capacity, facility_code, common_room, unit_type, created_at)
-         VALUES (?, ?, ?, ?, ?, 'SUB', NOW())`,
+         VALUES (?, ?, ?, ?, '-', 'SUB', NOW())`,
         [
           new_property_name,
           new_unit_name,
           capacity || 0,
-          facilityCode,
-          commonRoom
+          facilityCode
         ]
       );
     }
