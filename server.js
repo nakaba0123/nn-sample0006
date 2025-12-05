@@ -1242,7 +1242,7 @@ await conn.query(
          unit_name=?, 
          capacity=?, 
          facility_code=?,
-         common_room='-'    -- ★ ここ固定でOK
+         common_room='-'    // ★ ここ固定でOK
    WHERE property_name=? 
      AND unit_name=?`,
   [
