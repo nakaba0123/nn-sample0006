@@ -997,7 +997,7 @@ app.get('/api/expansions', async (req, res) => {
     res.status(500).json({ message: '取得に失敗しました' });
   }
 });
-
+/*
 // =======================
 // PUT /api/expansions/:id
 // =======================
@@ -1038,18 +1038,6 @@ app.put("/api/expansions/:id", async (req, res) => {
     const old_property_name = oldRows[0].property_name;
     const old_unit_name     = oldRows[0].unit_name;
     const old_expansion_type = oldRows[0].expansion_type;
-/*
-    // ⭐ group_homes から facility_code を取得
-    const [homeRows] = await conn.query(
-      `SELECT facility_code
-       FROM group_homes
-       WHERE property_name = ? AND unit_name = ?`,
-      [old_property_name, old_unit_name]
-    );
-
-    const old_facility_code =
-      homeRows.length > 0 ? homeRows[0].facility_code : null;
-*/
 
     // 1️⃣ expansions 自体を更新
     await conn.query(
@@ -1157,6 +1145,179 @@ await conn.query(
     //
     // ===============================
     // それ以外は想定外
+    // ===============================
+    //
+    else {
+      throw new Error(`想定外のモード遷移: ${modeTransition}`);
+    }
+
+    await conn.commit();
+    res.json({ message: "expansions と group_homes を更新しました" });
+
+  } catch (error) {
+    await conn.rollback();
+    console.error("PUT /api/expansions/:id エラー:", error);
+    res.status(500).json({ error: "増床更新処理に失敗しました" });
+  } finally {
+    conn.release();
+  }
+});
+*/
+
+// =======================
+// PUT /api/expansions/:id
+// =======================
+app.put("/api/expansions/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    propertyName,
+    unitName,
+    expansionType,
+    capacity,
+    facilityCode,
+    commonRoom,
+    newRooms,   // ←★ 追加
+  } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "IDが指定されていません" });
+  }
+
+  const new_property_name  = propertyName  || null;
+  const new_unit_name      = unitName      || null;
+  const new_expansion_type = expansionType || null;
+
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    // 0️⃣ 旧データ取得
+    const [oldRows] = await conn.query(
+      `SELECT property_name, unit_name, expansion_type
+       FROM expansions WHERE id = ?`,
+      [id]
+    );
+
+    if (oldRows.length === 0) {
+      throw new Error("対象のexpansionが存在しません");
+    }
+
+    const old_property_name  = oldRows[0].property_name;
+    const old_unit_name      = oldRows[0].unit_name;
+    const old_expansion_type = oldRows[0].expansion_type;
+
+    // 1️⃣ expansions 自体を更新（★ new_rooms を含む）
+    await conn.query(
+      `UPDATE expansions
+         SET property_name = ?, 
+             unit_name = ?, 
+             expansion_type = ?,
+             new_rooms = ?
+       WHERE id = ?`,
+      [
+        new_property_name,
+        new_unit_name,
+        new_expansion_type,
+        newRooms || null,   // ←★ ここ！
+        id
+      ]
+    );
+
+    // 2️⃣ モード変化判定
+    const modeTransition = `${old_expansion_type}->${new_expansion_type}`;
+
+    //
+    // ===============================
+    // A → A
+    // ===============================
+    //
+    if (modeTransition === "A->A") {
+      // ① SUB（＝group_homes）の更新
+      await conn.query(
+        `UPDATE group_homes
+           SET property_name=?, unit_name=?, capacity=?, facility_code=?, common_room=?
+         WHERE property_name=? AND unit_name=?`,
+        [
+          new_property_name,
+          new_unit_name,
+          capacity || 0,
+          facilityCode,
+          commonRoom,
+          old_property_name,
+          old_unit_name
+        ]
+      );
+
+      // ② expansions の全件更新（A/Bまとめて）
+      await conn.query(
+        `UPDATE expansions
+           SET unit_name = ?
+         WHERE property_name = ?
+           AND unit_name = ?`,
+        [new_unit_name, old_property_name, old_unit_name]
+      );
+    }
+
+    //
+    // ===============================
+    // A → B
+    // ===============================
+    //
+    else if (modeTransition === "A->B") {
+      // old SUB 削除
+      await conn.query(
+        `DELETE FROM group_homes
+         WHERE property_name=? AND unit_name=?`,
+        [old_property_name, old_unit_name]
+      );
+
+      // expansions（同一ユニット）全部を新名義に統合
+      await conn.query(
+        `UPDATE expansions
+           SET property_name=?, unit_name=?, expansion_type='B'
+         WHERE property_name=? AND unit_name=?`,
+        [
+          new_property_name,
+          new_unit_name,
+          old_property_name,
+          old_unit_name
+        ]
+      );
+    }
+
+    //
+    // ===============================
+    // B → A
+    // ===============================
+    //
+    else if (modeTransition === "B->A") {
+      // SUB を新規追加
+      await conn.query(
+        `INSERT INTO group_homes 
+           (property_name, unit_name, capacity, facility_code, common_room, unit_type, created_at)
+         VALUES (?, ?, ?, ?, ?, 'SUB', NOW())`,
+        [
+          new_property_name,
+          new_unit_name,
+          capacity || 0,
+          facilityCode,
+          commonRoom
+        ]
+      );
+    }
+
+    //
+    // ===============================
+    // B → B
+    // ===============================
+    //
+    else if (modeTransition === "B->B") {
+      // 何もなし
+    }
+
+    //
+    // ===============================
+    // 想定外
     // ===============================
     //
     else {
