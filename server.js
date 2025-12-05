@@ -1214,7 +1214,7 @@ await conn.query(
          unit_name = ?,
          expansion_type = ?,
          new_rooms = ?,
-         common_room = ?     -- ★ 追加
+         common_room = ?    // -- ★ 追加
    WHERE id = ?`,
   [
     new_property_name,
